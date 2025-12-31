@@ -8,6 +8,17 @@ Pokemon Mystery Dungeon-style roguelike engine built with C#, FNA, and Lua scrip
 - **Do not create PRs without asking** - Wait for user approval before creating pull requests
 - **Verify builds pass** before suggesting commits - Run `dotnet build RogueEssence.sln`
 
+## AI Reference Documentation
+
+Before modifying this codebase, read these guides:
+
+| Guide | Purpose |
+|-------|---------|
+| [docs/claude/architecture.md](docs/claude/architecture.md) | System overview, subsystems, data flow |
+| [docs/claude/common-tasks.md](docs/claude/common-tasks.md) | How to add content, maps, scripts, features |
+| [docs/claude/api-reference.md](docs/claude/api-reference.md) | Quick reference for key classes and methods |
+| [examples/](examples/) | Annotated code examples for all common patterns |
+
 ## Prerequisites
 
 ```bash
