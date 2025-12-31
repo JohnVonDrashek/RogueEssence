@@ -2,6 +2,12 @@
 
 Pokemon Mystery Dungeon-style roguelike engine built with C#, FNA, and Lua scripting.
 
+## Claude Code Rules
+
+- **Do not commit or push without explicit user consent** - Always ask before running `git commit` or `git push`
+- **Do not create PRs without asking** - Wait for user approval before creating pull requests
+- **Verify builds pass** before suggesting commits - Run `dotnet build RogueEssence.sln`
+
 ## Prerequisites
 
 ```bash
