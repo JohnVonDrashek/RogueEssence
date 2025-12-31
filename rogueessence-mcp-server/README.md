@@ -34,9 +34,21 @@ npm run build
 
 ## Usage
 
-### With Claude Code
+### For RogueEssence Contributors (Recommended)
 
-Add to your Claude Code MCP configuration (`~/.claude/claude_code_config.json`):
+The project is pre-configured with `.mcp.json` - just build and it works:
+
+```bash
+cd rogueessence-mcp-server
+npm install
+npm run build
+```
+
+Then start Claude Code in the RogueEssence directory - the MCP server is automatically available.
+
+### Manual Configuration
+
+If you need to configure manually, add to `~/.claude/settings.json`:
 
 ```json
 {

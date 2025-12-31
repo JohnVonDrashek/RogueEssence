@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "rogueessence": {
+      "command": "node",
+      "args": ["rogueessence-mcp-server/dist/index.js"]
+    }
+  }
+}

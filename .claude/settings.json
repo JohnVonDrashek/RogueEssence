@@ -6,11 +6,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/doc-updater.sh",
+            "command": "bash -c 'cd \"$(git rev-parse --show-toplevel)\" && .claude/hooks/doc-updater.sh'",
             "timeout": 300000
           }
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "csharp-lsp@claude-plugins-official": true
+  },
+  "enableAllProjectMcpServers": true
 }
