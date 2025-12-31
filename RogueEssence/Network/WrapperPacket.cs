@@ -7,11 +7,22 @@ using RogueEssence.Data;
 
 namespace RogueEssence.Network
 {
-
+    /// <summary>
+    /// Abstract generic wrapper class for network packets that provides serialization support.
+    /// Wraps any serializable type T for transmission over the network using LiteNetLib.
+    /// </summary>
+    /// <typeparam name="T">The type of data to wrap in the packet.</typeparam>
     public abstract class WrapperPacket<T> : INetSerializable
     {
+        /// <summary>
+        /// Gets or sets the state data contained in this packet.
+        /// </summary>
         public T State { get; set; }
 
+        /// <summary>
+        /// Deserializes the packet data from the network reader.
+        /// </summary>
+        /// <param name="reader">The network data reader containing the serialized data.</param>
         void INetSerializable.Deserialize(NetDataReader reader)
         {
             byte[] arr = reader.GetBytesWithLength();
@@ -30,6 +41,10 @@ namespace RogueEssence.Network
             }
         }
 
+        /// <summary>
+        /// Serializes the packet data to the network writer.
+        /// </summary>
+        /// <param name="netWriter">The network data writer to write the serialized data to.</param>
         void INetSerializable.Serialize(NetDataWriter netWriter)
         {
             if (State == null)

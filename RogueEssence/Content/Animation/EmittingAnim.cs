@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A particle animation that spawns another animation when it finishes.
+    /// Useful for creating chain effects like explosions after projectiles.
+    /// </summary>
     [Serializable]
     public class EmittingAnim : ParticleAnim
     {

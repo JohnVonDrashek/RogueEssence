@@ -8,13 +8,37 @@ using System;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// A menu element that displays formatted text with optional color tags.
+    /// Supports horizontal and vertical alignment and inline color changes using [color=#RRGGBB] tags.
+    /// </summary>
     public class MenuText : BaseMenuElement
     {
+        /// <summary>
+        /// Gets the text content (with color tags stripped).
+        /// </summary>
         public string Text { get; private set; }
+
+        /// <summary>
+        /// The default text color.
+        /// </summary>
         public Color Color;
+
+        /// <summary>
+        /// Vertical alignment of the text.
+        /// </summary>
         public DirV AlignV;
+
+        /// <summary>
+        /// Horizontal alignment of the text.
+        /// </summary>
         public DirH AlignH;
+
+        /// <summary>
+        /// The position of the text relative to the parent menu.
+        /// </summary>
         public Loc Loc;
+
         private List<(int idx, Color color)> textColor;
 
         public MenuText(string text, Loc loc)
@@ -53,6 +77,12 @@ namespace RogueEssence.Menu
             SetText(text);
         }
 
+        /// <summary>
+        /// Breaks a string into lines that fit within the specified width, preserving color tags.
+        /// </summary>
+        /// <param name="text">The text to break into lines.</param>
+        /// <param name="width">The maximum width in pixels for each line.</param>
+        /// <returns>An array of line strings with color tags preserved.</returns>
         public static string[] BreakIntoLines(string text, int width)
         {
             List<(int idx, string color)> textColor = new List<(int idx, string color)>();
@@ -139,6 +169,10 @@ namespace RogueEssence.Menu
             return lines;
         }
 
+        /// <summary>
+        /// Sets the text content, parsing any color tags.
+        /// </summary>
+        /// <param name="text">The text to set, which may contain [color=#RRGGBB] and [color] tags.</param>
         public void SetText(string text)
         {
             textColor.Clear();
@@ -210,6 +244,10 @@ namespace RogueEssence.Menu
             }
         }
 
+        /// <summary>
+        /// Gets the pixel width of the text.
+        /// </summary>
+        /// <returns>The width of the text in pixels.</returns>
         public int GetTextLength()
         {
             return GraphicsManager.TextFont.SubstringWidth(Text);

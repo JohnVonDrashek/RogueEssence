@@ -12,58 +12,154 @@ using RogueElements;
 
 namespace RogueEssence
 {
+    /// <summary>
+    /// Manages diagnostics, logging, settings persistence, input recording/playback, and control configuration.
+    /// Provides a singleton instance accessible throughout the application.
+    /// </summary>
     public class DiagManager
     {
         private static DiagManager instance;
+
+        /// <summary>
+        /// Initializes the singleton instance of DiagManager.
+        /// </summary>
         public static void InitInstance()
         {
             instance = new DiagManager();
         }
+        /// <summary>
+        /// Gets the singleton instance of DiagManager.
+        /// </summary>
         public static DiagManager Instance { get { return instance; } }
 
+        /// <summary>
+        /// Path to control button label graphics.
+        /// </summary>
         public static string CONTROLS_LABEL_PATH { get => PathMod.ASSET_PATH + "Controls/Label/"; }
+
+        /// <summary>
+        /// Path to default control configuration files.
+        /// </summary>
         public static string CONTROLS_DEFAULT_PATH { get => PathMod.ASSET_PATH + "Controls/Default/"; }
+
+        /// <summary>
+        /// Path to user configuration files.
+        /// </summary>
         public static string CONFIG_PATH { get => PathMod.APP_PATH + "CONFIG/"; }
+
+        /// <summary>
+        /// Path to gamepad-specific configuration files.
+        /// </summary>
         public static string CONFIG_GAMEPAD_PATH { get => CONFIG_PATH + "GAMEPAD/"; }
+
+        /// <summary>
+        /// Path to log files.
+        /// </summary>
         public static string LOG_PATH { get => PathMod.APP_PATH + "LOG/"; }
+
+        /// <summary>
+        /// Windows registry path for application settings.
+        /// </summary>
         public const string REG_PATH = "HKEY_CURRENT_USER\\Software\\RogueEssence";
 
 
         private object lockObj = new object();
 
+        /// <summary>
+        /// Delegate for handling log message events.
+        /// </summary>
+        /// <param name="message">The log message.</param>
         public delegate void LogAdded(string message);
+
+        /// <summary>
+        /// Delegate for getting additional error trace information.
+        /// </summary>
+        /// <returns>Additional trace information to append to error logs.</returns>
         public delegate string ErrorTrace();
 
         private bool inError;
         private LogAdded errorAddedEvent;
         private ErrorTrace errorTraceEvent;
 
+        /// <summary>
+        /// Gets whether input is currently being recorded.
+        /// </summary>
         public bool RecordingInput { get { return (ActiveDebugReplay == null && inputWriter != null); } }
         private BinaryWriter inputWriter;
+
+        /// <summary>
+        /// The list of recorded inputs for debug replay, or null if not replaying.
+        /// </summary>
         public List<FrameInput> ActiveDebugReplay;
+
+        /// <summary>
+        /// The current index in the debug replay sequence.
+        /// </summary>
         public int DebugReplayIndex;
 
+        /// <summary>
+        /// Whether developer mode is enabled.
+        /// </summary>
         public bool DevMode;
 
         /// <summary>
-        /// Debug with lua listener
+        /// Whether Lua debugging with listener is enabled.
         /// </summary>
         public bool DebugLua;
+
+        /// <summary>
+        /// The root editor interface for development tools.
+        /// </summary>
         public IRootEditor DevEditor;
+
+        /// <summary>
+        /// Whether to listen and log map generation events.
+        /// </summary>
         public bool ListenGen;
 
+        /// <summary>
+        /// Gets whether a gamepad is currently the active input device.
+        /// </summary>
         public bool GamePadActive { get; private set; }
 
         private string gamePadID;
+
+        /// <summary>
+        /// Dictionary mapping gamepad GUIDs to their button label mappings.
+        /// </summary>
         public Dictionary<string, Dictionary<Buttons, string>> ButtonToLabel { get; private set; }
+
+        /// <summary>
+        /// Dictionary mapping keyboard keys to their display labels.
+        /// </summary>
         public Dictionary<Keys, string> KeyToLabel { get; private set; }
+
+        /// <summary>
+        /// Dictionary of default gamepad configurations by GUID.
+        /// </summary>
         public Dictionary<string, GamePadMap> GamepadDefaults { get; set; }
+
+        /// <summary>
+        /// Gets the action button mappings for the current gamepad.
+        /// </summary>
         public Buttons[] CurActionButtons { get { return CurSettings.GamepadMaps[gamePadID].ActionButtons; } }
+
+        /// <summary>
+        /// Gets the display name of the current gamepad.
+        /// </summary>
         public string CurGamePadName { get { return CurSettings.GamepadMaps[gamePadID].Name; } }
 
+        /// <summary>
+        /// The current user settings.
+        /// </summary>
         public Settings CurSettings;
 
         private string loadMessage;
+
+        /// <summary>
+        /// Gets or sets the current loading message displayed during initialization.
+        /// Thread-safe property.
+        /// </summary>
         public string LoadMsg
         {
             get
@@ -78,7 +174,10 @@ namespace RogueEssence
             }
         }
 
-
+        /// <summary>
+        /// Initializes a new instance of the DiagManager class.
+        /// Creates required directories and initializes default settings.
+        /// </summary>
         public DiagManager()
         {
             if (!Directory.Exists(LOG_PATH))
@@ -101,12 +200,20 @@ namespace RogueEssence
             FNALoggerEXT.LogError = LogInfo;
         }
 
+        /// <summary>
+        /// Sets the error event handlers for logging and tracing.
+        /// </summary>
+        /// <param name="errorAdded">Handler called when an error is logged.</param>
+        /// <param name="errorTrace">Handler that provides additional trace information.</param>
         public void SetErrorListener(LogAdded errorAdded, ErrorTrace errorTrace)
         {
             errorAddedEvent = errorAdded;
             errorTraceEvent = errorTrace;
         }
 
+        /// <summary>
+        /// Subscribes to RogueElements map generation events for debugging.
+        /// </summary>
         public void ListenToMapGen()
         {
             GenContextDebug.OnError += logRogueElementsError;
@@ -131,6 +238,9 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Writes all accumulated RogueElements log messages to the log file and clears the buffer.
+        /// </summary>
         public void FlushRogueElements()
         {
             StringBuilder builder = new StringBuilder("Steps:\n");
@@ -143,12 +253,19 @@ namespace RogueEssence
             logMsgs.Clear();
         }
 
+        /// <summary>
+        /// Cleans up resources, ending any active input recording.
+        /// </summary>
         public void Unload()
         {
             EndInput();
         }
 
 
+        /// <summary>
+        /// Begins recording input to a timestamped log file.
+        /// Records the random seed and all subsequent frame inputs.
+        /// </summary>
         public void BeginInput()
         {
             try
@@ -165,6 +282,10 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Records a single frame of input to the active recording.
+        /// </summary>
+        /// <param name="input">The frame input to record.</param>
         public void LogInput(FrameInput input)
         {
             if (inputWriter != null)
@@ -187,6 +308,9 @@ namespace RogueEssence
         }
 
 
+        /// <summary>
+        /// Ends the current input recording session and closes the file.
+        /// </summary>
         public void EndInput()
         {
             try
@@ -203,6 +327,11 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Loads a recorded input file for debug replay.
+        /// Restores the random seed and populates ActiveDebugReplay with recorded inputs.
+        /// </summary>
+        /// <param name="path">The filename of the recording in the LOG_PATH directory.</param>
         public void LoadInputs(string path)
         {
             try
@@ -233,16 +362,20 @@ namespace RogueEssence
         }
 
 
+        /// <summary>
+        /// Logs an error to console and output log with full stack trace.
+        /// </summary>
+        /// <param name="exception">The exception to log.</param>
         public void LogError(Exception exception)
         {
             LogError(exception, true);
         }
 
         /// <summary>
-        /// Logs an error to console and output log.  Puts out the entire stack trace including inner exceptions.
+        /// Logs an error to console and output log. Outputs the entire stack trace including inner exceptions.
         /// </summary>
-        /// <param name="exception">THe exception to log.</param>
-        /// <param name="signal">Triggers On-Error code if true.  Logs silently if not.</param>
+        /// <param name="exception">The exception to log.</param>
+        /// <param name="signal">Triggers error event handlers if true. Logs silently if false.</param>
         public void LogError(Exception exception, bool signal)
         {
             lock (lockObj)
@@ -294,6 +427,10 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Logs an informational message to console and log file.
+        /// </summary>
+        /// <param name="diagInfo">The message to log.</param>
         public void LogInfo(string diagInfo)
         {
             lock (lockObj)
@@ -324,6 +461,10 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Loads control label mappings and default gamepad configurations from XML files.
+        /// Populates ButtonToLabel, KeyToLabel, and GamepadDefaults.
+        /// </summary>
         public void SetupInputs()
         {
             ButtonToLabel = new Dictionary<string, Dictionary<Buttons, string>>();
@@ -383,6 +524,11 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Loads user settings from XML configuration files.
+        /// Returns default settings if files don't exist or fail to load.
+        /// </summary>
+        /// <returns>The loaded or default Settings object.</returns>
         public Settings LoadSettings()
         {
             //try to load from file
@@ -532,6 +678,11 @@ namespace RogueEssence
             return settings;
         }
 
+        /// <summary>
+        /// Saves user settings to XML configuration files.
+        /// Creates separate files for general config, keyboard, gamepad, and contacts.
+        /// </summary>
+        /// <param name="settings">The settings to save.</param>
         public void SaveSettings(Settings settings)
         {
             {
@@ -656,6 +807,10 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Loads mod configuration from ModConfig.xml.
+        /// </summary>
+        /// <returns>A tuple containing the quest mod header and array of enabled mod headers.</returns>
         public (ModHeader, ModHeader[]) LoadModSettings()
         {
             string path = CONFIG_PATH + "ModConfig.xml";
@@ -698,6 +853,9 @@ namespace RogueEssence
             return (ModHeader.Invalid, new ModHeader[0] { });
         }
 
+        /// <summary>
+        /// Logs the currently active quest and mods to the diagnostic log.
+        /// </summary>
         public void PrintModSettings()
         {
             DiagManager.Instance.LogInfo("-----------------------------------------");
@@ -708,6 +866,9 @@ namespace RogueEssence
             DiagManager.Instance.LogInfo("-----------------------------------------");
         }
 
+        /// <summary>
+        /// Saves the current mod configuration to ModConfig.xml.
+        /// </summary>
         public void SaveModSettings()
         {
             XmlDocument xmldoc = new XmlDocument();
@@ -726,6 +887,10 @@ namespace RogueEssence
         }
 
 
+        /// <summary>
+        /// Updates the gamepad active state and loads appropriate gamepad configuration.
+        /// </summary>
+        /// <param name="active">Whether a gamepad should be considered active.</param>
         public void UpdateGamePadActive(bool active)
         {
             if (!GamePadActive && active)
@@ -753,6 +918,12 @@ namespace RogueEssence
             GamePadActive = active;
         }
 
+        /// <summary>
+        /// Gets the display string for a control input based on the current input device.
+        /// Returns gamepad button or keyboard key label as appropriate.
+        /// </summary>
+        /// <param name="inputType">The input type to get the string for.</param>
+        /// <returns>A localized control string (e.g., "[X]" or "(A)").</returns>
         public string GetControlString(FrameInput.InputType inputType)
         {
             if (GamePadActive)
@@ -765,6 +936,11 @@ namespace RogueEssence
             return GetKeyboardString(CurSettings.ActionKeys[(int)inputType]);
         }
 
+        /// <summary>
+        /// Gets the display string for a gamepad button.
+        /// </summary>
+        /// <param name="button">The button to get the string for.</param>
+        /// <returns>A localized button string or the button name in parentheses.</returns>
         public string GetButtonString(Buttons button)
         {
             Dictionary<Buttons, string> dict;
@@ -778,6 +954,11 @@ namespace RogueEssence
             return "(" + button.ToLocal() + ")";
         }
 
+        /// <summary>
+        /// Gets the display string for a keyboard key.
+        /// </summary>
+        /// <param name="key">The key to get the string for.</param>
+        /// <returns>A localized key string or the key name in brackets.</returns>
         public string GetKeyboardString(Keys key)
         {
             string mappedString;

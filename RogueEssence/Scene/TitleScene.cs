@@ -7,23 +7,48 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence
 {
+    /// <summary>
+    /// Scene that displays the game title screen.
+    /// Shows the title logo and waits for player input to proceed to the main menu.
+    /// </summary>
     public class TitleScene : BaseScene
     {
+        /// <summary>
+        /// Time in frames to wait before showing the "Press Enter" subtitle.
+        /// </summary>
         const int ENTER_WAIT_TIME = 90;
+
+        /// <summary>
+        /// Duration of the flashing effect cycle for the subtitle in frames.
+        /// </summary>
         const int ENTER_FLASH_TIME = 60;
 
         private bool hideTitle;
         private ulong startTime;
 
+        /// <summary>
+        /// Saved menu state for returning to the title menu from other screens.
+        /// </summary>
         public static List<IInteractable> TitleMenuSaveState;
 
+        /// <summary>
+        /// Initializes a new instance of the TitleScene class.
+        /// </summary>
+        /// <param name="hideTitle">Whether to hide the title and go directly to the menu.</param>
         public TitleScene(bool hideTitle) : base()
         {
             this.hideTitle = hideTitle;
         }
 
+        /// <summary>
+        /// Called when exiting the scene. No cleanup required.
+        /// </summary>
         public override void Exit() { }
 
+        /// <summary>
+        /// Called when the scene begins.
+        /// Starts playing the title background music.
+        /// </summary>
         public override void Begin()
         {
             //set up title, fade, and start music
@@ -31,6 +56,11 @@ namespace RogueEssence
             startTime = GraphicsManager.TotalFrameTick;
         }
 
+        /// <summary>
+        /// Processes input for the title scene.
+        /// Waits for any key/button press to proceed to the main menu.
+        /// </summary>
+        /// <returns>An enumerator for coroutine execution.</returns>
         public override IEnumerator<YieldInstruction> ProcessInput()
         {
             if (!hideTitle && GameManager.Instance.InputManager.AnyKeyPressed() || GameManager.Instance.InputManager.AnyButtonPressed())
@@ -56,6 +86,10 @@ namespace RogueEssence
                 yield return new WaitForFrames(1);
         }
 
+        /// <summary>
+        /// Draws the title scene including background, title logo, and flashing subtitle.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch used for rendering.</param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             float window_scale = GraphicsManager.WindowZoom;

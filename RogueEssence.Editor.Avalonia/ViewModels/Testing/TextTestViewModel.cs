@@ -18,6 +18,10 @@ using System.Text.RegularExpressions;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the text testing dialog.
+    /// Allows developers to test dialogue text rendering in-game.
+    /// </summary>
     public class TextTestViewModel : ViewModelBase
     {
         private string text;

@@ -80,6 +80,10 @@ namespace RogueEssence.Content
 
 
 
+    /// <summary>
+    /// An emitter that combines multiple SwitchOffEmitters to run simultaneously.
+    /// All sub-emitters are switched off together.
+    /// </summary>
     [Serializable]
     public class MultiSwitchEmitter : SwitchOffEmitter
     {

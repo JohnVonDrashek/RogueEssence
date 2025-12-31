@@ -8,8 +8,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A sprite sheet specifically designed for rendering beam-type effects.
+    /// Contains separate head, body, and tail frames for creating extensible beam visuals.
+    /// </summary>
     public class BeamSheet : SpriteSheet, IEffectAnim
     {
+        /// <summary>
+        /// Defines the components of a beam animation.
+        /// </summary>
         private enum BeamFrame
         {
             Head,
@@ -17,18 +24,28 @@ namespace RogueEssence.Content
             Tail
         }
 
+        /// <summary>
+        /// Gets the total number of animation frames in the beam.
+        /// </summary>
         public int TotalFrames { get; private set; }
 
+        /// <summary>
+        /// Creates a new beam sheet from a texture and rectangle definitions.
+        /// </summary>
+        /// <param name="tex">The source texture containing all beam frames.</param>
+        /// <param name="rects">The rectangles defining each frame's location.</param>
+        /// <param name="totalFrames">The number of animation frames.</param>
         public BeamSheet(Texture2D tex, Rectangle[] rects, int totalFrames)
             :base(tex, rects)
         {
             TotalFrames = totalFrames;
         }
 
-        //frompath (import) will take a folder containing all elements
-        //fromstream (load) will take the png, and the rectangles (head.body/tail are precalculated)
-        //save will save as .beam
-
+        /// <summary>
+        /// Imports a beam sheet from a directory containing Head.png, Body.png, Tail.png, and BeamData.xml.
+        /// </summary>
+        /// <param name="path">The path to the directory containing beam assets.</param>
+        /// <returns>A new BeamSheet imported from the specified directory.</returns>
         public static new BeamSheet Import(string path)
         {
             if (File.Exists(path + "BeamData.xml"))
@@ -76,6 +93,11 @@ namespace RogueEssence.Content
                 throw new Exception("Error finding XML file in " + path + ".");
         }
 
+        /// <summary>
+        /// Exports a beam sheet to a directory as separate Head.png, Body.png, Tail.png, and BeamData.xml files.
+        /// </summary>
+        /// <param name="sheet">The beam sheet to export.</param>
+        /// <param name="baseDirectory">The directory to export to.</param>
         public static void Export(BeamSheet sheet, string baseDirectory)
         {
             //export head
@@ -101,6 +123,11 @@ namespace RogueEssence.Content
         }
 
 
+        /// <summary>
+        /// Loads a beam sheet from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>A new BeamSheet loaded from the stream.</returns>
         public static new BeamSheet Load(BinaryReader reader)
         {
             long length = reader.ReadInt64();
@@ -121,6 +148,10 @@ namespace RogueEssence.Content
             
         }
 
+        /// <summary>
+        /// Creates a fallback beam sheet using the default error texture.
+        /// </summary>
+        /// <returns>A BeamSheet containing the default fallback texture.</returns>
         public static new BeamSheet LoadError()
         {
             Rectangle[] rects = new Rectangle[3];
@@ -129,18 +160,38 @@ namespace RogueEssence.Content
             return new BeamSheet(defaultTex, rects, 1);
         }
 
+        /// <summary>
+        /// Saves the beam sheet to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public override void Save(BinaryWriter writer)
         {
             base.Save(writer);
             writer.Write(TotalFrames);
         }
 
+        /// <summary>
+        /// Gets the source rectangle for a specific beam component and frame.
+        /// </summary>
+        /// <param name="component">The beam component (Head, Body, or Tail).</param>
+        /// <param name="frame">The animation frame index.</param>
+        /// <returns>The source rectangle for the specified frame.</returns>
         private Rectangle getBeamFrame(BeamFrame component, int frame)
         {
             int index = (int)component * TotalFrames + frame;
             return spriteRects[index];
         }
 
+        /// <summary>
+        /// Draws a complete beam with head, body, and tail in the specified direction.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The starting position of the beam.</param>
+        /// <param name="frame">The animation frame to draw.</param>
+        /// <param name="dir">The direction the beam points.</param>
+        /// <param name="offset">The offset from the starting position.</param>
+        /// <param name="length">The length of the beam body.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void DrawBeam(SpriteBatch spriteBatch, Vector2 pos, int frame, Dir8 dir, int offset, int length, Color color)
         {
             Loc dirLoc = dir.GetLoc();
@@ -159,6 +210,13 @@ namespace RogueEssence.Content
             Draw(spriteBatch, new Vector2(pos.X + diff.X, pos.Y + diff.Y), head, color, new Vector2(1), (float)((int)dir * Math.PI / 4));
         }
 
+        /// <summary>
+        /// Draws a vertical column beam extending upward from the specified position.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The base position of the column.</param>
+        /// <param name="frame">The animation frame to draw.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void DrawColumn(SpriteBatch spriteBatch, Vector2 pos, int frame, Color color)
         {
             Rectangle head = getBeamFrame(BeamFrame.Head, frame);

@@ -9,8 +9,15 @@ using ReactiveUI;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the rename dialog.
+    /// Provides a simple text input for renaming items.
+    /// </summary>
     public class RenameViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the RenameViewModel class.
+        /// </summary>
         public RenameViewModel()
         {
             Name = "";

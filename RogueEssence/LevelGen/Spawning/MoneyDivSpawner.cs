@@ -20,13 +20,25 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public RandRange DivAmount { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the MoneyDivSpawner class.
+        /// </summary>
         public MoneyDivSpawner() { }
 
+        /// <summary>
+        /// Initializes a new instance of the MoneyDivSpawner class with the specified division amount range.
+        /// </summary>
+        /// <param name="divAmount">The range for number of pickups to create.</param>
         public MoneyDivSpawner(RandRange divAmount)
         {
             DivAmount = divAmount;
         }
 
+        /// <summary>
+        /// Gets the money spawns by dividing the total amount into multiple pickups.
+        /// </summary>
+        /// <param name="map">The generation context with spawner data.</param>
+        /// <returns>A list of money spawns divided from the total.</returns>
         public List<MoneySpawn> GetSpawns(T map)
         {
             MoneySpawn total = map.Spawner.Pick(map.Rand);
@@ -56,8 +68,14 @@ namespace RogueEssence.LevelGen
         }
     }
 
+    /// <summary>
+    /// Interface for spawners that divide a total amount into multiple spawns.
+    /// </summary>
     public interface IDivSpawner
     {
+        /// <summary>
+        /// Gets or sets the random range for the number of divisions.
+        /// </summary>
         RandRange DivAmount { get; set; }
     }
 }

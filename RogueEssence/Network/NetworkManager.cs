@@ -6,26 +6,53 @@ using LiteNetLib.Utils;
 
 namespace RogueEssence.Network
 {
+    /// <summary>
+    /// Represents the current online connection status of the network manager.
+    /// </summary>
     public enum OnlineStatus
     {
+        /// <summary>Not connected to any network.</summary>
         Offline,
+        /// <summary>Currently attempting to connect to a server.</summary>
         Connecting,
+        /// <summary>Connected to server, looking for a partner to connect with.</summary>
         FindingPartner,
+        /// <summary>Receiving connection from a partner.</summary>
         ReceivingPartner,
+        /// <summary>Fully connected and communicating with a partner.</summary>
         Connected
     }
+
+    /// <summary>
+    /// Represents the reason for a network connection being closed.
+    /// </summary>
     public enum NetCloseReason
     {
+        /// <summary>No specific close reason.</summary>
         None,
+        /// <summary>The other party ended the connection.</summary>
         OtherEnded,
+        /// <summary>Already connected to another peer.</summary>
         AlreadyConnected,
+        /// <summary>The activity types between peers do not match.</summary>
         DifferentActivity,
+        /// <summary>The server is shutting down.</summary>
         ServerShutdown,
+        /// <summary>The peer ID does not match the expected value.</summary>
         PeerIDMismatch
     }
+
+    /// <summary>
+    /// Manages all network connections and peer-to-peer communication for online activities.
+    /// Uses LiteNetLib for underlying network operations.
+    /// </summary>
     public class NetworkManager
     {
         private const string CONNECTION_KEY = "n09gBuU3h76ZyORXSlaiEkAT7tbOBG1";
+
+        /// <summary>
+        /// The default port number used for network connections.
+        /// </summary>
         public const int DEFAULT_PORT = 1705;
 
         private const int SERVER_INTRO = 0;
@@ -34,21 +61,47 @@ namespace RogueEssence.Network
         private const int CLIENT_DATA = 3;
 
         private static NetworkManager instance;
+
+        /// <summary>
+        /// Initializes the singleton instance of the NetworkManager.
+        /// </summary>
         public static void InitInstance()
         {
             instance = new NetworkManager();
         }
+
+        /// <summary>
+        /// Gets the singleton instance of the NetworkManager.
+        /// </summary>
         public static NetworkManager Instance { get { return instance; } }
 
         private NetManager client;
         private EventBasedNetListener clientListener;
 
+        /// <summary>
+        /// Gets the current online connection status.
+        /// </summary>
         public OnlineStatus Status { get; private set; }
+
+        /// <summary>
+        /// Gets the exit message when a connection is closed.
+        /// </summary>
         public string ExitMsg { get; private set; }
 
+        /// <summary>
+        /// Gets the current online activity being performed.
+        /// </summary>
         public OnlineActivity Activity { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the connection is peer-to-peer.
+        /// </summary>
         public bool P2P { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the NetworkManager class.
+        /// Sets up the network client and event listeners.
+        /// </summary>
         public NetworkManager()
         {
             clientListener = new EventBasedNetListener();
@@ -63,12 +116,19 @@ namespace RogueEssence.Network
             ExitMsg = "";
         }
 
+        /// <summary>
+        /// Prepares an online activity for connection.
+        /// </summary>
+        /// <param name="activity">The online activity to prepare.</param>
         public void PrepareActivity(OnlineActivity activity/*, bool p2p*/)
         {
             Activity = activity;
             //P2P = p2p;
         }
 
+        /// <summary>
+        /// Initiates a connection to the server specified in the current activity.
+        /// </summary>
         public void Connect()
         {
             ExitMsg = "";
@@ -221,11 +281,18 @@ namespace RogueEssence.Network
             DiagManager.Instance.LogError(new SocketException((int)socketErrorCode));
         }
 
+        /// <summary>
+        /// Polls for network events and processes any pending packets.
+        /// Should be called regularly from the game loop.
+        /// </summary>
         public void Update()
         {
             client.PollEvents();
         }
 
+        /// <summary>
+        /// Disconnects from the current connection and cleans up resources.
+        /// </summary>
         public void Disconnect()
         {
             client.Stop();

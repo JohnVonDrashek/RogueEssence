@@ -6,13 +6,25 @@ using RogueEssence.Ground;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents an item that can be collected, used, thrown, or equipped.
+    /// Contains all data about the item's appearance, effects, and usage mechanics.
+    /// </summary>
     [Serializable]
     public class ItemData : ProximityPassive, IDescribedData
     {
+        /// <summary>
+        /// Returns the localized name of this item.
+        /// </summary>
+        /// <returns>The localized name string.</returns>
         public override string ToString()
         {
             return Name.ToLocal();
         }
+
+        /// <summary>
+        /// Defines how an item can be used.
+        /// </summary>
         public enum UseType
         {
             None,
@@ -150,7 +162,10 @@ namespace RogueEssence.Data
         /// Set to an empty anim to use the item's own sprite.
         /// </summary>
         public Content.AnimData ThrowAnim;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the ItemData class with default values.
+        /// </summary>
         public ItemData()
         {
             Name = new LocalText();
@@ -196,22 +211,62 @@ namespace RogueEssence.Data
     }
 
 
+    /// <summary>
+    /// Summary data for an item entry, including item-specific properties for filtering and display.
+    /// </summary>
     [Serializable]
     public class ItemEntrySummary : EntrySummary
     {
+        /// <summary>
+        /// The icon index for this item.
+        /// </summary>
         public int Icon;
+
+        /// <summary>
+        /// How this item can be used.
+        /// </summary>
         public ItemData.UseType UsageType;
+
+        /// <summary>
+        /// The item state types this item has.
+        /// </summary>
         public List<FlagType> States;
+
+        /// <summary>
+        /// Maximum stack size for this item.
+        /// </summary>
         public int MaxStack;
+
+        /// <summary>
+        /// Whether this item cannot be dropped.
+        /// </summary>
         public bool CannotDrop;
+
+        /// <summary>
+        /// Whether this item's effects apply while in the bag rather than equipped.
+        /// </summary>
         public bool BagEffect;
 
-
+        /// <summary>
+        /// Initializes a new instance of the ItemEntrySummary class.
+        /// </summary>
         public ItemEntrySummary() : base()
         {
             States = new List<FlagType>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the ItemEntrySummary class with the specified values.
+        /// </summary>
+        /// <param name="name">The localized name of the item.</param>
+        /// <param name="released">Whether the item is released for gameplay.</param>
+        /// <param name="comment">Developer comment for this item.</param>
+        /// <param name="sort">The sort order for this item.</param>
+        /// <param name="icon">The icon index for this item.</param>
+        /// <param name="useType">How this item can be used.</param>
+        /// <param name="maxStack">Maximum stack size.</param>
+        /// <param name="cannotDrop">Whether this item cannot be dropped.</param>
+        /// <param name="bagEffect">Whether effects apply while in bag.</param>
         public ItemEntrySummary(LocalText name, bool released, string comment, int sort, int icon, ItemData.UseType useType, int maxStack, bool cannotDrop, bool bagEffect) : base(name, released, comment, sort)
         {
             Icon = icon;
@@ -222,6 +277,10 @@ namespace RogueEssence.Data
             BagEffect = bagEffect;
         }
 
+        /// <summary>
+        /// Gets the display name with appropriate color based on item type.
+        /// </summary>
+        /// <returns>The formatted name string with color tags.</returns>
         public override string GetColoredName()
         {
             if (UsageType == ItemData.UseType.Treasure)
@@ -243,11 +302,21 @@ namespace RogueEssence.Data
             return String.Format("{0}{1}", prefix, GetColoredName());
         }
 
+        /// <summary>
+        /// Checks if this item contains a specific state type.
+        /// </summary>
+        /// <typeparam name="T">The ItemState type to check for.</typeparam>
+        /// <returns>True if the item contains the state, false otherwise.</returns>
         public bool ContainsState<T>() where T : ItemState
         {
             return ContainsState(typeof(T));
         }
 
+        /// <summary>
+        /// Checks if this item contains a specific state type.
+        /// </summary>
+        /// <param name="type">The type to check for.</param>
+        /// <returns>True if the item contains the state, false otherwise.</returns>
         public bool ContainsState(Type type)
         {
             foreach (FlagType testType in States)

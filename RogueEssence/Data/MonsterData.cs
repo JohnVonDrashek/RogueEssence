@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents a monster species with all its forms, stats, and evolution data.
+    /// Contains the complete definition of a monster type in the game.
+    /// </summary>
     [Serializable]
     public class MonsterData : IEntryData
     {
@@ -93,6 +97,9 @@ namespace RogueEssence.Data
         /// </summary>
         public List<BaseMonsterForm> Forms;
 
+        /// <summary>
+        /// Initializes a new instance of the MonsterData class with default values.
+        /// </summary>
         public MonsterData()
         {
             Name = new LocalText();
@@ -117,24 +124,41 @@ namespace RogueEssence.Data
     }
 
 
-
-
+    /// <summary>
+    /// Summary data for a monster entry, including form summaries for quick access.
+    /// </summary>
     [Serializable]
     public class MonsterEntrySummary : EntrySummary
     {
+        /// <summary>
+        /// Summaries for each form of this monster.
+        /// </summary>
         public List<BaseFormSummary> Forms;
 
+        /// <summary>
+        /// Initializes a new instance of the MonsterEntrySummary class.
+        /// </summary>
         public MonsterEntrySummary() : base()
         {
             Forms = new List<BaseFormSummary>();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MonsterEntrySummary class with the specified values.
+        /// </summary>
+        /// <param name="name">The localized name of the monster.</param>
+        /// <param name="released">Whether the monster is released for gameplay.</param>
+        /// <param name="comment">Developer comment for this monster.</param>
+        /// <param name="sort">The sort order for this monster.</param>
         public MonsterEntrySummary(LocalText name, bool released, string comment, int sort) : base(name, released, comment, sort)
         {
             Forms = new List<BaseFormSummary>();
         }
 
-
+        /// <summary>
+        /// Gets the display name with green color formatting.
+        /// </summary>
+        /// <returns>The formatted name string with color tags.</returns>
         public override string GetColoredName()
         {
             return String.Format("[color=#00FF00]{0}[color]", Name.ToLocal());

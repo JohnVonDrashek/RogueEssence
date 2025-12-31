@@ -17,6 +17,9 @@ namespace RogueEssence.Script
     /// </summary>
     public class LuaCoroutineIterator : IEnumerator<YieldInstruction>
     {
+        /// <summary>
+        /// Gets the current yield instruction from the iterator.
+        /// </summary>
         public YieldInstruction Current { get; internal set; }
 
         object IEnumerator.Current { get { return this.Current; } }
@@ -25,6 +28,11 @@ namespace RogueEssence.Script
         private LuaFunction m_origfun;
         private object[] m_origargs;
 
+        /// <summary>
+        /// Creates a new Lua coroutine iterator from a Lua function.
+        /// </summary>
+        /// <param name="fun">The Lua function to wrap as a coroutine.</param>
+        /// <param name="args">Arguments to pass to the Lua function.</param>
         public LuaCoroutineIterator( LuaFunction fun, params object[] args )
         {
             m_origfun = fun;
@@ -45,6 +53,10 @@ namespace RogueEssence.Script
             return null;
         }
 
+        /// <summary>
+        /// Advances the iterator to the next yield instruction.
+        /// </summary>
+        /// <returns>True if there is a next instruction, false if the coroutine has completed.</returns>
         public bool MoveNext()
         {
             object res = CallInternal();
@@ -62,6 +74,9 @@ namespace RogueEssence.Script
             return res != null;
         }
 
+        /// <summary>
+        /// Resets the iterator to the beginning, recreating the coroutine.
+        /// </summary>
         public void Reset()
         {
             Current = null;
@@ -93,7 +108,9 @@ namespace RogueEssence.Script
         //   Dispose(false);
         // }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Disposes of the iterator and releases any resources.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

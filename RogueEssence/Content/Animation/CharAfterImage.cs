@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A fading afterimage effect of a character sprite.
+    /// Used for motion blur and dash effects.
+    /// </summary>
     public class CharAfterImage : BaseAnim
     {
         public CharAfterImage(Loc mapLoc, CharID appearance, int currentAnim, int frame, Dir8 dir, int locHeight, int animTime, byte alpha, byte alphaSpeed)

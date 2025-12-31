@@ -17,6 +17,10 @@ using Newtonsoft.Json.Linq;
 namespace RogueEssence.Ground
 {
 
+    /// <summary>
+    /// Represents a character in ground mode that can move, interact, and be controlled by AI or player input.
+    /// Implements collision detection, animation, and scripting capabilities.
+    /// </summary>
     [Serializable]
     public class GroundChar : GroundAIUser, ICharSprite, IBox, IEntityWithLuaData
     {

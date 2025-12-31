@@ -11,11 +11,26 @@ using RogueEssence.Data;
 
 namespace RogueEssence
 {
+    /// <summary>
+    /// Represents settings for a supported language, including its display name and fallback languages.
+    /// </summary>
     public class LanguageSetting
     {
+        /// <summary>
+        /// The display name of the language (e.g., "English", "Japanese").
+        /// </summary>
         public string Name;
+
+        /// <summary>
+        /// List of language codes to fall back to if a string is not found in this language.
+        /// </summary>
         public List<string> Fallbacks;
 
+        /// <summary>
+        /// Initializes a new instance of the LanguageSetting class.
+        /// </summary>
+        /// <param name="name">The display name of the language.</param>
+        /// <param name="fallbacks">The list of fallback language codes.</param>
         public LanguageSetting(string name, List<string> fallbacks)
         {
             Name = name;
@@ -23,16 +38,52 @@ namespace RogueEssence
             Fallbacks.AddRange(fallbacks);
         }
     }
+
+    /// <summary>
+    /// Provides localization and text formatting utilities for the game.
+    /// Handles loading, caching, and formatting of localized strings with support for
+    /// grammar rules in multiple languages including English, Spanish, German, Italian, and Korean.
+    /// </summary>
     public static class Text
     {
+        /// <summary>
+        /// The newline string used as a divider.
+        /// </summary>
         public const string DIVIDER_STR = "\n";
+
+        /// <summary>
+        /// The base filename for localization string files.
+        /// </summary>
         public const string STRINGS_FILE_NAME = "strings";
+
+        /// <summary>
+        /// The file extension for localization resource files.
+        /// </summary>
         public const string STRINGS_FILE_EXT = ".resx";
 
+        /// <summary>
+        /// Dictionary of loaded localization strings keyed by string ID.
+        /// </summary>
         public static Dictionary<string, string> Strings;
+
+        /// <summary>
+        /// Dictionary of extended localization strings for custom content.
+        /// </summary>
         public static Dictionary<string, string> StringsEx;
+
+        /// <summary>
+        /// The current culture/language setting.
+        /// </summary>
         public static CultureInfo Culture;
+
+        /// <summary>
+        /// Array of supported language codes.
+        /// </summary>
         public static string[] SupportedLangs;
+
+        /// <summary>
+        /// Dictionary mapping language codes to their settings.
+        /// </summary>
         public static Dictionary<string, LanguageSetting> LangNames;
 
         private static string subMsgRegex = @"(?<pause>\[pause=(?<pauseval>\d+)\])" +
@@ -52,6 +103,10 @@ namespace RogueEssence
         public static Regex MsgTags = new Regex(subMsgRegex + @"|" + subGenderRegex,
                                                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Compiled regex for grammar tag replacements supporting multiple languages.
+        /// Handles articles and grammatical gender for English, Spanish, German, Italian, and Korean.
+        /// </summary>
         public static Regex GrammarTags = new Regex(@"(?<a_an>\[a/an\]\W+(?<a_anval>\w))" + //en
                                                 @"|(?<el_la>\[el/la\]\W+?(?<el_lasex>\[male\]|\[female\])?\w)" + //es
                                                 @"|(?<los_las>\[los/las\]\W+?(?<los_lassex>\[male\]|\[female\])?\w)" + //es
@@ -69,6 +124,10 @@ namespace RogueEssence
                                                 @"|(?<i_lamyeon>(?<i_lamyeonval>\w)[^가-힣]+?\[이/라면\])", //ko
                                                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Initializes the Text system by registering encoding providers and loading language definitions.
+        /// Must be called before using any localization features.
+        /// </summary>
         public static void Init()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -123,11 +182,21 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Converts a language code to its display name.
+        /// </summary>
+        /// <param name="lang">The language code.</param>
+        /// <returns>The display name of the language.</returns>
         public static string ToName(this string lang)
         {
             return LangNames[lang].Name;
         }
 
+        /// <summary>
+        /// Loads localization strings from a RESX file.
+        /// </summary>
+        /// <param name="path">The path to the RESX file.</param>
+        /// <returns>A dictionary of string key-value pairs.</returns>
         public static Dictionary<string, string> LoadStringResx(string path)
         {
             try
@@ -166,6 +235,11 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Loads localization strings with comments from a RESX file for development use.
+        /// </summary>
+        /// <param name="path">The path to the RESX file.</param>
+        /// <returns>A dictionary of string keys to value and comment tuples.</returns>
         public static Dictionary<string, (string val, string comment)> LoadDevStringResx(string path)
         {
             try
@@ -211,6 +285,13 @@ namespace RogueEssence
         }
 
 
+        /// <summary>
+        /// Loads script-specific localization strings with fallback support.
+        /// </summary>
+        /// <param name="code">The language code to load.</param>
+        /// <param name="basePath">The base path for script files.</param>
+        /// <param name="packagefilepath">The relative path within the package.</param>
+        /// <returns>A dictionary of localized strings.</returns>
         public static Dictionary<string, string> LoadScriptStringDict(string code, string basePath, string packagefilepath)
         {
             Dictionary<string, string> xmlDict = new Dictionary<string, string>();
@@ -268,6 +349,13 @@ namespace RogueEssence
             return xmlDict;
         }
 
+        /// <summary>
+        /// Loads script-specific localization strings for all languages for development use.
+        /// </summary>
+        /// <param name="basePath">The base path for script files.</param>
+        /// <param name="packagefilepath">The relative path within the package.</param>
+        /// <param name="excludeEdit">Whether to exclude the current namespace from loading.</param>
+        /// <returns>A nested dictionary of string keys to language code to value/comment pairs.</returns>
         public static Dictionary<string, Dictionary<string, (string val, string comment)>> LoadDevScriptStringDict(string basePath, string packagefilepath, bool excludeEdit)
         {
             Dictionary<string, Dictionary<string, (string val, string comment)>> rawStrings = new Dictionary<string, Dictionary<string, (string, string)>>();
@@ -297,6 +385,11 @@ namespace RogueEssence
             return rawStrings;
         }
 
+        /// <summary>
+        /// Saves localization strings to a RESX file.
+        /// </summary>
+        /// <param name="path">The path to save the RESX file.</param>
+        /// <param name="stringDict">The dictionary of strings with comments to save.</param>
         public static void SaveStringResx(string path, Dictionary<string, (string val, string comment)> stringDict)
         {
             using (ResXResourceWriter resx = new ResXResourceWriter(path))
@@ -309,6 +402,13 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Formats a string with arguments and applies language-specific grammar rules.
+        /// Handles article selection (a/an), gender agreement, and Korean particles.
+        /// </summary>
+        /// <param name="input">The format string with grammar tags.</param>
+        /// <param name="args">Arguments to insert into the format string.</param>
+        /// <returns>The formatted and grammar-corrected string.</returns>
         public static string FormatGrammar(string input, params object[] args)
         {
             try
@@ -631,6 +731,12 @@ namespace RogueEssence
             return defaultGender;
         }
 
+        /// <summary>
+        /// Retrieves a localized string by key and formats it with the provided arguments.
+        /// </summary>
+        /// <param name="key">The localization string key.</param>
+        /// <param name="args">Arguments to insert into the format string.</param>
+        /// <returns>The formatted localized string.</returns>
         public static string FormatKey(string key, params object[] args)
         {
             try
@@ -647,6 +753,12 @@ namespace RogueEssence
             }
             return key;
         }
+        /// <summary>
+        /// Converts an enum value to its localized string representation.
+        /// </summary>
+        /// <param name="value">The enum value to localize.</param>
+        /// <param name="extra">Additional suffix for the localization key, or null.</param>
+        /// <returns>The localized string, or the enum's ToString() if not found.</returns>
         public static string ToLocal(this Enum value, string extra)
         {
             string key = "_ENUM_" + value.GetType().Name + "_" + value;
@@ -662,11 +774,21 @@ namespace RogueEssence
     
             return value.ToString();
         }
+        /// <summary>
+        /// Converts an enum value to its localized string representation.
+        /// </summary>
+        /// <param name="value">The enum value to localize.</param>
+        /// <returns>The localized string, or the enum's ToString() if not found.</returns>
         public static string ToLocal(this Enum value)
         {
             return value.ToLocal(null);
         }
 
+        /// <summary>
+        /// Converts a string to an escaped representation with Unicode escapes for non-ASCII characters.
+        /// </summary>
+        /// <param name="str">The string to escape.</param>
+        /// <returns>The escaped string with Unicode escape sequences.</returns>
         public static string ToEscaped(this string str)
         {
             StringBuilder builder = new StringBuilder();
@@ -681,6 +803,12 @@ namespace RogueEssence
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Builds a grammatically correct list string from an array of items.
+        /// Uses localized separators for commas and "and".
+        /// </summary>
+        /// <param name="input">The array of strings to join.</param>
+        /// <returns>A formatted list string.</returns>
         public static string BuildList(string[] input)
         {
             StringBuilder totalString = new StringBuilder();
@@ -698,6 +826,10 @@ namespace RogueEssence
             return totalString.ToString();
         }
 
+        /// <summary>
+        /// Sets the current culture and loads localization strings for the specified language.
+        /// </summary>
+        /// <param name="code">The language code to set (e.g., "en", "jp").</param>
         public static void SetCultureCode(string code)
         {
             Culture = new CultureInfo(code);
@@ -750,6 +882,12 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Gets the language-specific version of a file path.
+        /// </summary>
+        /// <param name="basePath">The base file path.</param>
+        /// <param name="cultureCode">The culture code to append.</param>
+        /// <returns>The path with the culture code inserted before the extension.</returns>
         public static string GetLanguagedPath(string basePath, string cultureCode)
         {
             if (String.IsNullOrEmpty(cultureCode))
@@ -761,6 +899,11 @@ namespace RogueEssence
             return Path.Join(dir, noExt + "." + cultureCode + ext);
         }
 
+        /// <summary>
+        /// Gets the best available language-specific path, falling back through the language chain.
+        /// </summary>
+        /// <param name="basePath">The base file path.</param>
+        /// <returns>The best matching language path that exists, or the base path.</returns>
         public static string ModLangPath(string basePath)
         {
             string cultureCode = Culture.Name.ToLower();
@@ -777,6 +920,11 @@ namespace RogueEssence
             return basePath;
         }
 
+        /// <summary>
+        /// Sanitizes a string for use as a filename by removing diacritics and special characters.
+        /// </summary>
+        /// <param name="input">The string to sanitize.</param>
+        /// <returns>A sanitized string safe for use as a filename.</returns>
         public static string Sanitize(string input)
         {
             StringBuilder sbReturn = new StringBuilder();
@@ -791,6 +939,12 @@ namespace RogueEssence
             return result;
         }
 
+        /// <summary>
+        /// Generates a unique name by appending a numeric suffix if needed.
+        /// </summary>
+        /// <param name="inputStr">The desired name.</param>
+        /// <param name="getConflict">A function that returns true if the name conflicts.</param>
+        /// <returns>A non-conflicting name, or null if no valid name could be found.</returns>
         public static string GetNonConflictingName(string inputStr, Func<string, bool> getConflict)
         {
             string prefix = inputStr;
@@ -818,6 +972,13 @@ namespace RogueEssence
             return null;
         }
 
+        /// <summary>
+        /// Gets a non-conflicting save file path by appending a numeric suffix if needed.
+        /// </summary>
+        /// <param name="folderPath">The folder path for the save file.</param>
+        /// <param name="fileName">The desired file name without extension.</param>
+        /// <param name="fileExtension">The file extension including the dot.</param>
+        /// <returns>A non-conflicting file name (without path or extension).</returns>
         public static string GetNonConflictingSavePath(string folderPath, string fileName, string fileExtension)
         {
             bool savePathExists(string name)
@@ -828,6 +989,11 @@ namespace RogueEssence
             return Text.GetNonConflictingName(fileName, savePathExists);
         }
 
+        /// <summary>
+        /// Converts a PascalCase member name to a human-readable title with spaces.
+        /// </summary>
+        /// <param name="name">The PascalCase name to convert.</param>
+        /// <returns>The name with spaces inserted between word boundaries.</returns>
         public static string GetMemberTitle(string name)
         {
             StringBuilder separatedName = new StringBuilder();
@@ -850,6 +1016,12 @@ namespace RogueEssence
             return separatedName.ToString();
         }
 
+        /// <summary>
+        /// Computes a deterministic hash code for a string that is consistent across runs.
+        /// Unlike GetHashCode(), this produces the same value every time.
+        /// </summary>
+        /// <param name="str">The string to hash.</param>
+        /// <returns>A deterministic 32-bit hash value.</returns>
         public static int DeterministicHash(string str)
         {
             //TODO: we don't know if this is consistent between 32bit and 64bit machines...
@@ -873,16 +1045,31 @@ namespace RogueEssence
 
 
 
+    /// <summary>
+    /// A serializable key for looking up extended localization strings.
+    /// Provides methods to retrieve the localized value from StringsEx.
+    /// </summary>
     [Serializable]
     public struct StringKey
     {
+        /// <summary>
+        /// The localization key string.
+        /// </summary>
         public string Key;
 
+        /// <summary>
+        /// Initializes a new StringKey with the specified key.
+        /// </summary>
+        /// <param name="key">The localization key.</param>
         public StringKey(string key)
         {
             Key = key;
         }
 
+        /// <summary>
+        /// Retrieves the localized value for this key from StringsEx.
+        /// </summary>
+        /// <returns>The localized string, or the key itself if not found.</returns>
         public string ToLocal()
         {
             try
@@ -899,6 +1086,10 @@ namespace RogueEssence
             return Key;
         }
 
+        /// <summary>
+        /// Returns the key as a string.
+        /// </summary>
+        /// <returns>The key, or an empty string if null.</returns>
         public override string ToString()
         {
             if (Key != null)
@@ -906,11 +1097,20 @@ namespace RogueEssence
             return "";
         }
 
+        /// <summary>
+        /// Checks whether this key has a valid, non-empty value.
+        /// </summary>
+        /// <returns>True if the key is not null or whitespace.</returns>
         public bool IsValid()
         {
             return !String.IsNullOrWhiteSpace(Key);
         }
 
+        /// <summary>
+        /// Checks whether a localization value exists for the specified key.
+        /// </summary>
+        /// <param name="key">The key to check.</param>
+        /// <returns>True if the key exists in StringsEx.</returns>
         public static bool HasValue(string key)
         {
             return Text.StringsEx.ContainsKey(key);
@@ -918,31 +1118,80 @@ namespace RogueEssence
     }
 
 
+    /// <summary>
+    /// Abstract base class for localized format strings with variable arguments.
+    /// Subclasses define how arguments are provided and formatted.
+    /// </summary>
     [Serializable]
     public abstract class LocalFormat
     {
+        /// <summary>
+        /// The localization key for the format string.
+        /// </summary>
         public StringKey Key;
 
+        /// <summary>
+        /// Initializes a new instance with an empty key.
+        /// </summary>
         public LocalFormat() { Key = new StringKey(""); }
+
+        /// <summary>
+        /// Initializes a new instance by copying from another LocalFormat.
+        /// </summary>
+        /// <param name="other">The LocalFormat to copy from.</param>
         public LocalFormat(LocalFormat other) { Key = other.Key; }
+
+        /// <summary>
+        /// Creates a deep copy of this LocalFormat.
+        /// </summary>
+        /// <returns>A new LocalFormat instance with the same values.</returns>
         public abstract LocalFormat Clone();
 
+        /// <summary>
+        /// Formats and returns the localized string with arguments inserted.
+        /// </summary>
+        /// <returns>The formatted localized string.</returns>
         public abstract string FormatLocal();
     }
 
+    /// <summary>
+    /// Provides localized text formatting with enum values as arguments.
+    /// Each enum value is converted to its localized string representation.
+    /// </summary>
+    /// <typeparam name="T">The enum type for the arguments.</typeparam>
     [Serializable]
     public class LocalFormatEnum<T> : LocalFormat where T : Enum
     {
+        /// <summary>
+        /// The list of enum values to use as format arguments.
+        /// </summary>
         public List<T> Enums;
 
+        /// <summary>
+        /// Initializes a new empty instance.
+        /// </summary>
         public LocalFormatEnum() { Enums = new List<T>(); }
+
+        /// <summary>
+        /// Initializes a new instance by copying from another LocalFormatEnum.
+        /// </summary>
+        /// <param name="other">The LocalFormatEnum to copy from.</param>
         public LocalFormatEnum(LocalFormatEnum<T> other) : base(other)
         {
             Enums = new List<T>();
             Enums.AddRange(other.Enums);
         }
+
+        /// <summary>
+        /// Creates a deep copy of this LocalFormatEnum.
+        /// </summary>
+        /// <returns>A new LocalFormatEnum instance with the same values.</returns>
         public override LocalFormat Clone() { return new LocalFormatEnum<T>(this); }
 
+        /// <summary>
+        /// Formats the localized string with the enum values converted to localized strings.
+        /// </summary>
+        /// <returns>The formatted localized string.</returns>
         public override string FormatLocal()
         {
             List<string> enumStrings = new List<string>();
@@ -952,12 +1201,28 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Provides localized text formatting with StringKey arguments.
+    /// Each argument key is resolved to its localized value before formatting.
+    /// </summary>
     [Serializable]
     public class LocalFormatSimple : LocalFormat
     {
+        /// <summary>
+        /// The list of StringKey arguments to insert into the format string.
+        /// </summary>
         public List<StringKey> Args;
 
+        /// <summary>
+        /// Initializes a new empty instance.
+        /// </summary>
         public LocalFormatSimple() { Args = new List<StringKey>(); }
+
+        /// <summary>
+        /// Initializes a new instance with the specified key and string arguments.
+        /// </summary>
+        /// <param name="keyString">The localization key for the format string.</param>
+        /// <param name="args">The argument keys as strings.</param>
         public LocalFormatSimple(string keyString, params string[] args)
         {
             Key = new StringKey(keyString);
@@ -965,6 +1230,11 @@ namespace RogueEssence
             foreach (string arg in args)
                 Args.Add(new StringKey(arg));
         }
+        /// <summary>
+        /// Initializes a new instance with the specified key and StringKey arguments.
+        /// </summary>
+        /// <param name="key">The localization key for the format string.</param>
+        /// <param name="args">The argument keys as StringKeys.</param>
         public LocalFormatSimple(StringKey key, params StringKey[] args)
         {
             Key = key;
@@ -972,13 +1242,27 @@ namespace RogueEssence
             foreach (StringKey arg in args)
                 Args.Add(arg);
         }
+
+        /// <summary>
+        /// Initializes a new instance by copying from another LocalFormatSimple.
+        /// </summary>
+        /// <param name="other">The LocalFormatSimple to copy from.</param>
         public LocalFormatSimple(LocalFormatSimple other) : base(other)
         {
             Args = new List<StringKey>();
             Args.AddRange(other.Args);
         }
+
+        /// <summary>
+        /// Creates a deep copy of this LocalFormatSimple.
+        /// </summary>
+        /// <returns>A new LocalFormatSimple instance with the same values.</returns>
         public override LocalFormat Clone() { return new LocalFormatSimple(this); }
 
+        /// <summary>
+        /// Formats the localized string with the argument keys resolved to their localized values.
+        /// </summary>
+        /// <returns>The formatted localized string.</returns>
         public override string FormatLocal()
         {
             object[] args = new object[Args.Count];
@@ -988,24 +1272,46 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Represents text that can be localized into multiple languages.
+    /// Stores a default text and a dictionary of translations keyed by language code.
+    /// </summary>
     [Serializable]
     public class LocalText
     {
+        /// <summary>
+        /// The default text used when no translation is available.
+        /// </summary>
         public string DefaultText;
 
+        /// <summary>
+        /// Dictionary mapping language codes to translated text.
+        /// </summary>
         public Dictionary<string, string> LocalTexts;
 
+        /// <summary>
+        /// Initializes a new empty LocalText instance.
+        /// </summary>
         public LocalText()
         {
             DefaultText = "";
             LocalTexts = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Initializes a new LocalText with the specified default text.
+        /// </summary>
+        /// <param name="defaultText">The default text.</param>
         public LocalText(string defaultText)
         {
             DefaultText = defaultText;
             LocalTexts = new Dictionary<string, string>();
         }
+
+        /// <summary>
+        /// Initializes a new LocalText by copying from another instance.
+        /// </summary>
+        /// <param name="other">The LocalText to copy from.</param>
         public LocalText(LocalText other)
         {
             DefaultText = other.DefaultText;
@@ -1013,6 +1319,11 @@ namespace RogueEssence
             foreach (string key in other.LocalTexts.Keys)
                 LocalTexts.Add(key, other.LocalTexts[key]);
         }
+        /// <summary>
+        /// Initializes a new LocalText by copying and formatting with string arguments.
+        /// </summary>
+        /// <param name="other">The LocalText format template to copy from.</param>
+        /// <param name="args">The arguments to insert into the format string.</param>
         public LocalText(LocalText other, string[] args)
         {
             DefaultText = Text.FormatGrammar(other.DefaultText, args);
@@ -1020,6 +1331,12 @@ namespace RogueEssence
             foreach (string key in other.LocalTexts.Keys)
                 LocalTexts.Add(key, Text.FormatGrammar(other.LocalTexts[key], args));
         }
+        /// <summary>
+        /// Initializes a new LocalText by copying and formatting with LocalText arguments.
+        /// Each language is formatted independently using the appropriate translation.
+        /// </summary>
+        /// <param name="other">The LocalText format template to copy from.</param>
+        /// <param name="args">The LocalText arguments to insert.</param>
         public LocalText(LocalText other, LocalText[] args)
         {
             string[] defaultArgs = new string[args.Length];
@@ -1040,15 +1357,32 @@ namespace RogueEssence
                 LocalTexts.Add(key, Text.FormatGrammar(other.LocalTexts[key], localArgs));
             }
         }
+        /// <summary>
+        /// Creates a new LocalText by formatting the template with string arguments.
+        /// </summary>
+        /// <param name="format">The format template.</param>
+        /// <param name="args">The string arguments to insert.</param>
+        /// <returns>A new formatted LocalText.</returns>
         public static LocalText FormatLocalText(LocalText format, params string[] args)
         {
             return new LocalText(format, args);
         }
+
+        /// <summary>
+        /// Creates a new LocalText by formatting the template with LocalText arguments.
+        /// </summary>
+        /// <param name="format">The format template.</param>
+        /// <param name="args">The LocalText arguments to insert.</param>
+        /// <returns>A new formatted LocalText.</returns>
         public static LocalText FormatLocalText(LocalText format, params LocalText[] args)
         {
             return new LocalText(format, args);
         }
 
+        /// <summary>
+        /// Gets the localized text for the current culture, falling back through the language chain.
+        /// </summary>
+        /// <returns>The localized text, or the default text if no translation is found.</returns>
         public string ToLocal()
         {
             string text;
@@ -1067,7 +1401,10 @@ namespace RogueEssence
             return Regex.Unescape(DefaultText);
         }
 
-
+        /// <summary>
+        /// Returns the default text as a string.
+        /// </summary>
+        /// <returns>The default text.</returns>
         public override string ToString()
         {
             return DefaultText;

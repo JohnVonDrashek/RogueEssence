@@ -3,23 +3,35 @@ using System.IO;
 
 namespace RogueEssence.Content
 {
-
+    /// <summary>
+    /// A hierarchical index node for locating character sprite data within a binary file.
+    /// Forms a tree structure where each level represents a different attribute (species, form, skin, gender).
+    /// </summary>
     public class CharaIndexNode
     {
+        /// <summary>
+        /// The byte position in the file where this node's data is located.
+        /// </summary>
         public long Position;
+
+        /// <summary>
+        /// Child nodes indexed by their ID.
+        /// </summary>
         public Dictionary<int, CharaIndexNode> Nodes;
 
+        /// <summary>
+        /// Creates a new empty CharaIndexNode.
+        /// </summary>
         public CharaIndexNode()
         {
             Nodes = new Dictionary<int, CharaIndexNode>();
         }
 
-        //save format:
-        //write this element's position
-        //for each sub-element
-        //write their ID
-        //write their element
-        
+        /// <summary>
+        /// Loads a CharaIndexNode tree from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>The root node of the loaded index tree.</returns>
         public static CharaIndexNode Load(BinaryReader reader)
         {
             CharaIndexNode node = new CharaIndexNode();
@@ -34,6 +46,10 @@ namespace RogueEssence.Content
             return node;
         }
 
+        /// <summary>
+        /// Saves this CharaIndexNode tree to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public void Save(BinaryWriter writer)
         {
             writer.Write(Position);
@@ -45,6 +61,11 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Adds a position entry to the index tree at the specified path.
+        /// </summary>
+        /// <param name="position">The byte position to store.</param>
+        /// <param name="subIDs">The path of IDs to the entry. Use -1 to set the current node's position.</param>
         public void AddSubValue(long position, params int[] subIDs)
         {
             addSubValue(position, subIDs, 0);
@@ -67,6 +88,11 @@ namespace RogueEssence.Content
                 Position = position;
         }
 
+        /// <summary>
+        /// Gets the byte position stored at the specified path in the index tree.
+        /// </summary>
+        /// <param name="subIDs">The path of IDs to look up. Use -1 to get the current node's position.</param>
+        /// <returns>The stored byte position, or 0 if not found.</returns>
         public long GetPosition(params int[] subIDs)
         {
             return getPosition(subIDs, 0);

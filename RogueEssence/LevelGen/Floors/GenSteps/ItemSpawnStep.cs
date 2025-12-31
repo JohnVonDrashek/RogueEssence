@@ -17,11 +17,18 @@ namespace RogueEssence.LevelGen
         [EditorHeight(0, 360)]
         public SpawnDict<string, SpawnList<InvItem>> Spawns;
 
+        /// <summary>
+        /// Initializes a new instance of the ItemSpawnStep class.
+        /// </summary>
         public ItemSpawnStep()
         {
             Spawns = new SpawnDict<string, SpawnList<InvItem>>();
         }
 
+        /// <summary>
+        /// Applies the item spawn step, adding spawn entries to the map's item spawn tables.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             foreach (string key in Spawns.GetKeys())
@@ -45,9 +52,18 @@ namespace RogueEssence.LevelGen
         }
     }
 
+    /// <summary>
+    /// Helper class for working with category spawn dictionaries.
+    /// </summary>
     public static class CategorySpawnHelper
     {
-
+        /// <summary>
+        /// Collapses a nested spawn dictionary into a flat list with calculated spawn rates.
+        /// </summary>
+        /// <typeparam name="K">The key type of the spawn dictionary.</typeparam>
+        /// <typeparam name="V">The value type of the inner spawn lists.</typeparam>
+        /// <param name="spawns">The nested spawn dictionary to collapse.</param>
+        /// <returns>A list of tuples containing the item and its overall spawn probability.</returns>
         public static List<(object, double)> CollapseSpawnDict<K, V>(SpawnDict<K, SpawnList<V>> spawns)
         {
             List<(object, double)> flatList = new List<(object, double)>();

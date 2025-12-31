@@ -3,6 +3,10 @@ using RogueElements;
 
 namespace RogueEssence.Dungeon
 {
+    /// <summary>
+    /// Provides field of view (FOV) calculations for determining visibility in the dungeon.
+    /// Uses shadowcasting algorithm with octant-based transformation for efficient visibility computation.
+    /// </summary>
     public static class Fov
     {
         //  \3|4/
@@ -23,6 +27,13 @@ namespace RogueEssence.Dungeon
             { 0,  1,  1,  0 },   // 7 SE-S
         };
 
+        /// <summary>
+        /// Checks if the cardinal path from start to start+diff is blocked.
+        /// </summary>
+        /// <param name="start">The starting location.</param>
+        /// <param name="diff">The difference vector to the target.</param>
+        /// <param name="checkBlock">Function to test if a location blocks visibility.</param>
+        /// <returns>True if the path is blocked; otherwise, false.</returns>
         public static bool IsCardinalPathBlocked(Loc start, Loc diff, Grid.LocTest checkBlock)
         {
             int sgn_x = Math.Sign(diff.X);
@@ -55,6 +66,21 @@ namespace RogueEssence.Dungeon
         //four 2's, two 3's, a 5, 7, 11, 13, and 17
         const int SLOPE_GRANULARITY = 12252240;
 
+        /// <summary>
+        /// Checks if a path is clear between columns using shadowcasting.
+        /// </summary>
+        /// <param name="start">The starting location.</param>
+        /// <param name="startCol">The starting column index.</param>
+        /// <param name="endCol">The ending column index.</param>
+        /// <param name="endRow">The ending row index.</param>
+        /// <param name="xx">X transformation for X coordinate.</param>
+        /// <param name="xy">X transformation for Y coordinate.</param>
+        /// <param name="yx">Y transformation for X coordinate.</param>
+        /// <param name="yy">Y transformation for Y coordinate.</param>
+        /// <param name="startSlope">The starting slope value.</param>
+        /// <param name="endSlope">The ending slope value.</param>
+        /// <param name="checkBlock">Function to test if a location blocks visibility.</param>
+        /// <returns>True if the path is clear; otherwise, false.</returns>
         public static bool IsPathClear(Loc start, int startCol, int endCol, int endRow, int xx, int xy, int yx, int yy, int startSlope, int endSlope, Grid.LocTest checkBlock)
         {
             bool prevBlocked = false;
@@ -118,6 +144,13 @@ namespace RogueEssence.Dungeon
         }
 
 
+        /// <summary>
+        /// Determines whether the end location is visible from the start location.
+        /// </summary>
+        /// <param name="start">The viewer's location.</param>
+        /// <param name="end">The target location to check visibility for.</param>
+        /// <param name="checkBlock">Function to test if a location blocks visibility.</param>
+        /// <returns>True if the end location is visible from the start; otherwise, false.</returns>
         public static bool IsInFOV(Loc start, Loc end, Grid.LocTest checkBlock)
         {
             Loc diff = end - start;
@@ -149,8 +182,22 @@ namespace RogueEssence.Dungeon
 
 
 
+        /// <summary>
+        /// Delegate for applying lighting values to a location.
+        /// </summary>
+        /// <param name="locX">The X coordinate of the location.</param>
+        /// <param name="locY">The Y coordinate of the location.</param>
+        /// <param name="lighting">The lighting value from 0 to 1.</param>
         public delegate void LightOperation(int locX, int locY, float lighting);
 
+        /// <summary>
+        /// Calculates analog field of view with lighting values for each visible tile.
+        /// </summary>
+        /// <param name="rectStart">The starting corner of the rectangular area to compute.</param>
+        /// <param name="rectSize">The size of the rectangular area.</param>
+        /// <param name="start">The viewer's location.</param>
+        /// <param name="checkBlock">Function to test if a location blocks visibility.</param>
+        /// <param name="lightOp">Operation to apply lighting values to visible locations.</param>
         public static void CalculateAnalogFOV(Loc rectStart, Loc rectSize, Loc start, Grid.LocTest checkBlock, LightOperation lightOp)
         {
             // Viewer's cell is always visible.

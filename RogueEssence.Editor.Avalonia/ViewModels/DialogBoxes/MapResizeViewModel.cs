@@ -10,8 +10,17 @@ using RogueElements;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the map resize dialog.
+    /// Allows users to specify new map dimensions and the anchor direction for resizing.
+    /// </summary>
     public class MapResizeViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the MapResizeViewModel class.
+        /// </summary>
+        /// <param name="mapWidth">The current map width.</param>
+        /// <param name="mapHeight">The current map height.</param>
         public MapResizeViewModel(int mapWidth, int mapHeight)
         {
             this.mapWidth = mapWidth;

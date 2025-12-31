@@ -7,12 +7,31 @@ using RogueElements;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Defines an emotion type for character portraits with fallback options.
+    /// </summary>
     public class EmotionType
     {
+        /// <summary>
+        /// The display name of the emotion.
+        /// </summary>
         public string Name;
+
+        /// <summary>
+        /// A list of emotion indices to try if this emotion is unavailable.
+        /// </summary>
         public List<int> Fallbacks;
+
+        /// <summary>
+        /// Whether this emotion can be randomly selected.
+        /// </summary>
         public bool AllowRandom;
 
+        /// <summary>
+        /// Creates a new emotion type.
+        /// </summary>
+        /// <param name="name">The emotion name.</param>
+        /// <param name="allowRandom">Whether to allow random selection.</param>
         public EmotionType(string name, bool allowRandom)
         {
             Name = name;
@@ -21,11 +40,26 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Stores the position and reverse availability of a portrait in the sheet.
+    /// </summary>
     public struct PortraitData
     {
+        /// <summary>
+        /// The index position in the sprite sheet.
+        /// </summary>
         public int Position;
+
+        /// <summary>
+        /// Whether a reversed (mirrored) version is available.
+        /// </summary>
         public bool HasReverse;
 
+        /// <summary>
+        /// Creates new portrait position data.
+        /// </summary>
+        /// <param name="pos">The sheet position index.</param>
+        /// <param name="hasReverse">Whether a reverse version exists.</param>
         public PortraitData(int pos, bool hasReverse)
         {
             Position = pos;
@@ -33,26 +67,50 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Specifies an emotion style for portrait display, including direction.
+    /// </summary>
     [Serializable]
     public struct EmoteStyle
     {
+        /// <summary>
+        /// The emotion index to display.
+        /// </summary>
         public int Emote;
+
+        /// <summary>
+        /// Whether to display the reversed/mirrored version.
+        /// </summary>
         public bool Reverse;
 
+        /// <summary>
+        /// Creates an emote style with the specified emotion, facing default direction.
+        /// </summary>
+        /// <param name="emote">The emotion index.</param>
         public EmoteStyle(int emote)
         {
             Emote = emote;
             Reverse = false;
         }
+
+        /// <summary>
+        /// Creates an emote style with the specified emotion and direction.
+        /// </summary>
+        /// <param name="emote">The emotion index.</param>
+        /// <param name="reverse">Whether to mirror the portrait.</param>
         public EmoteStyle(int emote, bool reverse)
         {
             Emote = emote;
             Reverse = reverse;
         }
-        
+
     }
 
 
+    /// <summary>
+    /// A sprite sheet specialized for character portrait images.
+    /// Supports multiple emotions with optional mirrored variants.
+    /// </summary>
     public class PortraitSheet : TileSheet
     {
         private Dictionary<int, PortraitData> emoteMap;
@@ -85,6 +143,11 @@ namespace RogueEssence.Content
             return true;
         }
 
+        /// <summary>
+        /// Imports a portrait sheet from a directory containing emotion PNG files or a Sheet.png.
+        /// </summary>
+        /// <param name="baseDirectory">The directory containing portrait images.</param>
+        /// <returns>A new PortraitSheet, or null if no valid images found.</returns>
         public static new PortraitSheet Import(string baseDirectory)
         {
             if (File.Exists(baseDirectory + "Sheet.png"))
@@ -194,6 +257,12 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Exports a portrait sheet to a directory.
+        /// </summary>
+        /// <param name="sheet">The sheet to export.</param>
+        /// <param name="baseDirectory">The output directory.</param>
+        /// <param name="singleFrames">If true, exports as Sheet.png; if false, exports individual emotion PNGs.</param>
         public static void Export(PortraitSheet sheet, string baseDirectory, bool singleFrames)
         {
             if (singleFrames)
@@ -263,6 +332,11 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Loads a portrait sheet from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>A new PortraitSheet loaded from the stream.</returns>
         public static new PortraitSheet Load(BinaryReader reader)
         {
             long length = reader.ReadInt64();
@@ -292,11 +366,19 @@ namespace RogueEssence.Content
             return new PortraitSheet(tex, animData);
         }
 
+        /// <summary>
+        /// Creates a fallback portrait sheet using the default error texture.
+        /// </summary>
+        /// <returns>A PortraitSheet containing the default fallback texture.</returns>
         public static new PortraitSheet LoadError()
         {
             return new PortraitSheet(defaultTex, defaultTex.Width, defaultTex.Height, new Dictionary<int, PortraitData>());
         }
 
+        /// <summary>
+        /// Saves the portrait sheet to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public override void Save(BinaryWriter writer)
         {
             base.Save(writer);
@@ -309,6 +391,11 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Gets the actual emotion index to use, following fallbacks if necessary.
+        /// </summary>
+        /// <param name="type">The requested emotion type index.</param>
+        /// <returns>The emotion index to use, or -1 if no fallback is available.</returns>
         public int GetReferencedEmoteIndex(int type)
         {
             int fallbackIndex = -1;
@@ -325,8 +412,12 @@ namespace RogueEssence.Content
             return type;
         }
 
-        //need a way to determine frame the old fashioned way,
-        //however, also need a way to determine frame for an animation playing at the true specified speed
+        /// <summary>
+        /// Draws a portrait at the specified position with the given emotion style.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="type">The emotion style including emotion index and direction.</param>
         public void DrawPortrait(SpriteBatch spriteBatch, Vector2 pos, EmoteStyle type)
         {
             type.Emote = GetReferencedEmoteIndex(type.Emote);
@@ -348,6 +439,11 @@ namespace RogueEssence.Content
                 DrawDefault(spriteBatch, new Rectangle((int)pos.X, (int)pos.Y, GraphicsManager.PortraitSize, GraphicsManager.PortraitSize));
         }
 
+        /// <summary>
+        /// Checks if the portrait sheet has a specific emotion.
+        /// </summary>
+        /// <param name="type">The emotion index to check.</param>
+        /// <returns>True if the emotion exists in this sheet.</returns>
         public bool HasEmotion(int type)
         {
             return emoteMap.ContainsKey(type);

@@ -11,8 +11,16 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the mod configuration dialog.
+    /// Allows users to edit mod metadata including name, namespace, author, description, UUID, and version.
+    /// </summary>
     public class ModConfigViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the ModConfigViewModel class.
+        /// </summary>
+        /// <param name="header">The mod header containing the current mod configuration.</param>
         public ModConfigViewModel(ModHeader header)
         {
             Name = header.Name;

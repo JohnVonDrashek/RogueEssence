@@ -5,20 +5,48 @@
     using RogueElements;
 
 
+	/// <summary>
+	/// Represents a fraction used for precise collision time calculation.
+	/// Stores numerator and denominator separately to avoid floating-point precision issues.
+	/// </summary>
     public struct Multiplier : IEquatable<Multiplier>
     {
+		/// <summary>
+		/// The numerator of the fraction.
+		/// </summary>
         public int Numerator;
+
+		/// <summary>
+		/// The denominator of the fraction.
+		/// </summary>
         public int Denominator;
 
+		/// <summary>
+		/// Initializes a new Multiplier with the specified numerator and denominator.
+		/// </summary>
+		/// <param name="num">The numerator.</param>
+		/// <param name="den">The denominator.</param>
         public Multiplier(int num, int den)
         {
             Numerator = num;
             Denominator = den;
         }
 
+		/// <summary>
+		/// Gets the minimum representable value.
+		/// </summary>
         public static Multiplier MinValue { get { return new Multiplier(0, 0); } }
+
+		/// <summary>
+		/// Gets the maximum representable value.
+		/// </summary>
         public static Multiplier MaxValue { get { return new Multiplier(1, 0); } }
 
+		/// <summary>
+		/// Determines whether this instance equals the specified object.
+		/// </summary>
+		/// <param name="obj">The object to compare.</param>
+		/// <returns>True if equal; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
             if (obj is Multiplier)
@@ -28,21 +56,35 @@
 
             return false;
         }
+		/// <summary>
+		/// Determines whether this instance equals another Multiplier.
+		/// </summary>
+		/// <param name="other">The Multiplier to compare.</param>
+		/// <returns>True if equal; otherwise, false.</returns>
         public bool Equals(Multiplier other)
         {
             return (this == other);
         }
 
+		/// <summary>
+		/// Determines if two Multipliers are equal.
+		/// </summary>
         public static bool operator ==(Multiplier a, Multiplier b)
         {
             return (a.Numerator == b.Numerator) && (a.Denominator == b.Denominator);
         }
 
+		/// <summary>
+		/// Determines if two Multipliers are not equal.
+		/// </summary>
         public static bool operator !=(Multiplier a, Multiplier b)
         {
             return !(a == b);
         }
 
+		/// <summary>
+		/// Determines if one Multiplier is less than another.
+		/// </summary>
         public static bool operator <(Multiplier a, Multiplier b)
         {
             if (a == MinValue || b == MaxValue)
@@ -56,6 +98,9 @@
                 return (a.Numerator * b.Denominator < b.Numerator * a.Denominator);
         }
 
+		/// <summary>
+		/// Determines if one Multiplier is greater than another.
+		/// </summary>
         public static bool operator >(Multiplier a, Multiplier b)
         {
             if (a == MinValue || b == MaxValue)
@@ -69,11 +114,21 @@
                 return (a.Numerator * b.Denominator > b.Numerator * a.Denominator);
         }
 
+		/// <summary>
+		/// Returns a hash code for this instance.
+		/// </summary>
+		/// <returns>A hash code.</returns>
         public override int GetHashCode()
         {
             return Numerator.GetHashCode() ^ Numerator.GetHashCode();
         }
 
+		/// <summary>
+		/// Returns the smaller of two Multipliers.
+		/// </summary>
+		/// <param name="value1">The first value.</param>
+		/// <param name="value2">The second value.</param>
+		/// <returns>The smaller Multiplier.</returns>
         public static Multiplier Min(Multiplier value1, Multiplier value2)
         {
             if (value1 < value2)
@@ -82,6 +137,12 @@
                 return value2;
         }
 
+		/// <summary>
+		/// Returns the larger of two Multipliers.
+		/// </summary>
+		/// <param name="value1">The first value.</param>
+		/// <param name="value2">The second value.</param>
+		/// <returns>The larger Multiplier.</returns>
         public static Multiplier Max(Multiplier value1, Multiplier value2)
         {
             if (value1 > value2)

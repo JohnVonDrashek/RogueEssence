@@ -5,17 +5,35 @@ using RogueElements;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An index node for locating tile data within a binary file.
+    /// Maps 2D tile coordinates to byte positions in the file.
+    /// </summary>
     public class TileIndexNode
     {
+        /// <summary>
+        /// The size of each tile in pixels.
+        /// </summary>
         public int TileSize;
 
+        /// <summary>
+        /// Maps tile coordinates to byte positions in the file.
+        /// </summary>
         public Dictionary<Loc, long> Positions;
 
+        /// <summary>
+        /// Creates a new empty TileIndexNode.
+        /// </summary>
         public TileIndexNode()
         {
             Positions = new Dictionary<Loc, long>();
         }
 
+        /// <summary>
+        /// Loads a TileIndexNode from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>The loaded TileIndexNode.</returns>
         public static TileIndexNode Load(BinaryReader reader)
         {
             TileIndexNode node = new TileIndexNode();
@@ -30,6 +48,10 @@ namespace RogueEssence.Content
             return node;
         }
 
+        /// <summary>
+        /// Saves this TileIndexNode to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public void Save(BinaryWriter writer)
         {
             writer.Write(TileSize);

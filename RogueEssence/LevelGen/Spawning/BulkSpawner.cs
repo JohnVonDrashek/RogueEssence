@@ -31,11 +31,19 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public int SpawnAmount;
 
+        /// <summary>
+        /// Initializes a new instance of the BulkSpawner class.
+        /// </summary>
         public BulkSpawner()
         {
             SpecificSpawns = new List<TSpawnable>();
             RandomSpawns = new SpawnList<TSpawnable>();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the BulkSpawner class as a copy of another.
+        /// </summary>
+        /// <param name="other">The BulkSpawner to copy.</param>
         protected BulkSpawner(BulkSpawner<TGenContext, TSpawnable> other) : this()
         {
             foreach (TSpawnable specificSpawn in other.SpecificSpawns)
@@ -44,8 +52,18 @@ namespace RogueEssence.LevelGen
             for (int ii = 0; ii < other.RandomSpawns.Count; ii++)
                 RandomSpawns.Add((TSpawnable)other.RandomSpawns.GetSpawn(ii).Copy(), other.RandomSpawns.GetSpawnRate(ii));
         }
+
+        /// <summary>
+        /// Creates a copy of this BulkSpawner.
+        /// </summary>
+        /// <returns>A new BulkSpawner with copied data.</returns>
         public BulkSpawner<TGenContext, TSpawnable> Copy() { return new BulkSpawner<TGenContext, TSpawnable>(this); }
 
+        /// <summary>
+        /// Gets all spawns including both specific spawns and randomly rolled spawns.
+        /// </summary>
+        /// <param name="map">The generation context.</param>
+        /// <returns>A list of spawned objects.</returns>
         public List<TSpawnable> GetSpawns(TGenContext map)
         {
             List<TSpawnable> spawns = new List<TSpawnable>();

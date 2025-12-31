@@ -5,6 +5,10 @@ using LiteNetLib.Utils;
 
 namespace WaypointServer
 {
+    /// <summary>
+    /// Manages client connections and peer-to-peer matchmaking for the waypoint server.
+    /// Handles connection requests, client registration, partner matching, and data relay between connected peers.
+    /// </summary>
     public class ConnectionManager
     {
         private const int SERVER_INTRO = 0;
@@ -26,10 +30,24 @@ namespace WaypointServer
         private Dictionary<string, string> searchingConnections;
         private Dictionary<string, string> activeConnections;
 
+        /// <summary>
+        /// Gets the number of clients currently searching for a partner connection.
+        /// </summary>
         public int Searching { get { return searchingConnections.Count; } }
+
+        /// <summary>
+        /// Gets the number of active peer-to-peer connections (counted as individual endpoints).
+        /// </summary>
         public int Active { get { return activeConnections.Count; } }
+
+        /// <summary>
+        /// Gets the total number of connected peers.
+        /// </summary>
         public int Peers { get { return peers.Count; } }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConnectionManager"/> class with empty connection tracking dictionaries.
+        /// </summary>
         public ConnectionManager()
         {
             peers = new Dictionary<long, NetPeer>();
@@ -39,6 +57,11 @@ namespace WaypointServer
             activeConnections = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Handles an incoming connection request from a client.
+        /// Accepts the connection only if the client provides the correct connection key.
+        /// </summary>
+        /// <param name="request">The connection request from the client.</param>
         public void ClientRequested(ConnectionRequest request)
         {
             try
@@ -51,6 +74,11 @@ namespace WaypointServer
             }
         }
 
+        /// <summary>
+        /// Handles a newly connected client peer.
+        /// Registers the peer and sends the server introduction message containing the server name.
+        /// </summary>
+        /// <param name="peer">The newly connected network peer.</param>
         public void ClientConnected(NetPeer peer)
         {
             try
@@ -68,6 +96,12 @@ namespace WaypointServer
             }
         }
 
+        /// <summary>
+        /// Handles client disconnection by cleaning up all associated state.
+        /// Removes the peer from tracking, clears client info, and disconnects any active partner.
+        /// </summary>
+        /// <param name="peer">The disconnecting network peer.</param>
+        /// <param name="disconnectInfo">Information about the disconnection reason.</param>
         public void ClientDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             try
@@ -101,6 +135,14 @@ namespace WaypointServer
             }
         }
 
+        /// <summary>
+        /// Processes incoming network data from a connected peer.
+        /// For active connections, relays data to the partner peer.
+        /// For new connections, handles client registration and matchmaking with potential partners.
+        /// </summary>
+        /// <param name="peer">The network peer that sent the data.</param>
+        /// <param name="reader">The packet reader containing the received data.</param>
+        /// <param name="deliveryMethod">The delivery method used for the packet.</param>
         public void NetworkReceived(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
         {
 

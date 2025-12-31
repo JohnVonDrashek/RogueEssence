@@ -4,6 +4,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Interface for animation data that can be placed in the game world.
+    /// Provides properties and methods for controlling animation playback.
+    /// </summary>
     public interface IPlaceableAnimData
     {
         GraphicsManager.AssetType AssetType { get; }
@@ -27,6 +31,9 @@ namespace RogueEssence.Content
         void LoadFrom(IPlaceableAnimData other);
     }
 
+    /// <summary>
+    /// Animation data for item sprites.
+    /// </summary>
     [Serializable]
     public class ItemAnimData : AnimDataBase, IPlaceableAnimData
     {
@@ -61,6 +68,9 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Animation data for object sprites.
+    /// </summary>
     [Serializable]
     public class ObjAnimData : AnimDataBase, IPlaceableAnimData
     {
@@ -95,6 +105,9 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Animation data for beam effect sprites.
+    /// </summary>
     [Serializable]
     public class BeamAnimData : AnimDataBase
     {
@@ -125,6 +138,9 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Animation data for background sprites.
+    /// </summary>
     [Serializable]
     public class BGAnimData : AnimDataBase
     {
@@ -155,6 +171,10 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Animation data for particle effect sprites.
+    /// The most commonly used animation data type for visual effects.
+    /// </summary>
     [Serializable]
     public class AnimData : AnimDataBase
     {
@@ -187,14 +207,25 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Flags for horizontal and vertical sprite flipping.
+    /// </summary>
     [Flags]
     public enum SpriteFlip
     {
+        /// <summary>No flipping applied.</summary>
         None = 0,
+        /// <summary>Flip horizontally.</summary>
         Horiz = 1,
+        /// <summary>Flip vertically.</summary>
         Vert = 2
     }
 
+    /// <summary>
+    /// Abstract base class for all animation data types.
+    /// Provides common properties for animation playback including frame timing,
+    /// direction, transparency, and sprite effects.
+    /// </summary>
     [Serializable]
     public abstract class AnimDataBase
     {

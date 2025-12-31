@@ -14,13 +14,43 @@ using System.Reactive.Subjects;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for Type values. Displays a combo box for selecting from assignable types.
+    /// Uses TypeConstraintAttribute to determine the base type for available selections.
+    /// </summary>
     public class TypeEditor : Editor<Type>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor should display a label. False because the control includes its own label.
+        /// </summary>
         public override bool DefaultLabel => false;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor should display type information.
+        /// </summary>
         public override bool DefaultType => true;
 
+        /// <summary>
+        /// Loads a combo box control for selecting a type from available assignable types.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The Type value to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, Type member, Type[] subGroupStack)
         {
             TypeConstraintAttribute dataAtt = ReflectionExt.FindAttribute<TypeConstraintAttribute>(attributes);
@@ -63,7 +93,15 @@ namespace RogueEssence.Dev
 
         }
 
-
+        /// <summary>
+        /// Saves the combo box selection and returns the selected Type.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>The selected Type value.</returns>
         public override Type SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             int controlIndex = 0;

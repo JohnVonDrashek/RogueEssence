@@ -17,11 +17,25 @@ using RogueEssence.Dev.ViewModels;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Dungeon map editor form for editing dungeon/floor maps in RogueEssence.
+    /// Implements IMapEditor to provide map editing functionality with undo/redo support.
+    /// </summary>
     public class MapEditForm : ParentForm, IMapEditor
     {
-
+        /// <summary>
+        /// Gets whether the editor form is currently active.
+        /// </summary>
         public bool Active { get; private set; }
+
+        /// <summary>
+        /// Gets the undo/redo stack for map editing operations.
+        /// </summary>
         public UndoStack Edits { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the MapEditForm class.
+        /// </summary>
         public MapEditForm()
         {
             InitializeComponent();
@@ -38,6 +52,10 @@ namespace RogueEssence.Dev.Views
         }
 
 
+        /// <summary>
+        /// Processes user input for the map editor.
+        /// </summary>
+        /// <param name="input">The input manager containing current input state.</param>
         public void ProcessInput(InputManager input)
         {
             DevForm.ExecuteOrInvoke(() => ((MapEditViewModel)DataContext).ProcessInput(input));
@@ -46,18 +64,32 @@ namespace RogueEssence.Dev.Views
 
 
 
+        /// <summary>
+        /// Handles the window loaded event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void Window_Loaded(object sender, EventArgs e)
         {
             Active = true;
         }
 
         private bool silentClose;
+
+        /// <summary>
+        /// Closes the form without triggering scene transition logic.
+        /// </summary>
         public void SilentClose()
         {
             silentClose = true;
             Close();
         }
 
+        /// <summary>
+        /// Handles the window closed event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void Window_Closed(object sender, EventArgs e)
         {
             Active = false;

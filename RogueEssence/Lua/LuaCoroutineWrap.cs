@@ -19,26 +19,49 @@ namespace RogueEssence.Script
         private static readonly LuaFunction s_CoCreate = LuaEngine.Instance.RunString("return coroutine.create").First() as LuaFunction;
         private static readonly LuaFunction s_CoStatus = LuaEngine.Instance.RunString("return coroutine.status").First() as LuaFunction;
         private object m_Co;
-        public List<object> CoReturns { get; set; } //Returned values from the Coroutine
+        /// <summary>
+        /// Gets or sets the list of values returned from the coroutine.
+        /// </summary>
+        public List<object> CoReturns { get; set; }
+
+        /// <summary>
+        /// Gets the most recent value returned from the coroutine.
+        /// </summary>
         public object       Current { get { return CoReturns.Last(); } internal set { CoReturns.Add(value); } }
 
 
+        /// <summary>
+        /// Represents the execution status of a Lua coroutine.
+        /// </summary>
         public enum EStatus
         {
+            /// <summary>
+            /// The coroutine has finished execution.
+            /// </summary>
             Dead,
+            /// <summary>
+            /// The coroutine is currently executing.
+            /// </summary>
             Running,
+            /// <summary>
+            /// The coroutine is paused and can be resumed.
+            /// </summary>
             Suspended,
         }
 
         /// <summary>
-        ///
+        /// Creates a new coroutine wrapper from a Lua function.
         /// </summary>
-        /// <param name="fn"></param>
+        /// <param name="fn">The Lua function to wrap as a coroutine.</param>
         public LuaCoroutineWrap(LuaFunction fn)
         {
             m_Co = s_CoCreate.Call(fn).First() as object;
         }
 
+        /// <summary>
+        /// Creates a new coroutine wrapper from a Lua function path.
+        /// </summary>
+        /// <param name="fnpath">The path to the Lua function in the Lua state.</param>
         public LuaCoroutineWrap(string fnpath)
         {
             m_Co = s_CoCreate.Call(LuaEngine.Instance.LuaState.GetFunction(fnpath)).First() as object;

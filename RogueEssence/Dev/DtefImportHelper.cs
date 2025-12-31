@@ -11,9 +11,10 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Dev
 {
-    /**
-     * Autotile / tile importer for dungeon tiles in the Dungeon Tile Exchange Format.
-     */
+    /// <summary>
+    /// Provides import functionality for dungeon tiles in the Dungeon Tile Exchange Format (DTEF).
+    /// Handles parsing of tileset images, animation frames, and autotile configurations.
+    /// </summary>
     public class DtefImportHelper
     {
         private const string VAR0_FN = "tileset_0.png";
@@ -41,6 +42,12 @@ namespace RogueEssence.Dev
             0x8F, 0x1F, 0x4F, 0x2F, 0x5F, 0xAF
         };
 
+        /// <summary>
+        /// Imports a DTEF tileset from a directory containing tileset images and configuration.
+        /// Creates autotile data entries and saves the combined tile sheet.
+        /// </summary>
+        /// <param name="sourceDir">The directory containing the DTEF tileset files.</param>
+        /// <param name="destFile">The destination file path for the compiled tile sheet.</param>
         public static void ImportDtef(string sourceDir, string destFile)
         {
             string fileName = Path.GetFileName(sourceDir);
@@ -211,11 +218,21 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Exports a DTEF tile to the specified output path.
+        /// </summary>
+        /// <param name="index">The index of the tile to export.</param>
+        /// <param name="outputPath">The destination path for the exported tile.</param>
         public static void ExportDtefTile(int index, string outputPath)
         {
             //TODO: export just the tiles relevant to the particular autotile type
         }
 
+        /// <summary>
+        /// Imports all DTEF tilesets from subdirectories of the specified source directory.
+        /// </summary>
+        /// <param name="sourceDir">The parent directory containing DTEF tileset subdirectories.</param>
+        /// <param name="cachePattern">The pattern for generating output file names, with {0} as placeholder for tileset name.</param>
         public static void ImportAllDtefTiles(string sourceDir, string cachePattern)
         {
             string[] dirs = Directory.GetDirectories(sourceDir);

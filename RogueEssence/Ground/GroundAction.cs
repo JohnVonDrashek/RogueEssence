@@ -8,6 +8,10 @@ using RogueEssence.Dungeon;
 namespace RogueEssence.Ground
 {
 
+    /// <summary>
+    /// Abstract base class representing an action that a ground character can perform.
+    /// Handles animation state, movement, collision detection, and drawing for ground mode characters.
+    /// </summary>
     [Serializable]
     public abstract class GroundAction
     {
@@ -134,6 +138,9 @@ namespace RogueEssence.Ground
     }
 
 
+    /// <summary>
+    /// Ground action representing an idle/standing state with looping animation.
+    /// </summary>
     [Serializable]
     public class IdleGroundAction : GroundAction
     {
@@ -187,6 +194,9 @@ namespace RogueEssence.Ground
         }
     }
 
+    /// <summary>
+    /// Ground action representing walking movement in a direction.
+    /// </summary>
     [Serializable]
     public class WalkGroundAction : GroundAction
     {
@@ -244,6 +254,9 @@ namespace RogueEssence.Ground
         }
     }
 
+    /// <summary>
+    /// Ground action representing an idle state without animation (frozen on first frame).
+    /// </summary>
     [Serializable]
     public class IdleNoAnim : GroundAction
     {
@@ -274,6 +287,9 @@ namespace RogueEssence.Ground
     }
 
 
+    /// <summary>
+    /// Ground action representing a skidding/deceleration state after walking.
+    /// </summary>
     [Serializable]
     public class SkidGroundAction : GroundAction
     {
@@ -371,6 +387,9 @@ namespace RogueEssence.Ground
         }
     }
 
+    /// <summary>
+    /// Ground action representing a one-shot pose animation that plays through and then completes.
+    /// </summary>
     [Serializable]
     public class PoseGroundAction : GroundAction
     {
@@ -404,6 +423,9 @@ namespace RogueEssence.Ground
         }
     }
 
+    /// <summary>
+    /// Ground action that displays a specific frame of an animation without animating.
+    /// </summary>
     [Serializable]
     public class FrameGroundAction : GroundAction
     {
@@ -440,6 +462,9 @@ namespace RogueEssence.Ground
         }
     }
 
+    /// <summary>
+    /// Ground action that plays an animation in reverse.
+    /// </summary>
     [Serializable]
     public class ReverseGroundAction : GroundAction
     {
@@ -475,6 +500,9 @@ namespace RogueEssence.Ground
     }
 
 
+    /// <summary>
+    /// Ground action that animates a character moving to a destination position over time.
+    /// </summary>
     [Serializable]
     public class AnimateToPositionGroundAction : GroundAction
     {
@@ -563,6 +591,9 @@ namespace RogueEssence.Ground
     }
 
 
+    /// <summary>
+    /// Ground action that makes a character hop up and down with height animation.
+    /// </summary>
     [Serializable]
     public class HopGroundAction : GroundAction
     {

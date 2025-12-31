@@ -15,8 +15,14 @@ using RogueEssence.LevelGen;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for IMultiRandPicker objects. Enables subgroup display for complex multi-random picker editing.
+    /// </summary>
     public class MultiRandPickerEditor : Editor<IMultiRandPicker>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
     }
 }

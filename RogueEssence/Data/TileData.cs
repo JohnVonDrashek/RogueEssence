@@ -7,14 +7,25 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Contains data for interactive tile objects like traps, switches, and passages.
+    /// Defines appearance, interaction type, and triggered effects.
+    /// </summary>
     [Serializable]
     public class TileData : PassiveData, IDescribedData
     {
+        /// <summary>
+        /// Returns the localized name of the tile.
+        /// </summary>
+        /// <returns>The tile name as a string.</returns>
         public override string ToString()
         {
             return Name.ToLocal();
         }
 
+        /// <summary>
+        /// Defines how the tile can be triggered or interacted with.
+        /// </summary>
         public enum TriggerType
         {
             None,
@@ -48,6 +59,10 @@ namespace RogueEssence.Data
         [Dev.Multiline(0)]
         public string Comment { get; set; }
 
+        /// <summary>
+        /// Generates a summary of this tile for indexing.
+        /// </summary>
+        /// <returns>An EntrySummary containing the tile's metadata.</returns>
         public EntrySummary GenerateEntrySummary() { return new EntrySummary(Name, Released, Comment); }
 
         /// <summary>
@@ -101,6 +116,9 @@ namespace RogueEssence.Data
         [ListCollapse]
         public PriorityList<SingleCharEvent> InteractWithTiles;
 
+        /// <summary>
+        /// Initializes a new instance of the TileData class with default values.
+        /// </summary>
         public TileData()
         {
             Name = new LocalText();

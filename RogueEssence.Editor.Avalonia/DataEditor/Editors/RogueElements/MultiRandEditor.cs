@@ -15,9 +15,18 @@ using System.Reflection;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for ILoopedRand objects. Provides custom string representation showing the amount spawner.
+    /// </summary>
     public class LoopedRandEditor : Editor<ILoopedRand>
     {
-
+        /// <summary>
+        /// Gets a string representation of the looped rand.
+        /// </summary>
+        /// <param name="obj">The looped rand to convert.</param>
+        /// <param name="type">The type of the object.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <returns>A formatted string showing the amount spawner.</returns>
         public override string GetString(ILoopedRand obj, Type type, object[] attributes)
         {
             if (obj.AmountSpawner == null)
@@ -28,8 +37,18 @@ namespace RogueEssence.Dev
         }
     }
 
+    /// <summary>
+    /// Editor for IPresetMultiRand objects. Provides custom string representation showing preset spawn count.
+    /// </summary>
     public class PresetMultiRandEditor : Editor<IPresetMultiRand>
     {
+        /// <summary>
+        /// Gets a string representation of the preset multi rand.
+        /// </summary>
+        /// <param name="obj">The preset multi rand to convert.</param>
+        /// <param name="type">The type of the object.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <returns>A formatted string showing the preset spawns.</returns>
         public override string GetString(IPresetMultiRand obj, Type type, object[] attributes)
         {
             if (obj.Count == 1)

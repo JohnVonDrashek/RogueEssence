@@ -15,12 +15,38 @@ using Avalonia;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for IPriorityList values. Displays a priority list box for editing elements with priority ordering.
+    /// Supports editing both element values and their priorities with copy/paste functionality.
+    /// </summary>
     public class PriorityListEditor : Editor<IPriorityList>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor should display a label. False because it handles its own labeling.
+        /// </summary>
         public override bool DefaultLabel => false;
 
+        /// <summary>
+        /// Loads a priority list box control for editing a priority-ordered collection.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The priority list to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, IPriorityList member, Type[] subGroupStack)
         {
             Type elementType = ReflectionExt.GetBaseTypeArg(typeof(IPriorityList<>), type, 0);

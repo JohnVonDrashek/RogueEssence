@@ -7,6 +7,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents a collection of game events that can be triggered during gameplay.
+    /// Contains event lists for various phases of battle, status effects, and character actions.
+    /// </summary>
     [Serializable]
     public class ActiveEffect : GameEventOwner
     {
@@ -88,6 +92,9 @@ namespace RogueEssence.Data
         [ListCollapse]
         public PriorityList<BattleEvent> InitActionData;
 
+        /// <summary>
+        /// Initializes a new instance of the ActiveEffect class with empty event lists.
+        /// </summary>
         public ActiveEffect()
         {
             UniversalStates = new StateCollection<UniversalState>();
@@ -127,6 +134,10 @@ namespace RogueEssence.Data
             InitActionData = new PriorityList<BattleEvent>();
         }
 
+        /// <summary>
+        /// Merges all events from another ActiveEffect into this one.
+        /// </summary>
+        /// <param name="other">The ActiveEffect to merge events from.</param>
         public void AddOther(ActiveEffect other)
         {
             foreach (UniversalState state in other.UniversalStates)
@@ -175,6 +186,10 @@ namespace RogueEssence.Data
                     list.Add(priority, step);
             }
         }
+        /// <summary>
+        /// Gets the total count of all events across all event lists.
+        /// </summary>
+        /// <returns>The total number of events in this ActiveEffect.</returns>
         public int GetTotalCount()
         {
             int total = 0;

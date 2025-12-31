@@ -4,8 +4,18 @@ using LiteNetLib;
 
 namespace WaypointServer
 {
+    /// <summary>
+    /// Entry point class for the WaypointServer application.
+    /// Initializes the server, sets up network event handlers, and runs the main server loop.
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Main entry point for the WaypointServer application.
+        /// Initializes diagnostics, creates the connection manager, sets up network listeners,
+        /// and runs an infinite loop to poll network events and display server status.
+        /// </summary>
+        /// <param name="args">Command-line arguments (not used).</param>
         static void Main(string[] args)
         {
 

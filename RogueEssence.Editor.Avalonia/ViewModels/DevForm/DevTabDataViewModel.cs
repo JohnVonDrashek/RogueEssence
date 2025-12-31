@@ -15,45 +15,86 @@ using Avalonia.Interactivity;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Data tab in the developer form.
+    /// Provides functionality for editing all game data types including monsters, skills, items, zones, and more.
+    /// </summary>
     public class DevTabDataViewModel : ViewModelBase
     {
-
+        /// <summary>
+        /// Opens the monster data editor.
+        /// </summary>
         public void btnEditMonster_Click()
         {
             OpenList(DataManager.DataType.Monster, DataManager.Instance.GetMonster, () => { return new MonsterData(); });
         }
+        /// <summary>
+        /// Opens the skill data editor.
+        /// </summary>
         public void btnEditSkill_Click()
         {
             OpenList(DataManager.DataType.Skill, DataManager.Instance.GetSkill, () => { return new SkillData(); });
         }
+
+        /// <summary>
+        /// Opens the intrinsic abilities data editor.
+        /// </summary>
         public void btnEditIntrinsics_Click()
         {
             OpenList(DataManager.DataType.Intrinsic, DataManager.Instance.GetIntrinsic, () => { return new IntrinsicData(); });
         }
+
+        /// <summary>
+        /// Opens the item data editor.
+        /// </summary>
         public void btnEditItem_Click()
         {
             OpenList(DataManager.DataType.Item, DataManager.Instance.GetItem, () => { return new ItemData(); });
         }
+
+        /// <summary>
+        /// Opens the zone data editor.
+        /// </summary>
         public void btnEditZone_Click()
         {
             OpenList(DataManager.DataType.Zone, DataManager.Instance.GetZone, () => { return new ZoneData(); });
         }
+
+        /// <summary>
+        /// Opens the status effects data editor.
+        /// </summary>
         public void btnEditStatuses_Click()
         {
             OpenList(DataManager.DataType.Status, DataManager.Instance.GetStatus, () => { return new StatusData(); });
         }
+
+        /// <summary>
+        /// Opens the map status effects data editor.
+        /// </summary>
         public void btnEditMapStatuses_Click()
         {
             OpenList(DataManager.DataType.MapStatus, DataManager.Instance.GetMapStatus, () => { return new MapStatusData(); });
         }
+
+        /// <summary>
+        /// Opens the terrain data editor.
+        /// </summary>
         public void btnEditTerrain_Click()
         {
             OpenList(DataManager.DataType.Terrain, DataManager.Instance.GetTerrain, () => { return new TerrainData(); });
         }
+
+        /// <summary>
+        /// Opens the tile data editor.
+        /// </summary>
         public void btnEditTiles_Click()
         {
             OpenList(DataManager.DataType.Tile, DataManager.Instance.GetTile, () => { return new TileData(); });
         }
+
+        /// <summary>
+        /// Opens the autotile data editor with DTEF import support.
+        /// </summary>
         public void btnEditAutoTile_Click()
         {
             DataManager.DataType dataType = DataManager.DataType.AutoTile;
@@ -198,36 +239,57 @@ namespace RogueEssence.Dev.ViewModels
             return conflicts;
         }
 
+        /// <summary>
+        /// Opens the emote data editor.
+        /// </summary>
         public void btnEditEmote_Click()
         {
             OpenList(DataManager.DataType.Emote, DataManager.Instance.GetEmote, () => { return new EmoteData(); });
         }
 
+        /// <summary>
+        /// Opens the element type data editor.
+        /// </summary>
         public void btnEditElement_Click()
         {
             OpenList(DataManager.DataType.Element, DataManager.Instance.GetElement, () => { return new ElementData(); });
         }
 
+        /// <summary>
+        /// Opens the growth group data editor.
+        /// </summary>
         public void btnEditGrowthGroup_Click()
         {
             OpenList(DataManager.DataType.GrowthGroup, DataManager.Instance.GetGrowth, () => { return new GrowthData(); });
         }
 
+        /// <summary>
+        /// Opens the skill group data editor.
+        /// </summary>
         public void btnEditSkillGroup_Click()
         {
             OpenList(DataManager.DataType.SkillGroup, DataManager.Instance.GetSkillGroup, () => { return new SkillGroupData(); });
         }
 
+        /// <summary>
+        /// Opens the rank data editor.
+        /// </summary>
         public void btnEditRank_Click()
         {
             OpenList(DataManager.DataType.Rank, DataManager.Instance.GetRank, () => { return new RankData(); });
         }
 
+        /// <summary>
+        /// Opens the skin data editor.
+        /// </summary>
         public void btnEditSkin_Click()
         {
             OpenList(DataManager.DataType.Skin, DataManager.Instance.GetSkin, () => { return new SkinData(); });
         }
 
+        /// <summary>
+        /// Opens the AI tactic data editor.
+        /// </summary>
         public void btnEditAI_Click()
         {
             OpenList(DataManager.DataType.AI, DataManager.Instance.GetAITactic, () => { return new AITactic(); });
@@ -494,6 +556,9 @@ namespace RogueEssence.Dev.ViewModels
         }
 
 
+        /// <summary>
+        /// Opens the dungeon map editor for the current map.
+        /// </summary>
         public void btnMapEditor_Click()
         {
             lock (GameBase.lockObj)
@@ -511,6 +576,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Opens the ground map editor for the current ground scene.
+        /// </summary>
         public void btnGroundEditor_Click()
         {
             lock (GameBase.lockObj)

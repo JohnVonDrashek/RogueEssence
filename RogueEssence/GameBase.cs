@@ -13,34 +13,61 @@ using RogueElements;
 namespace RogueEssence
 {
     /// <summary>
-    /// This is the main type for your game
+    /// This is the main type for your game.
+    /// Handles the game loop, initialization, content loading, and rendering.
     /// </summary>
     public class GameBase : Game
     {
+        /// <summary>
+        /// Number of frames between blinks of the splash screen text.
+        /// </summary>
         private const int SPLASH_BLINK_FRAMES = 40;
+
+        /// <summary>
+        /// Number of frames for the splash screen fade effect.
+        /// </summary>
         private const int SPLASH_FADE_FRAMES = 20;
 
+        /// <summary>
+        /// Represents the different phases of game loading.
+        /// </summary>
         public enum LoadPhase
         {
+            /// <summary>An error occurred during loading.</summary>
             Error = -1,
+            /// <summary>Loading system resources.</summary>
             System = 0,
+            /// <summary>Loading content resources.</summary>
             Content = 1,
+            /// <summary>Loading complete, game is ready.</summary>
             Ready = 2,
+            /// <summary>Unloading and shutting down.</summary>
             Unload = 3
         }
 
+        /// <summary>
+        /// The current loading phase of the game.
+        /// </summary>
         public static LoadPhase CurrentPhase;
+
+        /// <summary>
+        /// Lock object for thread synchronization during updates.
+        /// </summary>
         public static object lockObj = new object();
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+
         private int fadeFrames;
         private int splashFrames;
         private bool drawTurn;
         private bool backgroundLoaded;
         private bool firstUpdate;
 
+        /// <summary>
+        /// Initializes a new instance of the GameBase class.
+        /// Sets up graphics and window configuration.
+        /// </summary>
         public GameBase()
             : base()
         {

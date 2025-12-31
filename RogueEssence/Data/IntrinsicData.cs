@@ -1,6 +1,10 @@
 ﻿using System;
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents an intrinsic ability that monsters can have.
+    /// Intrinsics provide passive effects that are always active while the monster has them.
+    /// </summary>
     [Serializable]
     public class IntrinsicData : ProximityPassive, IDescribedData
     {
@@ -37,8 +41,15 @@ namespace RogueEssence.Data
         /// </summary>
         public int IndexNum;
 
+        /// <summary>
+        /// Generates a summary of this intrinsic for indexing purposes.
+        /// </summary>
+        /// <returns>An EntrySummary containing the intrinsic's metadata.</returns>
         public EntrySummary GenerateEntrySummary() { return new EntrySummary(Name, Released, Comment, IndexNum); }
 
+        /// <summary>
+        /// Initializes a new instance of the IntrinsicData class with default values.
+        /// </summary>
         public IntrinsicData()
         {
             Name = new LocalText();

@@ -6,28 +6,52 @@ using System.IO;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Represents a loopable music track loaded from an OGG Vorbis file.
+    /// Supports seamless looping using LOOPSTART and LOOPLENGTH metadata tags.
+    /// </summary>
     public class LoopedSong : IDisposable
     {
         #region Public Properties
 
+        /// <summary>
+        /// Gets the name of the song (derived from filename).
+        /// </summary>
         public string Name
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets or sets the playback volume (0.0 to 1.0).
+        /// </summary>
         public float Volume
         {
             get { return soundStream.Volume; }
             set { soundStream.Volume = value; }
         }
 
+        /// <summary>
+        /// Gets the current playback state (Playing, Paused, or Stopped).
+        /// </summary>
         public SoundState State { get { return soundStream.State; } }
 
+        /// <summary>
+        /// Gets the number of audio channels (1 for mono, 2 for stereo).
+        /// </summary>
         public int Channels { get; private set; }
+
+        /// <summary>
+        /// Gets the sample rate in Hz (e.g., 44100).
+        /// </summary>
         public int SampleRate { get; private set; }
+
         private int chunkSize { get { return Channels * SampleRate * 2; } }
 
+        /// <summary>
+        /// Gets the Vorbis comment tags from the audio file.
+        /// </summary>
         public Dictionary<string, List<string>> Tags { get; private set; }
 
         #endregion
@@ -47,6 +71,10 @@ namespace RogueEssence.Content
 
         #region Constructors, Deconstructor, Dispose()
 
+        /// <summary>
+        /// Loads and initializes a looped song from an OGG Vorbis file.
+        /// </summary>
+        /// <param name="fileName">The path to the OGG file.</param>
         public LoopedSong(string fileName)
         {
             stbVorbisData = FAudio.stb_vorbis_open_filename(fileName, out int error, IntPtr.Zero);
@@ -106,6 +134,9 @@ namespace RogueEssence.Content
             chunk = new float[chunkSize];
         }
 
+        /// <summary>
+        /// Releases the audio resources and closes the Vorbis decoder.
+        /// </summary>
         public void Dispose()
         {
             if (stbVorbisData != IntPtr.Zero)
@@ -149,6 +180,11 @@ namespace RogueEssence.Content
 
         private long sampleOffset;
 
+        /// <summary>
+        /// Converts a TimeSpan to a sample position within the loop.
+        /// </summary>
+        /// <param name="time">The time position.</param>
+        /// <returns>The corresponding sample position.</returns>
         public long GetSampleFromTimeSpan(TimeSpan time)
         {
             long sample = sampleOffset + (long)((ulong)time.Ticks * (ulong)SampleRate / TimeSpan.TicksPerSecond);
@@ -223,11 +259,21 @@ namespace RogueEssence.Content
 
         #region Public Comparison Methods/Operators
 
+        /// <summary>
+        /// Determines whether this song equals another by name.
+        /// </summary>
+        /// <param name="song">The song to compare.</param>
+        /// <returns>True if the song names match.</returns>
         public bool Equals(LoopedSong song)
         {
             return (((object)song) != null) && (Name == song.Name);
         }
 
+        /// <summary>
+        /// Determines whether this song equals another object.
+        /// </summary>
+        /// <param name="obj">The object to compare.</param>
+        /// <returns>True if the object is a LoopedSong with matching name.</returns>
         public override bool Equals(Object obj)
         {
             if (obj == null)

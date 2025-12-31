@@ -15,6 +15,12 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Ground
 {
+    /// <summary>
+    /// Represents a ground mode map where characters can move freely in any direction.
+    /// Ground maps are used for towns, cutscenes, and other non-dungeon areas.
+    /// Contains entities (characters, objects, markers), terrain layers, collision detection,
+    /// and Lua script events for map-specific behaviors.
+    /// </summary>
     [Serializable]
     public class GroundMap : IWorld, IEntryData
     {

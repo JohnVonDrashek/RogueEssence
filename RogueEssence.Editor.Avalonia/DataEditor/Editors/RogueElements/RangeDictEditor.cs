@@ -15,18 +15,27 @@ using Avalonia.Interactivity;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for IRangeDict values. Displays a range dictionary box for editing values keyed by integer ranges.
+    /// Supports editing both range keys and element values with copy/paste functionality.
+    /// </summary>
     public class RangeDictEditor : Editor<IRangeDict>
     {
         /// <summary>
-        /// Default display behavior of whether to treat 0s as 1s
+        /// Default display behavior of whether to treat 0s as 1s.
         /// </summary>
         public bool Index1;
 
         /// <summary>
-        /// Default display behavior of whether to treat end borders exclsusively
+        /// Default display behavior of whether to treat end borders exclusively.
         /// </summary>
         public bool Inclusive;
 
+        /// <summary>
+        /// Initializes a new instance of the RangeDictEditor class.
+        /// </summary>
+        /// <param name="index1">Whether to use 1-based indexing.</param>
+        /// <param name="inclusive">Whether the range end is inclusive.</param>
         public RangeDictEditor(bool index1, bool inclusive)
         {
             Index1 = index1;

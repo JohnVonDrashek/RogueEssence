@@ -6,6 +6,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A column-style animation that displays a vertical beam effect.
+    /// Uses BeamSheet graphics for rendering.
+    /// </summary>
     [Serializable]
     public class ColumnAnim : BaseAnim, IEmittable
     {

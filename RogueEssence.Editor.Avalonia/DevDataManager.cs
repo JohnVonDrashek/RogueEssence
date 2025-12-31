@@ -13,6 +13,10 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Static manager class for editor-specific data including tile caches, icons, and documentation.
+    /// Provides centralized access to graphics resources and editor settings.
+    /// </summary>
     public class DevDataManager
     {
 
@@ -34,6 +38,9 @@ namespace RogueEssence.Dev
 
         private static Dictionary<string, Size> savedTypeSizes;
 
+        /// <summary>
+        /// Initializes the DevDataManager, loading editor settings, documentation, icons, and caches.
+        /// </summary>
         public static void Init()
         {
             initEditorSettings();
@@ -133,6 +140,9 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Saves editor window settings to the configuration file.
+        /// </summary>
         public static void SaveEditorSettings()
         {
             try
@@ -206,6 +216,11 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Gets the XML documentation for a type.
+        /// </summary>
+        /// <param name="ownerType">The type to get documentation for.</param>
+        /// <returns>A formatted string with the type's full name and documentation.</returns>
         public static string GetTypeDoc(Type ownerType)
         {
             string desc;
@@ -219,6 +234,12 @@ namespace RogueEssence.Dev
             return String.Format("Full Name: {0}", unconstructedType.FullName);
         }
 
+        /// <summary>
+        /// Gets the XML documentation for a member of a type.
+        /// </summary>
+        /// <param name="ownerType">The type containing the member.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <returns>The member's documentation, or null if not found.</returns>
         public static string GetMemberDoc(Type ownerType, string name)
         {
             Type objectType = typeof(object);
@@ -252,18 +273,34 @@ namespace RogueEssence.Dev
             return null;
         }
 
+        /// <summary>
+        /// Gets the saved window size for a type's editor.
+        /// </summary>
+        /// <param name="type">The type to get the size for.</param>
+        /// <param name="size">The output size if found.</param>
+        /// <returns>True if a saved size exists, otherwise false.</returns>
         public static bool GetTypeSize(Type type, out Size size)
         {
             string name = type.Assembly.GetName().Name + ":" + type.FullName;
             return savedTypeSizes.TryGetValue(name, out size);
         }
 
+        /// <summary>
+        /// Saves the window size for a type's editor.
+        /// </summary>
+        /// <param name="type">The type to save the size for.</param>
+        /// <param name="size">The size to save.</param>
         public static void SetTypeSize(Type type, Size size)
         {
             string name = type.Assembly.GetName().Name + ":" + type.FullName;
             savedTypeSizes[name] = size;
         }
 
+        /// <summary>
+        /// Gets the icon bitmap for an element type.
+        /// </summary>
+        /// <param name="type">The element type key.</param>
+        /// <returns>The element icon bitmap, or the "none" icon if not found.</returns>
         public static Bitmap GetElementIcon(string type)
         {
             Bitmap icon;
@@ -275,7 +312,12 @@ namespace RogueEssence.Dev
             elementIcons.TryGetValue("none", out icon);
             return icon;
         }
-        
+
+        /// <summary>
+        /// Gets the icon bitmap for a skill category.
+        /// </summary>
+        /// <param name="category">The skill category.</param>
+        /// <returns>The skill category icon bitmap.</returns>
         public static Bitmap GetSkillCategoryIcon(BattleData.SkillCategory category)
         {
             Bitmap icon;
@@ -288,6 +330,11 @@ namespace RogueEssence.Dev
         }
         
 
+        /// <summary>
+        /// Gets a tile bitmap from the tile cache, loading it if necessary.
+        /// </summary>
+        /// <param name="tileTex">The tile frame specifying sheet and location.</param>
+        /// <returns>The tile bitmap, or null if not found.</returns>
         public static Bitmap GetTile(TileFrame tileTex)
         {
 
@@ -331,12 +378,20 @@ namespace RogueEssence.Dev
             return null;
         }
 
+        /// <summary>
+        /// Clears all tile and tileset caches.
+        /// </summary>
         public static void ClearCaches()
         {
             tileCache.Clear();
             tilesetCache.Clear();
         }
 
+        /// <summary>
+        /// Gets a tileset bitmap from the cache, loading it if necessary.
+        /// </summary>
+        /// <param name="tileset">The tileset name.</param>
+        /// <returns>The tileset bitmap, or null if not found.</returns>
         public static Bitmap GetTileset(string tileset)
         {
             Bitmap sheet;
@@ -372,6 +427,11 @@ namespace RogueEssence.Dev
             tilesetCache.Add(tileset, sheet);
         }
 
+        /// <summary>
+        /// Gets an alias dictionary from the cache, loading it if necessary.
+        /// </summary>
+        /// <param name="name">The alias file name (without extension).</param>
+        /// <returns>The alias dictionary mapping integers to strings, or null if not found.</returns>
         public static Dictionary<int, string> GetAlias(string name)
         {
             Dictionary<int, string> alias;

@@ -5,12 +5,31 @@ using RogueEssence.Content;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// Abstract base class for menus with vertical choice navigation.
+    /// Provides keyboard and mouse input handling for navigating up/down through choices,
+    /// along with multi-select support.
+    /// </summary>
     public abstract class VertChoiceMenu : ChoiceMenu
     {
+        /// <summary>
+        /// Delegate for handling single slot selection.
+        /// </summary>
+        /// <param name="slot">The index of the selected slot.</param>
         public delegate void OnChooseSlot(int slot);
+
+        /// <summary>
+        /// Delegate for handling multi-selection confirmation.
+        /// </summary>
+        /// <param name="slot">The list of selected slot indices.</param>
         public delegate void OnMultiChoice(List<int> slot);
 
         private int currentChoice;
+
+        /// <summary>
+        /// Gets or sets the currently selected choice index.
+        /// Setting this property updates the cursor position and triggers the ChoiceChanged callback.
+        /// </summary>
         public int CurrentChoice
         {
             get { return currentChoice; }
@@ -22,26 +41,66 @@ namespace RogueEssence.Menu
             }
         }
 
+        /// <summary>
+        /// Gets the vertical offset for content positioning, used by subclasses to add title space.
+        /// </summary>
         public virtual int ContentOffset { get { return 0; } }
 
         private int hoveredChoice;
         private bool clicking;
+
+        /// <summary>
+        /// Gets or sets the range of allowed multi-selections. Min is the minimum required, Max-1 is the maximum allowed.
+        /// </summary>
         public IntRange MultiSelect { get; protected set; }
+
         private int selectedTotal;
 
+        /// <summary>
+        /// Gets a value indicating whether the menu button is enabled.
+        /// </summary>
         public virtual bool CanMenu { get { return true; } }
+
+        /// <summary>
+        /// Gets a value indicating whether canceling is enabled.
+        /// </summary>
         public virtual bool CanCancel { get { return true; } }
 
+        /// <summary>
+        /// Initializes the menu with the specified parameters.
+        /// </summary>
+        /// <param name="start">The top-left position of the menu.</param>
+        /// <param name="width">The width of the menu in pixels.</param>
+        /// <param name="choices">The array of selectable choices.</param>
+        /// <param name="defaultChoice">The index of the initially selected choice.</param>
         protected void Initialize(Loc start, int width, IChoosable[] choices, int defaultChoice)
         {
             Initialize(start, width, choices, defaultChoice, choices.Length, -1);
         }
 
+        /// <summary>
+        /// Initializes the menu with the specified parameters and multi-select support.
+        /// </summary>
+        /// <param name="start">The top-left position of the menu.</param>
+        /// <param name="width">The width of the menu in pixels.</param>
+        /// <param name="choices">The array of selectable choices.</param>
+        /// <param name="defaultChoice">The index of the initially selected choice.</param>
+        /// <param name="totalSpaces">The total number of spaces in the menu.</param>
+        /// <param name="multiSelect">The maximum number of simultaneous selections (-1 to disable).</param>
         protected void Initialize(Loc start, int width, IChoosable[] choices, int defaultChoice, int totalSpaces, int multiSelect)
         {
             Initialize(start, width, choices, defaultChoice, totalSpaces, new IntRange(-1, multiSelect+1));
         }
 
+        /// <summary>
+        /// Initializes the menu with the specified parameters and multi-select range.
+        /// </summary>
+        /// <param name="start">The top-left position of the menu.</param>
+        /// <param name="width">The width of the menu in pixels.</param>
+        /// <param name="choices">The array of selectable choices.</param>
+        /// <param name="defaultChoice">The index of the initially selected choice.</param>
+        /// <param name="totalSpaces">The total number of spaces in the menu.</param>
+        /// <param name="multiSelect">The range defining minimum required and maximum allowed selections.</param>
         protected void Initialize(Loc start, int width, IChoosable[] choices, int defaultChoice, int totalSpaces, IntRange multiSelect)
         {
             Bounds = new Rect(start, new Loc(width, choices.Length * VERT_SPACE + GraphicsManager.MenuBG.TileHeight * 2 + ContentOffset));
@@ -52,6 +111,10 @@ namespace RogueEssence.Menu
             CurrentChoice = defaultChoice;
         }
 
+        /// <summary>
+        /// Sets the choices in the menu and calculates their bounds.
+        /// </summary>
+        /// <param name="choices">The array of choices to set.</param>
         protected void SetChoices(IChoosable[] choices)
         {
             Choices.Clear();
@@ -62,6 +125,13 @@ namespace RogueEssence.Menu
                     new Loc(Bounds.Width - GraphicsManager.MenuBG.TileWidth * 2 - 16 + 5 - 4, VERT_SPACE - 2));
             }
         }
+
+        /// <summary>
+        /// Calculates the required width for the menu based on the text length of choices.
+        /// </summary>
+        /// <param name="choices">The choices to measure.</param>
+        /// <param name="minWidth">The minimum width to return.</param>
+        /// <returns>The calculated width, rounded up to the nearest multiple of 4.</returns>
         protected int CalculateChoiceLength(IEnumerable<IChoosable> choices, int minWidth)
         {
             int maxWidth = minWidth;
@@ -77,10 +147,17 @@ namespace RogueEssence.Menu
             return maxWidth;
         }
 
+        /// <summary>
+        /// Called when the current choice changes. Override to handle selection changes.
+        /// </summary>
         protected virtual void ChoiceChanged() { }
 
+        /// <summary>
+        /// Called when multi-select state changes. Override to handle selection state updates.
+        /// </summary>
         protected virtual void MultiSelectChanged() { }
 
+        /// <inheritdoc/>
         public override void Update(InputManager input)
         {
             UpdateMouse(input);
@@ -89,6 +166,10 @@ namespace RogueEssence.Menu
                 UpdateKeys(input);
         }
 
+        /// <summary>
+        /// Processes mouse input for hover and click detection.
+        /// </summary>
+        /// <param name="input">The input manager containing the current input state.</param>
         protected virtual void UpdateMouse(InputManager input)
         {
             //when moused down on a selection, change currentchoice to that choice
@@ -122,6 +203,10 @@ namespace RogueEssence.Menu
         }
 
 
+        /// <summary>
+        /// Processes keyboard and gamepad input for navigation and selection.
+        /// </summary>
+        /// <param name="input">The input manager containing the current input state.</param>
         protected virtual void UpdateKeys(InputManager input)
         {
             if (input.JustPressed(FrameInput.InputType.Confirm))
@@ -215,26 +300,48 @@ namespace RogueEssence.Menu
             return -1;
         }
 
+        /// <summary>
+        /// Called when the menu button is pressed. Must be implemented by subclasses.
+        /// </summary>
         protected abstract void MenuPressed();
+
+        /// <summary>
+        /// Called when the cancel button is pressed. Must be implemented by subclasses.
+        /// </summary>
         protected abstract void Canceled();
+
+        /// <summary>
+        /// Called when multi-selection is confirmed. Must be implemented by subclasses.
+        /// </summary>
+        /// <param name="slots">The list of selected slot indices.</param>
         protected abstract void ChoseMultiIndex(List<int> slots);
+
+        /// <inheritdoc/>
         public override void ImportChoices(params IChoosable[] choices)
         {
             Initialize(Bounds.Start, CalculateChoiceLength(choices, 72), choices, Math.Min(CurrentChoice, choices.Length));
         }
     }
 
+    /// <summary>
+    /// A simple vertical menu that clears to checkpoint on menu press and removes itself on cancel.
+    /// This is the most common base class for single-column choice menus.
+    /// </summary>
     public abstract class SingleStripMenu : VertChoiceMenu
     {
+        /// <inheritdoc/>
         protected override void MenuPressed()
         {
             MenuManager.Instance.ClearToCheckpoint();
         }
 
+        /// <inheritdoc/>
         protected override void Canceled()
         {
             MenuManager.Instance.RemoveMenu();
         }
+
+        /// <inheritdoc/>
         protected override void ChoseMultiIndex(List<int> slots) { }
     }
 }

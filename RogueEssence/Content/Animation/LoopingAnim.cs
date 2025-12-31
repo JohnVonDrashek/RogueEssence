@@ -7,6 +7,10 @@ using System.Runtime.Serialization;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Abstract base class for animations that loop a fixed number of times or for a fixed duration.
+    /// Provides timing control, frame offset, and direction support.
+    /// </summary>
     [Serializable]
     public abstract class LoopingAnim : BaseAnim
     {

@@ -13,6 +13,9 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents the time of day in the game world.
+    /// </summary>
     public enum TimeOfDay
     {
         Unknown = -1,
@@ -21,24 +24,56 @@ namespace RogueEssence.Data
         Night,
         Dawn
     }
+
+    /// <summary>
+    /// Represents a profile picture configuration with a monster ID and emote.
+    /// </summary>
     [Serializable]
     public class ProfilePic
     {
+        /// <summary>
+        /// The monster ID for the profile picture.
+        /// </summary>
         public MonsterID ID;
+
+        /// <summary>
+        /// The emote index to display.
+        /// </summary>
         public int Emote;
 
+        /// <summary>
+        /// Initializes a new instance of the ProfilePic class.
+        /// </summary>
+        /// <param name="id">The monster ID for the profile.</param>
+        /// <param name="emote">The emote index.</param>
         public ProfilePic(MonsterID id, int emote)
         {
             ID = id;
             Emote = emote;
         }
     }
+
+    /// <summary>
+    /// Tracks the state of an ongoing rescue mission.
+    /// </summary>
     [Serializable]
     public class RescueState
     {
+        /// <summary>
+        /// The SOS mail being responded to.
+        /// </summary>
         public SOSMail SOS;
+
+        /// <summary>
+        /// Whether a rescue is currently in progress.
+        /// </summary>
         public bool Rescuing;
 
+        /// <summary>
+        /// Initializes a new instance of the RescueState class.
+        /// </summary>
+        /// <param name="sos">The SOS mail being responded to.</param>
+        /// <param name="rescuing">Whether rescue is in progress.</param>
         public RescueState(SOSMail sos, bool rescuing)
         {
             SOS = sos;
@@ -46,13 +81,31 @@ namespace RogueEssence.Data
         }
     }
 
+    /// <summary>
+    /// Abstract base class containing all save game progress data.
+    /// Tracks team, inventory, unlocks, dungeon state, and session timing.
+    /// </summary>
     [Serializable]
     public abstract class GameProgress
     {
+        /// <summary>
+        /// Duration in turns for major time periods (day/night).
+        /// </summary>
         public const int MAJOR_TIME_DUR = 600;
+
+        /// <summary>
+        /// Duration in turns for minor time periods (dawn/dusk).
+        /// </summary>
         public const int MINOR_TIME_DUR = 300;
 
+        /// <summary>
+        /// Current position in the day/night cycle.
+        /// </summary>
         public int TimeCycle;
+
+        /// <summary>
+        /// Gets the current time of day based on the time cycle.
+        /// </summary>
         public TimeOfDay Time
         {
             get
@@ -69,6 +122,9 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Possible outcomes when completing or failing a dungeon.
+        /// </summary>
         public enum ResultType
         {
             Unknown = -1,
@@ -80,12 +136,29 @@ namespace RogueEssence.Data
             GaveUp,
             Rescue
         }
+
+        /// <summary>
+        /// Determines what happens to progress when entering a dungeon.
+        /// </summary>
         public enum DungeonStakes
         {
-            None,//progress in the dungeon is not recorded
-            Progress,//progress in the dungeon is recorded
-            Risk//progress in the dungeon is recorded, losing gives a penalty
+            /// <summary>
+            /// Progress in the dungeon is not recorded.
+            /// </summary>
+            None,
+            /// <summary>
+            /// Progress in the dungeon is recorded.
+            /// </summary>
+            Progress,
+            /// <summary>
+            /// Progress is recorded, losing gives a penalty.
+            /// </summary>
+            Risk
         }
+
+        /// <summary>
+        /// Unlock state for dungeons and monsters.
+        /// </summary>
         public enum UnlockState
         {
             None,
@@ -93,31 +166,83 @@ namespace RogueEssence.Data
             Completed
         }
 
+        /// <summary>
+        /// The game version when this save was created.
+        /// </summary>
         public Version GameVersion;
+
+        /// <summary>
+        /// The main quest mod being played.
+        /// </summary>
         public ModHeader Quest;
+
+        /// <summary>
+        /// List of active mods for this save.
+        /// </summary>
         public List<ModHeader> Mods;
 
+        /// <summary>
+        /// Default skill assignment setting.
+        /// </summary>
         public Settings.SkillDefault DefaultSkill;
 
+        /// <summary>
+        /// The player's active exploration team.
+        /// </summary>
         public ExplorerTeam ActiveTeam;
+
+        /// <summary>
+        /// Random number generator with reproducible seeding.
+        /// </summary>
         public ReRandom Rand;
 
+        /// <summary>
+        /// Monster species unlock states (pokedex-like).
+        /// </summary>
         [JsonConverter(typeof(MonsterUnlockConverter))]
         public Dictionary<string, UnlockState> Dex;
+
+        /// <summary>
+        /// Individual form unlock states.
+        /// </summary>
         [JsonConverter(typeof(FormUnlockDictConverter))]
         public Dictionary<MonsterID, UnlockState> FormDex;
+
+        /// <summary>
+        /// Monsters available as rogue mode starters.
+        /// </summary>
         [JsonConverter(typeof(MonsterBoolDictConverter))]
         public Dictionary<string, bool> RogueStarters;
 
+        /// <summary>
+        /// Dungeon unlock states.
+        /// </summary>
         [JsonConverter(typeof(DungeonUnlockConverter))]
         public Dictionary<string, UnlockState> DungeonUnlocks;
 
-        //TODO: set dungeon unlocks and event flags to save variables
+        /// <summary>
+        /// Date when this save file was started.
+        /// </summary>
         public string StartDate;
+
+        /// <summary>
+        /// Unique identifier for this save file.
+        /// </summary>
         public string UUID;
+
+        /// <summary>
+        /// Profile pictures for the save file.
+        /// </summary>
         public ProfilePic[] ProfilePics;
 
+        /// <summary>
+        /// Whether team member switching is disabled.
+        /// </summary>
         public bool NoSwitching;
+
+        /// <summary>
+        /// Whether monster recruiting is disabled.
+        /// </summary>
         public bool NoRecruiting;
 
         /// <summary>
@@ -125,13 +250,34 @@ namespace RogueEssence.Data
         /// </summary>
         public RescueState Rescue;
 
+        /// <summary>
+        /// The next destination zone to travel to.
+        /// </summary>
         public ZoneLoc NextDest;
 
+        /// <summary>
+        /// Whether team mode is enabled (control all team members).
+        /// </summary>
         public bool TeamMode;
 
+        /// <summary>
+        /// Total turns taken in the current run.
+        /// </summary>
         public int TotalTurns;
+
+        /// <summary>
+        /// Total experience points earned.
+        /// </summary>
         public int TotalEXP;
+
+        /// <summary>
+        /// The level the team started at.
+        /// </summary>
         public int StartLevel;
+
+        /// <summary>
+        /// Number of rescue attempts remaining.
+        /// </summary>
         public int RescuesLeft;
 
         /// <summary>
@@ -145,25 +291,70 @@ namespace RogueEssence.Data
         public DateTime SessionStartTime;
 
 
-        //these values update and never clear
+        /// <summary>
+        /// Date when the current run ended.
+        /// </summary>
         public string EndDate;
+
+        /// <summary>
+        /// Current location name for display.
+        /// </summary>
         public string Location;
+
+        /// <summary>
+        /// Trail of location names visited.
+        /// </summary>
         public List<string> Trail;
+
+        /// <summary>
+        /// Trail of zone locations visited.
+        /// </summary>
         public List<ZoneLoc> LocTrail;
+
+        /// <summary>
+        /// Current dungeon stakes setting.
+        /// </summary>
         public DungeonStakes Stakes;
+
+        /// <summary>
+        /// Whether the player is currently in a dungeon.
+        /// </summary>
         public bool MidAdventure;
+
+        /// <summary>
+        /// The outcome of the last dungeon run.
+        /// </summary>
         public ResultType Outcome;
+
+        /// <summary>
+        /// Path to the generated AOK mail file.
+        /// </summary>
         public string GeneratedAOK;
+
+        /// <summary>
+        /// Whether rescue is allowed for this save.
+        /// </summary>
         public bool AllowRescue;
 
+        /// <summary>
+        /// Whether the game is in cutscene mode.
+        /// </summary>
         public bool CutsceneMode;
-        public string Song;//TODO: save the currently playing song
 
+        /// <summary>
+        /// The currently playing song identifier.
+        /// </summary>
+        public string Song;
 
-        //Added this for storing the serialized ScriptVar table
+        /// <summary>
+        /// Lua script variables persisted with the save.
+        /// </summary>
         [JsonConverter(typeof(Dev.ScriptVarsConverter))]
         public LuaTableContainer ScriptVars;
 
+        /// <summary>
+        /// Initializes a new instance of the GameProgress class with default values.
+        /// </summary>
         public GameProgress()
         {
             GameVersion = new Version();
@@ -188,6 +379,11 @@ namespace RogueEssence.Data
             Outcome = ResultType.Unknown;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the GameProgress class with a seed and UUID.
+        /// </summary>
+        /// <param name="seed">The random seed for the game.</param>
+        /// <param name="uuid">The unique identifier for this save.</param>
         public GameProgress(ulong seed, string uuid) : this()
         {
             Rand = new ReRandom(seed);

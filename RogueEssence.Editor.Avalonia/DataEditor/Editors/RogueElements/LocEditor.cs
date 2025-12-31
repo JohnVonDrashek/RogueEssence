@@ -14,11 +14,32 @@ using System.Reactive.Subjects;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for Loc (location/coordinate) values. Displays X and Y numeric controls for editing 2D coordinates.
+    /// </summary>
     public class LocEditor : Editor<Loc>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
 
+        /// <summary>
+        /// Loads X and Y numeric controls for editing a location.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The location value to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, Loc member, Type[] subGroupStack)
         {
             Avalonia.Controls.Grid innerPanel = getSharedRowPanel(4);
@@ -60,7 +81,15 @@ namespace RogueEssence.Dev
             control.Children.Add(innerPanel);
         }
 
-
+        /// <summary>
+        /// Saves the numeric controls and returns the location value.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>The edited Loc value.</returns>
         public override Loc SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             int controlIndex = 0;

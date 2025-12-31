@@ -2,8 +2,16 @@
 {
     using RogueElements;
 
+	/// <summary>
+	/// A collision response that causes the moving box to bounce off the collided surface.
+	/// The box reflects its velocity based on the collision normal.
+	/// </summary>
     public class BounceResponse : ICollisionResponse
 	{
+		/// <summary>
+		/// Creates a bounce response for the given collision, calculating the bounced destination.
+		/// </summary>
+		/// <param name="collision">The collision information to respond to.</param>
 		public BounceResponse(ICollision collision)
 		{
             var velocity = (collision.Goal.Start - collision.Origin.Start);
@@ -15,6 +23,9 @@
             this.Destination = new Rect(endLoc, collision.Goal.Size);
 		}
 
+		/// <summary>
+		/// Gets the destination after bouncing off the collision surface.
+		/// </summary>
 		public Rect Destination { get; private set; }
 	}
 }

@@ -5,9 +5,17 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Contains all data for a status condition that can be applied to characters.
+    /// Includes effects, visuals, and event handlers for the status.
+    /// </summary>
     [Serializable]
     public class StatusData : ProximityPassive, IDescribedData
     {
+        /// <summary>
+        /// Returns the localized name of the status.
+        /// </summary>
+        /// <returns>The status name as a string.</returns>
         public override string ToString()
         {
             return Name.ToLocal();
@@ -34,6 +42,10 @@ namespace RogueEssence.Data
         [Dev.Multiline(0)]
         public string Comment { get; set; }
 
+        /// <summary>
+        /// Generates a summary of this status for indexing.
+        /// </summary>
+        /// <returns>An EntrySummary containing the status's metadata.</returns>
         public EntrySummary GenerateEntrySummary() { return new EntrySummary(Name, Released, Comment); }
 
 
@@ -93,6 +105,9 @@ namespace RogueEssence.Data
         /// </summary>
         public PassiveData TargetPassive;
 
+        /// <summary>
+        /// Initializes a new instance of the StatusData class with default values.
+        /// </summary>
         public StatusData()
         {
             Name = new LocalText();

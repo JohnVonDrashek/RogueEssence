@@ -10,6 +10,11 @@ using System;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// Menu for viewing and managing team members.
+    /// Displays all party members with their levels and provides access to detailed character information.
+    /// Can also be used in "send home" mode for dismissing team members.
+    /// </summary>
     public class TeamMenu : TitledStripMenu
     {
         private static int defaultChoice;
@@ -18,12 +23,35 @@ namespace RogueEssence.Menu
 
         bool sendHome;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TeamMenu"/> class.
+        /// </summary>
+        /// <param name="sendHome">Whether the menu is in send-home mode.</param>
         public TeamMenu(bool sendHome) : this(sendHome, -1)
         { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TeamMenu"/> class with a default selection.
+        /// </summary>
+        /// <param name="sendHome">Whether the menu is in send-home mode.</param>
+        /// <param name="teamSlot">The initially selected team slot, or -1 to use the previous selection.</param>
         public TeamMenu(bool sendHome, int teamSlot) : this(MenuLabel.TEAM_MENU, sendHome, teamSlot)
         { }
+
+        /// <summary>
+        /// Initializes a new labeled instance of the <see cref="TeamMenu"/> class.
+        /// </summary>
+        /// <param name="label">The identifier label for this menu.</param>
+        /// <param name="sendHome">Whether the menu is in send-home mode.</param>
         public TeamMenu(string label, bool sendHome) : this(label, sendHome, -1)
         { }
+
+        /// <summary>
+        /// Initializes a new labeled instance of the <see cref="TeamMenu"/> class with full options.
+        /// </summary>
+        /// <param name="label">The identifier label for this menu.</param>
+        /// <param name="sendHome">Whether the menu is in send-home mode.</param>
+        /// <param name="teamSlot">The initially selected team slot, or -1 to use the previous selection.</param>
         public TeamMenu(string label, bool sendHome, int teamSlot)
         {
             Label = label;

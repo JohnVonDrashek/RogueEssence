@@ -10,8 +10,15 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Game tab in the developer form.
+    /// Provides functionality for spawning entities, managing items, skills, statuses, and intrinsics during gameplay.
+    /// </summary>
     public class DevTabGameViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the DevTabGameViewModel class with empty collections.
+        /// </summary>
         public DevTabGameViewModel()
         {
             Skills = new ObservableCollection<string>();
@@ -25,6 +32,9 @@ namespace RogueEssence.Dev.ViewModels
             ItemKeys = new List<string>();
         }
 
+        /// <summary>
+        /// Reloads the skills list from the data manager.
+        /// </summary>
         public void ReloadSkills()
         {
             Dictionary<string, string> entry_names = DataManager.Instance.DataIndices[DataManager.DataType.Skill].GetLocalStringArray(true);
@@ -39,6 +49,9 @@ namespace RogueEssence.Dev.ViewModels
             ChosenSkill = Math.Min(Math.Max(DevForm.GetConfig("SkillChoice", 0), 0), Skills.Count - 1);
         }
 
+        /// <summary>
+        /// Reloads the intrinsics list from the data manager.
+        /// </summary>
         public void ReloadIntrinsics()
         {
             Dictionary<string, string> entry_names = DataManager.Instance.DataIndices[DataManager.DataType.Intrinsic].GetLocalStringArray(true);
@@ -53,6 +66,9 @@ namespace RogueEssence.Dev.ViewModels
             ChosenIntrinsic = Math.Min(Math.Max(DevForm.GetConfig("IntrinsicChoice", 0), 0), Intrinsics.Count - 1);
         }
 
+        /// <summary>
+        /// Reloads the statuses list from the data manager.
+        /// </summary>
         public void ReloadStatuses()
         {
             Dictionary<string, string> entry_names = DataManager.Instance.DataIndices[DataManager.DataType.Status].GetLocalStringArray(true);
@@ -67,6 +83,9 @@ namespace RogueEssence.Dev.ViewModels
             ChosenStatus = Math.Min(Math.Max(DevForm.GetConfig("StatusChoice", 0), 0), Statuses.Count - 1);
         }
 
+        /// <summary>
+        /// Reloads the items list from the data manager.
+        /// </summary>
         public void ReloadItems()
         {
             Dictionary<string, string> entry_names = DataManager.Instance.DataIndices[DataManager.DataType.Item].GetLocalStringArray(true);
@@ -145,6 +164,9 @@ namespace RogueEssence.Dev.ViewModels
         }
 
 
+        /// <summary>
+        /// Spawns a clone of the focused character as a new monster on the map.
+        /// </summary>
         public void btnSpawn_Click()
         {
             lock (GameBase.lockObj)
@@ -162,6 +184,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Removes all ally and map teams from the current dungeon map.
+        /// </summary>
         public void btnDespawn_Click()
         {
             lock (GameBase.lockObj)
@@ -176,6 +201,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Spawns the selected item on the map or adds it to the player's inventory.
+        /// </summary>
         public void btnSpawnItem_Click()
         {
             lock (GameBase.lockObj)
@@ -202,6 +230,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Toggles the selected status effect on the focused character.
+        /// </summary>
         public void btnToggleStatus_Click()
         {
             lock (GameBase.lockObj)
@@ -233,6 +264,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Teaches the selected skill to the focused character.
+        /// </summary>
         public void btnLearnSkill_Click()
         {
             lock (GameBase.lockObj)
@@ -266,6 +300,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Teaches the selected skill to all enemy characters on the map.
+        /// </summary>
         public void btnGiveSkill_Click()
         {
             lock (GameBase.lockObj)
@@ -290,6 +327,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sets the selected intrinsic ability on the focused character.
+        /// </summary>
         public void btnSetIntrinsic_Click()
         {
             lock (GameBase.lockObj)
@@ -319,6 +359,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gives the selected intrinsic ability to all enemy characters on the map.
+        /// </summary>
         public void btnGiveFoes_Click()
         {
             lock (GameBase.lockObj)

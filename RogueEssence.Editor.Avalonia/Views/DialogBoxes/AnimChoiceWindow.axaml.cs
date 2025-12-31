@@ -5,8 +5,14 @@ using Avalonia.Markup.Xaml;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Dialog window for selecting an animation from available options.
+    /// </summary>
     public class AnimChoiceWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the AnimChoiceWindow class.
+        /// </summary>
         public AnimChoiceWindow()
         {
             this.InitializeComponent();
@@ -23,12 +29,21 @@ namespace RogueEssence.Dev.Views
 
 
 
+        /// <summary>
+        /// Handles the OK button click, closing the dialog with a true result.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void btnOK_Click(object sender, RoutedEventArgs e)
         {
             this.Close(true);
         }
 
-
+        /// <summary>
+        /// Handles the Cancel button click, closing the dialog with a false result.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close(false);

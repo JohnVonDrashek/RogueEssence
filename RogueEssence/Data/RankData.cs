@@ -3,6 +3,10 @@ using System;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents a player rank/tier that determines bag size and progression.
+    /// Ranks are earned through fame points and unlock larger inventory capacity.
+    /// </summary>
     [Serializable]
     public class RankData : IEntryData
     {

@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Specifies display transformation options for range boundary values in the editor.
+    /// Controls index base (0 or 1) and whether the upper bound is inclusive or exclusive.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class RangeBorderAttribute : PassableAttribute
     {

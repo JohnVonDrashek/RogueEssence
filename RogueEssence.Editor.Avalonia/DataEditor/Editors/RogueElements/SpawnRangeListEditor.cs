@@ -13,18 +13,27 @@ using Avalonia.Interactivity;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for ISpawnRangeList values. Displays a spawn range list box for editing weighted spawn elements with range bounds.
+    /// Supports copy/paste functionality and configurable range borders.
+    /// </summary>
     public class SpawnRangeListEditor : Editor<ISpawnRangeList>
     {
         /// <summary>
-        /// Default display behavior of whether to treat 0s as 1s
+        /// Default display behavior of whether to treat 0s as 1s.
         /// </summary>
         public bool Index1;
 
         /// <summary>
-        /// Default display behavior of whether to treat end borders exclsusively
+        /// Default display behavior of whether to treat end borders exclusively.
         /// </summary>
         public bool Inclusive;
 
+        /// <summary>
+        /// Initializes a new instance of the SpawnRangeListEditor class.
+        /// </summary>
+        /// <param name="index1">Whether to use 1-based indexing.</param>
+        /// <param name="inclusive">Whether the range end is inclusive.</param>
         public SpawnRangeListEditor(bool index1, bool inclusive)
         {
             Index1 = index1;

@@ -6,28 +6,34 @@ using RectPacker;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A sprite sheet that stores multiple variable-sized sprites in a texture atlas.
+    /// Each sprite has its own source rectangle within the texture.
+    /// </summary>
     public class SpriteSheet : BaseSheet
     {
+        /// <summary>
+        /// The source rectangles for each sprite in the atlas.
+        /// </summary>
         protected Rectangle[] spriteRects;
 
-        //public SpriteSheet(int width, int height, params Rectangle[] rects)
-        //    : base(width, height)
-        //{
-        //    //Initialize vertex buffer data
-        //    spriteRects = new List<Rectangle>();
-        //    spriteRects.AddRange(rects);
-        //}
-
+        /// <summary>
+        /// Creates a new SpriteSheet from a texture and sprite rectangles.
+        /// </summary>
+        /// <param name="tex">The texture containing all sprites.</param>
+        /// <param name="rects">The source rectangles for each sprite.</param>
         protected SpriteSheet(Texture2D tex, params Rectangle[] rects)
             : base(tex)
         {
             spriteRects = rects;
         }
 
-        //frompath (import) will take a folder containing all elements
-        //fromstream (load) will take the png and all the rectangles from stream
-        //save will save as .atlas
-
+        /// <summary>
+        /// Imports a sprite sheet from a directory containing individual PNG files.
+        /// Automatically packs them into a texture atlas.
+        /// </summary>
+        /// <param name="path">The path to the directory containing PNG files.</param>
+        /// <returns>A new SpriteSheet with all images packed into an atlas.</returns>
         public static new SpriteSheet Import(string path)
         {
             string[] pngs = Directory.GetFiles(path, "*.png", SearchOption.TopDirectoryOnly);
@@ -63,6 +69,11 @@ namespace RogueEssence.Content
             return new SpriteSheet(tex, rects);
         }
 
+        /// <summary>
+        /// Loads a sprite sheet from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>A new SpriteSheet loaded from the stream.</returns>
         public static new SpriteSheet Load(BinaryReader reader)
         {
             long length = reader.ReadInt64();
@@ -81,11 +92,19 @@ namespace RogueEssence.Content
             return new SpriteSheet(tex, rects);
         }
 
+        /// <summary>
+        /// Creates a fallback sprite sheet using the default error texture.
+        /// </summary>
+        /// <returns>A SpriteSheet containing the default fallback texture.</returns>
         public static new SpriteSheet LoadError()
         {
             return new SpriteSheet(defaultTex, new Rectangle[0] { });
         }
 
+        /// <summary>
+        /// Saves the sprite sheet to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public override void Save(BinaryWriter writer)
         {
             base.Save(writer);
@@ -99,6 +118,13 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Draws a sprite from the sheet at the specified position.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="index">The index of the sprite to draw.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void DrawSprite(SpriteBatch spriteBatch, Vector2 pos, int index, Color color)
         {
             if (index < spriteRects.Length)

@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Specifies validation options for MonsterID fields in the editor.
+    /// Controls which components (species, form, skin, gender) can be set to invalid/default values.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class MonsterIDAttribute : PassableAttribute
     {

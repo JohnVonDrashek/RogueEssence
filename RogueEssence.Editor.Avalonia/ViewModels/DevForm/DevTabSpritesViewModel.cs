@@ -5,9 +5,15 @@ using System.Text;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Sprites tab in the developer form.
+    /// Provides access to editors for various sprite and graphic asset types.
+    /// </summary>
     public class DevTabSpritesViewModel : ViewModelBase
     {
-
+        /// <summary>
+        /// Opens the species sprite editor.
+        /// </summary>
         public void btnEditSprites_Click()
         {
             SpeciesEditViewModel mv = new SpeciesEditViewModel();
@@ -17,6 +23,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the species portrait editor.
+        /// </summary>
         public void btnEditPortraits_Click()
         {
             SpeciesEditViewModel mv = new SpeciesEditViewModel();
@@ -26,6 +35,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the particle effects editor.
+        /// </summary>
         public void btnEditParticles_Click()
         {
             AnimEditViewModel mv = new AnimEditViewModel();
@@ -35,6 +47,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the beam effects editor.
+        /// </summary>
         public void btnEditBeams_Click()
         {
             BeamEditViewModel mv = new BeamEditViewModel();
@@ -44,6 +59,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the background graphics editor.
+        /// </summary>
         public void btnEditBGs_Click()
         {
             AnimEditViewModel mv = new AnimEditViewModel();
@@ -53,7 +71,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
-
+        /// <summary>
+        /// Opens the emote icons editor.
+        /// </summary>
         public void btnEditEmotes_Click()
         {
             AnimEditViewModel mv = new AnimEditViewModel();
@@ -63,6 +83,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the tileset editor.
+        /// </summary>
         public void btnEditTiles_Click()
         {
             TilesetEditViewModel mv = new TilesetEditViewModel();
@@ -72,6 +95,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the item graphics editor.
+        /// </summary>
         public void btnEditItems_Click()
         {
             AnimEditViewModel mv = new AnimEditViewModel();
@@ -81,6 +107,9 @@ namespace RogueEssence.Dev.ViewModels
             editForm.Show();
         }
 
+        /// <summary>
+        /// Opens the object graphics editor.
+        /// </summary>
         public void btnEditObjects_Click()
         {
             AnimEditViewModel mv = new AnimEditViewModel();

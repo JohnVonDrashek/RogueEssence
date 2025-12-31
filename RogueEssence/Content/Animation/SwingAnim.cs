@@ -3,6 +3,10 @@ using System;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An animation that moves along a curved arc path between two points.
+    /// The curve is perpendicular to the direct path, controlled by AxisRatio.
+    /// </summary>
     public class SwingAnim : LoopingAnim
     {
         public SwingAnim(AnimData anim, int moveTime, Loc startLoc, Loc newEndPos, float axisRatio, Dir8 dir)

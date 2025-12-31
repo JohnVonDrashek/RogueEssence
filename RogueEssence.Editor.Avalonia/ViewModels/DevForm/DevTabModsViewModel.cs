@@ -16,6 +16,10 @@ using Avalonia.Controls;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel representing a single mod node in the mods tree.
+    /// Contains the mod's name, namespace, path, and any child nodes.
+    /// </summary>
     public class ModsNodeViewModel : ViewModelBase
     {
         private string name;
@@ -36,6 +40,12 @@ namespace RogueEssence.Dev.ViewModels
 
         public ObservableCollection<ModsNodeViewModel> Nodes { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the ModsNodeViewModel class.
+        /// </summary>
+        /// <param name="name">The display name of the mod.</param>
+        /// <param name="newNamespace">The namespace of the mod.</param>
+        /// <param name="fullPath">The full path to the mod directory.</param>
         public ModsNodeViewModel(string name, string newNamespace, string fullPath)
         {
             this.name = name;
@@ -46,8 +56,15 @@ namespace RogueEssence.Dev.ViewModels
 
     }
 
+    /// <summary>
+    /// ViewModel for the Mods tab in the developer form.
+    /// Provides functionality for managing game mods including creating, switching, editing, and deleting mods.
+    /// </summary>
     public class DevTabModsViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the DevTabModsViewModel class.
+        /// </summary>
         public DevTabModsViewModel()
         {
             currentMod = null;
@@ -72,11 +89,17 @@ namespace RogueEssence.Dev.ViewModels
 
         public ObservableCollection<ModsNodeViewModel> Mods { get; }
 
+        /// <summary>
+        /// Updates the current mod display name from the active quest mod.
+        /// </summary>
         public void UpdateMod()
         {
             CurrentMod = getModName(PathMod.Quest);
         }
 
+        /// <summary>
+        /// Handles the Switch button click to change the active mod.
+        /// </summary>
         public async void btnSwitch_Click()
         {
             //give a pop up warning that the game will be reloaded and wait for confirmation
@@ -105,6 +128,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles the Add button click to create a new mod.
+        /// </summary>
         public async void btnAdd_Click()
         {
             ModConfigWindow window = new ModConfigWindow();
@@ -164,6 +190,9 @@ namespace RogueEssence.Dev.ViewModels
             Mods.Add(newNode);
         }
 
+        /// <summary>
+        /// Handles the Delete button click to remove the selected mod.
+        /// </summary>
         public async void btnDelete_Click()
         {
             //prohibit the deletion of the current node or the base node
@@ -186,6 +215,9 @@ namespace RogueEssence.Dev.ViewModels
             Mods.Remove(chosenMod);
         }
 
+        /// <summary>
+        /// Handles the Edit button click to modify the current mod's configuration.
+        /// </summary>
         public async void btnEdit_Click()
         {
             ModConfigWindow window = new ModConfigWindow();

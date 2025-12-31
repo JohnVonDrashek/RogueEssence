@@ -13,8 +13,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Provides utility methods for importing and processing game assets including
+    /// character sprites, portraits, tiles, beams, fonts, and directional sprite sheets.
+    /// </summary>
     public class ImportHelper
     {
+        /// <summary>
+        /// Builds an index file for character sprite data by aggregating all cached character files.
+        /// </summary>
+        /// <param name="cachePattern">The file pattern for locating character cache files.</param>
         public static void BuildCharIndex(string cachePattern)
         {
             CharaIndexNode fullGuide = new CharaIndexNode();

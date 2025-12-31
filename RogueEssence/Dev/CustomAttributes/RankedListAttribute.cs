@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Indicates that a list should display items with rank numbers in the editor.
+    /// Controls whether the rank numbering starts at 0 or 1.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class RankedListAttribute : PassableAttribute
     {

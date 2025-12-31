@@ -12,8 +12,16 @@ namespace RogueEssence.Script
     /// </summary>
     public class ScriptStrings : ILuaEngineComponent
     {
+        /// <summary>
+        /// Gets the currently loaded map strings as a Lua table.
+        /// </summary>
         public LuaTable MapStrings { get; private set; }
 
+        /// <summary>
+        /// Creates a Lua table from a package string table file.
+        /// </summary>
+        /// <param name="packagefilepath">The relative path to the package.</param>
+        /// <returns>The loaded string table as a Lua table.</returns>
         public LuaTable MakePackageStringTable(string packagefilepath)
         {
             return MapStrings;
@@ -41,6 +49,10 @@ namespace RogueEssence.Script
             }
         }
 
+        /// <summary>
+        /// Loads a package string table and stores it in MapStrings.
+        /// </summary>
+        /// <param name="packagefilepath">The relative path to the package.</param>
         public void LoadPackageStringTable(string packagefilepath)
         {
             LuaTable strings = makePackageStringTable(packagefilepath);
@@ -58,6 +70,12 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Shifts all non-whitespace characters in a string by a specified amount.
+        /// </summary>
+        /// <param name="baseStr">The base string to shift.</param>
+        /// <param name="shift">The amount to shift each character by.</param>
+        /// <returns>The shifted string.</returns>
         public string ShiftString(string baseStr, int shift)
         {
             string resultStr = "";
@@ -155,6 +173,10 @@ namespace RogueEssence.Script
             return "";
         }
 
+        /// <summary>
+        /// Sets up Lua function wrappers for string operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             //TODO

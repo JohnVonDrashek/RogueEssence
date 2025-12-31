@@ -11,6 +11,9 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// Represents a single element in a spawn list with weight and calculated spawn chance.
+    /// </summary>
     public class SpawnListElement : ViewModelBase
     {
         private int weight;
@@ -37,6 +40,13 @@ namespace RogueEssence.Dev.ViewModels
 
         private StringConv conv;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpawnListElement"/> class.
+        /// </summary>
+        /// <param name="conv">The string converter for display purposes.</param>
+        /// <param name="weight">The spawn weight of this element.</param>
+        /// <param name="chance">The calculated spawn chance as a decimal percentage.</param>
+        /// <param name="val">The actual value this element represents.</param>
         public SpawnListElement(StringConv conv, int weight, double chance, object val)
         {
             this.conv = conv;
@@ -46,9 +56,25 @@ namespace RogueEssence.Dev.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel for the SpawnListBox control that manages weighted spawn lists.
+    /// </summary>
     public class SpawnListBoxViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Delegate for applying edits to an element at a specific index.
+        /// </summary>
+        /// <param name="index">The index of the element.</param>
+        /// <param name="element">The edited element.</param>
         public delegate void EditElementOp(int index, object element);
+
+        /// <summary>
+        /// Delegate for initiating an element edit operation.
+        /// </summary>
+        /// <param name="index">The index of the element.</param>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
+        /// <param name="op">The callback operation to perform after editing.</param>
         public delegate void ElementOp(int index, object element, bool advancedEdit, EditElementOp op);
 
         public event ElementOp OnEditItem;
@@ -59,6 +85,11 @@ namespace RogueEssence.Dev.ViewModels
 
         public bool ConfirmDelete;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpawnListBoxViewModel"/> class.
+        /// </summary>
+        /// <param name="parent">The parent window for dialog display.</param>
+        /// <param name="conv">The string converter for display purposes.</param>
         public SpawnListBoxViewModel(Window parent, StringConv conv)
         {
             StringConv = conv;
@@ -102,6 +133,11 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Creates a spawn list from the current collection state.
+        /// </summary>
+        /// <param name="type">The type of spawn list to create.</param>
+        /// <returns>A populated spawn list.</returns>
         public ISpawnList GetList(Type type)
         {
             ISpawnList result = (ISpawnList)Activator.CreateInstance(type);
@@ -110,6 +146,10 @@ namespace RogueEssence.Dev.ViewModels
             return result;
         }
 
+        /// <summary>
+        /// Loads the collection from a spawn list source.
+        /// </summary>
+        /// <param name="source">The spawn list to load from.</param>
         public void LoadFromList(ISpawnList source)
         {
             Collection.Clear();
@@ -121,6 +161,10 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Loads the collection from a list of tuples containing objects and their spawn rates.
+        /// </summary>
+        /// <param name="source">The list of tuples to load from.</param>
         public void LoadFromTupleList(List<(object, double)> source)
         {
             Collection.Clear();
@@ -158,6 +202,11 @@ namespace RogueEssence.Dev.ViewModels
             CurrentElement = index;
         }
 
+        /// <summary>
+        /// Inserts an element at the specified index, copying the weight from the element at that position.
+        /// </summary>
+        /// <param name="index">The index at which to insert.</param>
+        /// <param name="element">The element to insert.</param>
         public void InsertOnKey(int index, object element)
         {
             int newWeight = 10;
@@ -179,6 +228,11 @@ namespace RogueEssence.Dev.ViewModels
             CurrentElement = index;
         }
 
+        /// <summary>
+        /// Handles double-click events on the collection grid to edit the selected item.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The pointer released event arguments.</param>
         public void gridCollection_DoubleClick(object sender, PointerReleasedEventArgs e)
         {
             //int index = lbxCollection.IndexFromPoint(e.X, e.Y);
@@ -193,6 +247,10 @@ namespace RogueEssence.Dev.ViewModels
         }
 
 
+        /// <summary>
+        /// Handles the add button click event.
+        /// </summary>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
         public void btnAdd_Click(bool advancedEdit)
         {
             int index = CurrentElement;

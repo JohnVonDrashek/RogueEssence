@@ -15,10 +15,23 @@ namespace RogueEssence.LevelGen
         where E : ISpawnable
         where F : ISpawnable
     {
+        /// <summary>
+        /// Initializes a new instance of the DisconnectedSpawnStep class.
+        /// </summary>
         public DisconnectedSpawnStep() { }
 
+        /// <summary>
+        /// Initializes a new instance of the DisconnectedSpawnStep class with the specified spawner.
+        /// </summary>
+        /// <param name="spawn">The spawner to use.</param>
         public DisconnectedSpawnStep(IStepSpawner<T, E> spawn) : base(spawn) { }
 
+        /// <summary>
+        /// Distributes spawns to tiles that are not connected to the main path.
+        /// Uses flood fill from the first viewable location to identify disconnected areas.
+        /// </summary>
+        /// <param name="map">The generation context.</param>
+        /// <param name="spawns">The list of spawns to distribute.</param>
         public override void DistributeSpawns(T map, List<E> spawns)
         {
             bool[][] connectionGrid = new bool[map.Width][];

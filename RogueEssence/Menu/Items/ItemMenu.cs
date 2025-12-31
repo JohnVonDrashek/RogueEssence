@@ -10,19 +10,47 @@ using RogueEssence.Ground;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// Multi-page menu for browsing and managing the player team's inventory.
+    /// Displays held items and bag items with their prices and descriptions.
+    /// </summary>
     public class ItemMenu : MultiPageMenu
     {
         private static int defaultChoice;
 
+        /// <summary>
+        /// The width of the item menu in pixels.
+        /// </summary>
         public const int ITEM_MENU_WIDTH = 176;
+
+        /// <summary>
+        /// The number of item slots displayed per page.
+        /// </summary>
         public const int SLOTS_PER_PAGE = 8;
 
         private int replaceSlot;
 
         ItemSummary summaryMenu;
 
-        //-2 for no replace slot, -1 for replace with ground, positive numbers for replace held team index's item
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemMenu"/> class.
+        /// </summary>
+        /// <param name="replaceSlot">
+        /// -2 for normal item selection, -1 for replacing ground item,
+        /// 0+ for replacing a team member's held item at that index.
+        /// </param>
+        /// <param name="defaultTotalChoice">The default selected item index, or -1 to use previous selection.</param>
         public ItemMenu(int replaceSlot = -2, int defaultTotalChoice = -1) : this(MenuLabel.INVENTORY_MENU, replaceSlot, defaultTotalChoice) { }
+
+        /// <summary>
+        /// Initializes a new labeled instance of the <see cref="ItemMenu"/> class.
+        /// </summary>
+        /// <param name="label">The identifier label for this menu.</param>
+        /// <param name="replaceSlot">
+        /// -2 for normal item selection, -1 for replacing ground item,
+        /// 0+ for replacing a team member's held item at that index.
+        /// </param>
+        /// <param name="defaultTotalChoice">The default selected item index, or -1 to use previous selection.</param>
         public ItemMenu(string label, int replaceSlot = -2, int defaultTotalChoice = -1)
         {
             this.Label = label;
@@ -97,6 +125,10 @@ namespace RogueEssence.Menu
             }
         }
 
+        /// <summary>
+        /// Gets the maximum number of inventory pages based on current item count.
+        /// </summary>
+        /// <returns>The number of pages needed to display all inventory items.</returns>
         public static int getMaxInvPages()
         {
             if (DataManager.Instance.Save.ActiveTeam.GetInvCount() == 0)
@@ -177,6 +209,10 @@ namespace RogueEssence.Menu
 
 
 
+        /// <summary>
+        /// Coroutine that processes the sort items command.
+        /// </summary>
+        /// <returns>A coroutine for the sort operation.</returns>
         public IEnumerator<YieldInstruction> SortCommand()
         {
             yield return CoroutineManager.Instance.StartCoroutine((GameManager.Instance.CurrentScene == DungeonScene.Instance) ? DungeonScene.Instance.ProcessPlayerInput(new GameAction(GameAction.ActionType.SortItems, Dir8.None)) : GroundScene.Instance.ProcessInput(new GameAction(GameAction.ActionType.SortItems, Dir8.None)));

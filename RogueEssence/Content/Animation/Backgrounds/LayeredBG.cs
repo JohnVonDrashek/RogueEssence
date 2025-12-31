@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace RogueEssence.Dungeon
 {
+    /// <summary>
+    /// A single layer in a layered background, containing a MapBG instance.
+    /// </summary>
     [Serializable]
     public class BGLayer
     {
@@ -14,6 +17,10 @@ namespace RogueEssence.Dungeon
         public MapBG BG;
     }
 
+    /// <summary>
+    /// A background composed of multiple stacked layers, each with its own animation and parallax.
+    /// Layers are drawn in order from back to front.
+    /// </summary>
     [Serializable]
     public class LayeredBG : IBackgroundSprite
     {

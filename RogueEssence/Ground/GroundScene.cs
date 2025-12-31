@@ -11,7 +11,10 @@ using RogueEssence.Script;
 
 namespace RogueEssence.Ground
 {
-    //The game engine for Ground Mode, in which the player has free movement
+    /// <summary>
+    /// The main game engine for Ground Mode, providing player control, input processing,
+    /// camera management, and rendering. This is a singleton class that manages all ground mode interactions.
+    /// </summary>
     public partial class GroundScene : BaseGroundScene
     {
         private static GroundScene instance;

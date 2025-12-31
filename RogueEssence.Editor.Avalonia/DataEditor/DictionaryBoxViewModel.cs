@@ -12,6 +12,9 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// Represents a single key-value element in a dictionary collection.
+    /// </summary>
     public class DictionaryElement
     {
         private object key;
@@ -31,6 +34,12 @@ namespace RogueEssence.Dev.ViewModels
 
         private StringConv conv;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryElement"/> class.
+        /// </summary>
+        /// <param name="conv">The string converter for display purposes.</param>
+        /// <param name="key">The dictionary key.</param>
+        /// <param name="value">The dictionary value.</param>
         public DictionaryElement(StringConv conv, object key, object value)
         {
             this.conv = conv;
@@ -39,6 +48,9 @@ namespace RogueEssence.Dev.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel for the DictionaryBox control that manages key-value pair collections.
+    /// </summary>
     public class DictionaryBoxViewModel : ViewModelBase
     {
         public ObservableCollection<DictionaryElement> Collection { get; }
@@ -50,7 +62,21 @@ namespace RogueEssence.Dev.ViewModels
             set { this.SetIfChanged(ref selectedIndex, value); }
         }
 
+        /// <summary>
+        /// Delegate for applying edits to a dictionary element.
+        /// </summary>
+        /// <param name="oldKey">The original key.</param>
+        /// <param name="newKey">The new key (may be the same as oldKey).</param>
+        /// <param name="element">The element value.</param>
         public delegate void EditElementOp(object oldKey, object newKey, object element);
+
+        /// <summary>
+        /// Delegate for initiating an element edit operation.
+        /// </summary>
+        /// <param name="key">The key of the element.</param>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
+        /// <param name="op">The callback operation to perform after editing.</param>
         public delegate void ElementOp(object key, object element, bool advancedEdit, EditElementOp op);
 
         public event ElementOp OnEditKey;
@@ -63,6 +89,11 @@ namespace RogueEssence.Dev.ViewModels
 
         public bool ConfirmDelete;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DictionaryBoxViewModel"/> class.
+        /// </summary>
+        /// <param name="parent">The parent window for dialog display.</param>
+        /// <param name="conv">The string converter for display purposes.</param>
         public DictionaryBoxViewModel(Window parent, StringConv conv)
         {
             StringConv = conv;
@@ -70,11 +101,21 @@ namespace RogueEssence.Dev.ViewModels
             Collection = new ObservableCollection<DictionaryElement>();
         }
 
+        /// <summary>
+        /// Gets the collection as a typed dictionary.
+        /// </summary>
+        /// <typeparam name="T">The dictionary type to create.</typeparam>
+        /// <returns>A dictionary of the specified type.</returns>
         public T GetDict<T>() where T : IDictionary
         {
             return (T)GetDict(typeof(T));
         }
 
+        /// <summary>
+        /// Gets the collection as a dictionary of the specified type.
+        /// </summary>
+        /// <param name="type">The type of dictionary to create.</param>
+        /// <returns>A dictionary instance containing all collection entries.</returns>
         public IDictionary GetDict(Type type)
         {
             IDictionary result = (IDictionary)Activator.CreateInstance(type);
@@ -83,6 +124,10 @@ namespace RogueEssence.Dev.ViewModels
             return result;
         }
 
+        /// <summary>
+        /// Loads the collection from a source dictionary.
+        /// </summary>
+        /// <param name="source">The source dictionary to load from.</param>
         public void LoadFromDict(IDictionary source)
         {
             Collection.Clear();
@@ -145,6 +190,10 @@ namespace RogueEssence.Dev.ViewModels
             return -1;
         }
 
+        /// <summary>
+        /// Initiates editing of a dictionary key at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the element whose key to edit.</param>
         public void EditKey(int index)
         {
             bool advancedEdit = false;
@@ -155,6 +204,11 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles double-click events on the collection list to edit the selected item value.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The pointer released event arguments.</param>
         public void lbxCollection_DoubleClick(object sender, PointerReleasedEventArgs e)
         {
             //int index = lbxDictionary.IndexFromPoint(e.X, e.Y);
@@ -168,6 +222,10 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles the add button click event to add a new dictionary entry.
+        /// </summary>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
         public void btnAdd_Click(bool advancedEdit)
         {
             object newKey = null;
@@ -175,6 +233,9 @@ namespace RogueEssence.Dev.ViewModels
             OnEditKey?.Invoke(newKey, element, advancedEdit, insertKey);
         }
 
+        /// <summary>
+        /// Handles the delete button click event to remove the selected entry.
+        /// </summary>
         public async void btnDelete_Click()
         {
             if (SelectedIndex > -1 && SelectedIndex < Collection.Count)

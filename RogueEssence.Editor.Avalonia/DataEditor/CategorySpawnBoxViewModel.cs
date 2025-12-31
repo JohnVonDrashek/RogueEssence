@@ -11,6 +11,9 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// Represents a single element in a category spawn list, which can be either a category or an item within a category.
+    /// </summary>
     public class CategorySpawnElement : ViewModelBase
     {
         private int weight;
@@ -64,6 +67,14 @@ namespace RogueEssence.Dev.ViewModels
         private StringConv conv;
         private bool category;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategorySpawnElement"/> class.
+        /// </summary>
+        /// <param name="conv">The string converter for display purposes.</param>
+        /// <param name="category">Whether this element is a category header.</param>
+        /// <param name="weight">The spawn weight of this element.</param>
+        /// <param name="chance">The calculated spawn chance percentage.</param>
+        /// <param name="val">The actual value/object this element represents.</param>
         public CategorySpawnElement(StringConv conv, bool category, int weight, double chance, object val)
         {
             this.conv = conv;
@@ -74,9 +85,25 @@ namespace RogueEssence.Dev.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel for the CategorySpawnBox control that manages a hierarchical spawn list with categories.
+    /// </summary>
     public class CategorySpawnBoxViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Delegate for editing an element at a specific index.
+        /// </summary>
+        /// <param name="index">The index of the element to edit.</param>
+        /// <param name="element">The element to edit.</param>
         public delegate void EditElementOp(int index, object element);
+
+        /// <summary>
+        /// Delegate for initiating an element edit operation.
+        /// </summary>
+        /// <param name="index">The index of the element.</param>
+        /// <param name="element">The element being edited.</param>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
+        /// <param name="op">The callback operation to perform after editing.</param>
         public delegate void ElementOp(int index, object element, bool advancedEdit, EditElementOp op);
 
         public event ElementOp OnEditItem;
@@ -90,6 +117,12 @@ namespace RogueEssence.Dev.ViewModels
 
         public bool ConfirmDelete;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategorySpawnBoxViewModel"/> class.
+        /// </summary>
+        /// <param name="parent">The parent window for dialog display.</param>
+        /// <param name="categoryConv">The string converter for category display.</param>
+        /// <param name="conv">The string converter for item display.</param>
         public CategorySpawnBoxViewModel(Window parent, StringConv categoryConv, StringConv conv)
         {
             CategoryConv = categoryConv;
@@ -250,6 +283,11 @@ namespace RogueEssence.Dev.ViewModels
             updatePercentages();
         }
 
+        /// <summary>
+        /// Handles double-click events on the collection grid to edit the selected element.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The pointer released event arguments.</param>
         public void gridCollection_DoubleClick(object sender, PointerReleasedEventArgs e)
         {
             //int index = lbxCollection.IndexFromPoint(e.X, e.Y);
@@ -266,6 +304,10 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles the add category button click event.
+        /// </summary>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
         public void btnAddCategory_Click(bool advancedEdit)
         {
             int index = CurrentElement;
@@ -288,6 +330,10 @@ namespace RogueEssence.Dev.ViewModels
             OnEditKey?.Invoke(index, element, advancedEdit, insertCategory);
         }
 
+        /// <summary>
+        /// Handles the add item button click event.
+        /// </summary>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
         public async void btnAddItem_Click(bool advancedEdit)
         {
             int index = CurrentElement;

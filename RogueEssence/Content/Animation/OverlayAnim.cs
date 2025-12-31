@@ -5,7 +5,10 @@ using System;
 
 namespace RogueEssence.Content
 {
-
+    /// <summary>
+    /// A full-screen overlay animation that moves and fades over time.
+    /// Can tile in X and/or Y directions and supports fade in/out effects.
+    /// </summary>
     public class OverlayAnim : BaseAnim
     {
 

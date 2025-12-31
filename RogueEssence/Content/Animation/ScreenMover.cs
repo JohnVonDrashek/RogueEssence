@@ -3,6 +3,10 @@ using RogueElements;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Controls screen shake effects by adding random offsets to the camera position.
+    /// Shake intensity decreases over time from max to min.
+    /// </summary>
     [Serializable]
     public class ScreenMover
     {

@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A rain particle animation that wraps around the screen edges.
+    /// Creates a continuous rain effect by repositioning particles that exit the screen.
+    /// </summary>
     public class WrappedRainAnim : ParticleAnim
     {
         public WrappedRainAnim() { }

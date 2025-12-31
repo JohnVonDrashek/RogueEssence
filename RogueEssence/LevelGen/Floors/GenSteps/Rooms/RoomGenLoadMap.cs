@@ -24,17 +24,27 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public ITile RoomTerrain { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMap class.
+        /// </summary>
         public RoomGenLoadMap()
         {
             MapID = "";
         }
 
-
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMap class as a copy of another.
+        /// </summary>
+        /// <param name="other">The room generator to copy.</param>
         protected RoomGenLoadMap(RoomGenLoadMap<T> other) : base(other)
         {
             this.RoomTerrain = other.RoomTerrain;
         }
 
+        /// <summary>
+        /// Creates a copy of this room generator.
+        /// </summary>
+        /// <returns>A new RoomGenLoadMap with the same configuration.</returns>
         public override RoomGen<T> Copy() { return new RoomGenLoadMap<T>(this); }
 
 
@@ -89,13 +99,19 @@ namespace RogueEssence.LevelGen
         //public bool FulfillAll { get; set; }
 
 
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMapBordered class.
+        /// </summary>
         public RoomGenLoadMapBordered()
         {
             MapID = "";
             this.Borders = new Dictionary<Dir4, bool[]>();
         }
 
-
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMapBordered class as a copy of another.
+        /// </summary>
+        /// <param name="other">The room generator to copy.</param>
         protected RoomGenLoadMapBordered(RoomGenLoadMapBordered<T> other) : base(other)
         {
             //this.FulfillAll = other.FulfillAll;
@@ -143,6 +159,11 @@ namespace RogueEssence.LevelGen
     }
 
 
+    /// <summary>
+    /// Abstract base class for room generators that load rooms from map files.
+    /// Provides common functionality for drawing tiles, decorations, items, mobs, and entrances.
+    /// </summary>
+    /// <typeparam name="T">The type of map generation context.</typeparam>
     [Serializable]
     public abstract class RoomGenLoadMapBase<T> : RoomGen<T> where T : BaseMapGenContext
     {
@@ -160,18 +181,29 @@ namespace RogueEssence.LevelGen
         [NonSerialized]
         protected Map roomMap;
 
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMapBase class.
+        /// </summary>
         public RoomGenLoadMapBase()
         {
             MapID = "";
         }
 
-
+        /// <summary>
+        /// Initializes a new instance of the RoomGenLoadMapBase class as a copy of another.
+        /// </summary>
+        /// <param name="other">The room generator to copy.</param>
         protected RoomGenLoadMapBase(RoomGenLoadMapBase<T> other)
         {
             MapID = other.MapID;
             this.PreventChanges = other.PreventChanges;
         }
 
+        /// <summary>
+        /// Proposes the size of the room by loading the map and returning its dimensions.
+        /// </summary>
+        /// <param name="rand">The random number generator (unused).</param>
+        /// <returns>The dimensions of the loaded map.</returns>
         public override Loc ProposeSize(IRandom rand)
         {
             roomMap = DataManager.Instance.GetMap(MapID);

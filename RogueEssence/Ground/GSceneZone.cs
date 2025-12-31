@@ -9,9 +9,17 @@ using RogueEssence.Script;
 
 namespace RogueEssence.Ground
 {
+    /// <summary>
+    /// Partial class containing zone and map transition methods for the Ground Scene.
+    /// Handles entering, exiting, initializing, and saving ground maps.
+    /// </summary>
     public partial class GroundScene
     {
 
+        /// <summary>
+        /// Enters a ground map at the specified entry point.
+        /// </summary>
+        /// <param name="entryPoint">The index of the entry point to spawn at.</param>
         public void EnterGround(int entryPoint)
         {
             LocRay8 entry = ZoneManager.Instance.CurrentGround.GetEntryPoint(entryPoint);

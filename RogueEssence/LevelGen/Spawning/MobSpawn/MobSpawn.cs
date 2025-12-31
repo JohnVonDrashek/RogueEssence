@@ -8,13 +8,27 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.LevelGen
 {
+    /// <summary>
+    /// Interface for spawn generators that create characters in a team from a map context.
+    /// </summary>
+    /// <typeparam name="T">The type of map context.</typeparam>
     //TODO: port this interface down to RogueElements
     //to address concerns that map gen context may need to be passed into the logic responsible for creating a spawnable entity
     public interface ISpawnGenerator<T>
     {
+        /// <summary>
+        /// Spawns a character and adds it to the specified team.
+        /// </summary>
+        /// <param name="team">The team to add the character to.</param>
+        /// <param name="map">The map context for spawning.</param>
+        /// <returns>The spawned character.</returns>
         Character Spawn(Team team, T map);
     }
 
+    /// <summary>
+    /// Represents a single mob spawn configuration including species, level, skills, and other properties.
+    /// Used to define what monsters appear in dungeons and how they are configured.
+    /// </summary>
     [Serializable]
     public class MobSpawn : ISpawnable, ISpawnGenerator<IMobSpawnMap>
     {
@@ -62,6 +76,9 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public List<MobSpawnExtra> SpawnFeatures;
         
+        /// <summary>
+        /// Initializes a new instance of the MobSpawn class with default values.
+        /// </summary>
         public MobSpawn()
         {
             BaseForm = new MonsterID("", 0, "", Gender.Unknown);
@@ -71,6 +88,11 @@ namespace RogueEssence.LevelGen
             SpawnConditions = new List<MobSpawnCheck>();
             SpawnFeatures = new List<MobSpawnExtra>();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the MobSpawn class as a copy of another.
+        /// </summary>
+        /// <param name="other">The MobSpawn to copy.</param>
         protected MobSpawn(MobSpawn other) : this()
         {
             BaseForm = other.BaseForm;
@@ -83,9 +105,17 @@ namespace RogueEssence.LevelGen
             foreach (MobSpawnExtra extra in other.SpawnFeatures)
                 SpawnFeatures.Add(extra.Copy());
         }
+        /// <summary>
+        /// Creates a copy of this MobSpawn.
+        /// </summary>
+        /// <returns>A new MobSpawn with copied data.</returns>
         public MobSpawn Copy() { return new MobSpawn(this); }
         ISpawnable ISpawnable.Copy() { return Copy(); }
 
+        /// <summary>
+        /// Determines whether this mob can spawn based on all spawn conditions.
+        /// </summary>
+        /// <returns>True if all spawn conditions pass; otherwise, false.</returns>
         public bool CanSpawn()
         {
             foreach (MobSpawnCheck extra in SpawnConditions)
@@ -135,6 +165,12 @@ namespace RogueEssence.LevelGen
             return new_mob;
         }
 
+        /// <summary>
+        /// Spawns the mob with its configured properties and applies all spawn features.
+        /// </summary>
+        /// <param name="team">The team to add the character to.</param>
+        /// <param name="map">The map context for spawning.</param>
+        /// <returns>The spawned character.</returns>
         public virtual Character Spawn(Team team, IMobSpawnMap map)
         {
             Character newChar = SpawnBase(team, map);

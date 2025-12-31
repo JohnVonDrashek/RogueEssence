@@ -5,37 +5,79 @@ using System.IO;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Base class for all sprite sheet types in the game.
+    /// Provides core functionality for loading, saving, drawing, and manipulating textures.
+    /// Implements IDisposable for proper texture resource management.
+    /// </summary>
     public class BaseSheet : IDisposable
     {
-
+        /// <summary>
+        /// The shared graphics device used for texture operations.
+        /// </summary>
         protected static GraphicsDevice device;
+
+        /// <summary>
+        /// The default fallback texture used when loading fails.
+        /// </summary>
         protected static Texture2D defaultTex;
 
+        /// <summary>
+        /// The underlying texture data for this sheet.
+        /// </summary>
         protected Texture2D baseTexture { get; private set; }
 
+        /// <summary>
+        /// Gets the width of the sprite sheet in pixels.
+        /// </summary>
         public int Width { get { return baseTexture.Width; } }
+
+        /// <summary>
+        /// Gets the height of the sprite sheet in pixels.
+        /// </summary>
         public int Height { get { return baseTexture.Height; } }
 
+        /// <summary>
+        /// Gets the memory size of the texture data in bytes.
+        /// </summary>
         public long MemSize { get; private set; }
 
+        /// <summary>
+        /// Initializes the static graphics device and default texture for all BaseSheet instances.
+        /// Must be called before creating any sprite sheets.
+        /// </summary>
+        /// <param name="graphicsDevice">The graphics device to use for texture operations.</param>
+        /// <param name="tex">The default fallback texture.</param>
         public static void InitBase(GraphicsDevice graphicsDevice, Texture2D tex)
         {
             device = graphicsDevice;
             defaultTex = tex;
         }
 
+        /// <summary>
+        /// Creates a new blank sprite sheet with the specified dimensions.
+        /// </summary>
+        /// <param name="width">The width of the texture in pixels.</param>
+        /// <param name="height">The height of the texture in pixels.</param>
         public BaseSheet(int width, int height)
         {
             baseTexture = new Texture2D(device, width, height);
             MemSize = -1;
         }
 
+        /// <summary>
+        /// Creates a sprite sheet from an existing texture.
+        /// </summary>
+        /// <param name="tex">The texture to use as the base.</param>
         protected BaseSheet(Texture2D tex)
         {
             baseTexture = tex;
             MemSize = -1;
         }
 
+        /// <summary>
+        /// Releases the texture resources used by this sprite sheet.
+        /// </summary>
         public virtual void Dispose()
         {
             if (baseTexture != defaultTex)
@@ -47,10 +89,11 @@ namespace RogueEssence.Content
             Dispose();
         }
 
-        //frompath (import) will take a raw png
-        //fromstream (load) will also take a raw png from stream
-        //save will save as png
-
+        /// <summary>
+        /// Imports a sprite sheet from a PNG file on disk.
+        /// </summary>
+        /// <param name="path">The file path to the PNG image.</param>
+        /// <returns>A new BaseSheet containing the imported texture.</returns>
         public static BaseSheet Import(string path)
         {
             using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -60,6 +103,11 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Loads a sprite sheet from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>A new BaseSheet containing the loaded texture.</returns>
         public static BaseSheet Load(BinaryReader reader)
         {
             long length = reader.ReadInt64();
@@ -72,11 +120,20 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Creates a fallback sprite sheet using the default error texture.
+        /// Used when loading fails.
+        /// </summary>
+        /// <returns>A BaseSheet containing the default fallback texture.</returns>
         public static BaseSheet LoadError()
         {
             return new BaseSheet(defaultTex);
         }
 
+        /// <summary>
+        /// Saves the sprite sheet to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public virtual void Save(BinaryWriter writer)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -88,67 +145,165 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Exports the sprite sheet as a PNG to the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream to export to.</param>
         public void Export(Stream stream)
         {
             ExportTex(stream, baseTexture);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet at the specified position with white color.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture, or null for entire texture.</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle? sourceRect)
         {
             Draw(spriteBatch, pos, sourceRect, Color.White);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet at the specified position with the given color.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture, or null for entire texture.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle? sourceRect, Color color)
         {
             Draw(spriteBatch, pos, sourceRect, color, new Vector2(1));
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with color and scale.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture, or null for entire texture.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle? sourceRect, Color color, Vector2 scale)
         {
             Draw(spriteBatch, pos, sourceRect, color, scale, SpriteEffects.None);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with color, scale, and sprite effects.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture, or null for entire texture.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <param name="effect">The sprite effects (flip horizontal/vertical).</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle? sourceRect, Color color, Vector2 scale, SpriteEffects effect)
         {
             spriteBatch.Draw(baseTexture, pos, sourceRect, color, 0f, Vector2.Zero, scale, effect, 0);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with rotation, centered on the source rectangle.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <param name="rotation">The rotation angle in radians.</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle sourceRect, Color color, Vector2 scale, float rotation)
         {
             Draw(spriteBatch, pos, sourceRect, new Vector2(sourceRect.Width / 2, sourceRect.Height / 2), color, scale, rotation, SpriteEffects.None);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with rotation and sprite effects, centered on the source rectangle.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <param name="rotation">The rotation angle in radians.</param>
+        /// <param name="spriteEffects">The sprite effects (flip horizontal/vertical).</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle sourceRect, Color color, Vector2 scale, float rotation, SpriteEffects spriteEffects)
         {
             Draw(spriteBatch, pos, sourceRect, new Vector2(sourceRect.Width / 2, sourceRect.Height / 2), color, scale, rotation, spriteEffects);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with a custom origin point for rotation.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture.</param>
+        /// <param name="origin">The origin point for rotation and scaling.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <param name="rotation">The rotation angle in radians.</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle sourceRect, Vector2 origin, Color color, Vector2 scale, float rotation)
         {
             Draw(spriteBatch, pos, sourceRect, origin, color, scale, rotation, SpriteEffects.None);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet with full control over all drawing parameters.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="pos">The position to draw at.</param>
+        /// <param name="sourceRect">The source rectangle within the texture.</param>
+        /// <param name="origin">The origin point for rotation and scaling.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="scale">The scale factor to apply.</param>
+        /// <param name="rotation">The rotation angle in radians.</param>
+        /// <param name="spriteEffects">The sprite effects (flip horizontal/vertical).</param>
         public void Draw(SpriteBatch spriteBatch, Vector2 pos, Rectangle sourceRect, Vector2 origin, Color color, Vector2 scale, float rotation, SpriteEffects spriteEffects)
         {
             spriteBatch.Draw(baseTexture, pos, sourceRect, color, rotation, origin, scale, spriteEffects, 0);
         }
 
+        /// <summary>
+        /// Draws a portion of the sprite sheet stretched to fit a destination rectangle.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="destRect">The destination rectangle to draw into.</param>
+        /// <param name="sourceRect">The source rectangle within the texture, or null for entire texture.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void Draw(SpriteBatch spriteBatch, Rectangle destRect, Rectangle? sourceRect, Color color)
         {
             spriteBatch.Draw(baseTexture, destRect, sourceRect, color, 0f, Vector2.Zero, SpriteEffects.None, 0);
         }
 
+        /// <summary>
+        /// Draws the default fallback texture into the specified destination rectangle.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="destRect">The destination rectangle to draw into.</param>
         public void DrawDefault(SpriteBatch spriteBatch, Rectangle destRect)
         {
             spriteBatch.Draw(defaultTex, destRect, Color.White);
         }
 
+        /// <summary>
+        /// Replaces the current texture with a new one, disposing the old texture.
+        /// </summary>
+        /// <param name="tex">The new texture to use.</param>
         public void SetTexture(Texture2D tex)
         {
             baseTexture.Dispose();
             baseTexture = tex;
         }
 
+        /// <summary>
+        /// Checks if a rectangular region of the sprite sheet is completely transparent.
+        /// </summary>
+        /// <param name="srcPx">The X coordinate of the source region.</param>
+        /// <param name="srcPy">The Y coordinate of the source region.</param>
+        /// <param name="srcW">The width of the source region.</param>
+        /// <param name="srcH">The height of the source region.</param>
+        /// <returns>True if all pixels in the region have zero alpha, false otherwise.</returns>
         public bool IsBlank(int srcPx, int srcPy, int srcW, int srcH)
         {
             Color[] color = new Color[srcW * srcH];
@@ -185,6 +340,11 @@ namespace RogueEssence.Content
         }
 
 
+        /// <summary>
+        /// Imports a texture from a stream and applies premultiplied alpha.
+        /// </summary>
+        /// <param name="stream">The stream containing the image data.</param>
+        /// <returns>The imported texture with premultiplied alpha.</returns>
         public static Texture2D ImportTex(Stream stream)
         {
             Texture2D tex = Texture2D.FromStream(device, stream);
@@ -192,6 +352,11 @@ namespace RogueEssence.Content
             return tex;
         }
 
+        /// <summary>
+        /// Exports a texture to a stream, reversing premultiplied alpha for standard PNG format.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="tex">The texture to export.</param>
         public static void ExportTex(Stream stream, Texture2D tex)
         {
             Texture2D tempTex = CreateTexCopy(tex);
@@ -202,12 +367,24 @@ namespace RogueEssence.Content
 
 
 
+        /// <summary>
+        /// Exports color data as a PNG file to the specified file path.
+        /// </summary>
+        /// <param name="fileName">The path to save the file to.</param>
+        /// <param name="colors">The color data array.</param>
+        /// <param name="imgSize">The dimensions of the image.</param>
         public static void ExportColors(string fileName, Color[] colors, Point imgSize)
         {
             using (Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
                 ExportColors(stream, colors, imgSize);
         }
 
+        /// <summary>
+        /// Exports color data as a PNG to the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="colors">The color data array.</param>
+        /// <param name="imgSize">The dimensions of the image.</param>
         public static void ExportColors(Stream stream, Color[] colors, Point imgSize)
         {
             Texture2D animImg = new Texture2D(device, imgSize.X, imgSize.Y);
@@ -216,6 +393,11 @@ namespace RogueEssence.Content
             animImg.Dispose();
         }
 
+        /// <summary>
+        /// Gets the bounding rectangle of all non-transparent pixels within the specified bounds.
+        /// </summary>
+        /// <param name="bounds">The bounds to search within.</param>
+        /// <returns>The rectangle containing all non-transparent pixels, relative to the input bounds.</returns>
         public Rectangle GetCoveredRect(Rectangle bounds)
         {
             return GetCoveredRect(baseTexture, bounds);
@@ -250,6 +432,11 @@ namespace RogueEssence.Content
             return new Rectangle(left, top, right - left, bottom - top);
         }
 
+        /// <summary>
+        /// Creates a copy of the specified texture.
+        /// </summary>
+        /// <param name="source">The texture to copy.</param>
+        /// <returns>A new texture containing the same pixel data.</returns>
         public static Texture2D CreateTexCopy(Texture2D source)
         {
             Texture2D copy = new Texture2D(device, source.Width, source.Height);
@@ -259,22 +446,66 @@ namespace RogueEssence.Content
             return copy;
         }
 
+        /// <summary>
+        /// Copies a rectangular region from a source sheet to this sheet.
+        /// </summary>
+        /// <param name="source">The source sprite sheet to copy from.</param>
+        /// <param name="srcPx">The X coordinate in the source.</param>
+        /// <param name="srcPy">The Y coordinate in the source.</param>
+        /// <param name="srcW">The width of the region to copy.</param>
+        /// <param name="srcH">The height of the region to copy.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
         public void Blit(BaseSheet source, int srcPx, int srcPy, int srcW, int srcH, int destX, int destY)
         {
             BaseSheet.Blit(source.baseTexture, baseTexture, srcPx, srcPy, srcW, srcH, destX, destY);
         }
 
 
+        /// <summary>
+        /// Copies a rectangular region from a source sheet to a destination texture.
+        /// </summary>
+        /// <param name="source">The source sprite sheet to copy from.</param>
+        /// <param name="dest">The destination texture to copy to.</param>
+        /// <param name="srcPx">The X coordinate in the source.</param>
+        /// <param name="srcPy">The Y coordinate in the source.</param>
+        /// <param name="srcW">The width of the region to copy.</param>
+        /// <param name="srcH">The height of the region to copy.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
         public static void Blit(BaseSheet source, Texture2D dest, int srcPx, int srcPy, int srcW, int srcH, int destX, int destY)
         {
             BaseSheet.Blit(source.baseTexture, dest, srcPx, srcPy, srcW, srcH, destX, destY);
         }
 
+        /// <summary>
+        /// Copies a rectangular region from a source texture to a destination texture.
+        /// </summary>
+        /// <param name="source">The source texture to copy from.</param>
+        /// <param name="dest">The destination texture to copy to.</param>
+        /// <param name="srcPx">The X coordinate in the source.</param>
+        /// <param name="srcPy">The Y coordinate in the source.</param>
+        /// <param name="srcW">The width of the region to copy.</param>
+        /// <param name="srcH">The height of the region to copy.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
         public static void Blit(Texture2D source, Texture2D dest, int srcPx, int srcPy, int srcW, int srcH, int destX, int destY)
         {
             Blit(source, dest, srcPx, srcPy, srcW, srcH, destX, destY, SpriteEffects.None);
         }
 
+        /// <summary>
+        /// Copies a rectangular region from a source texture to a destination texture with optional flipping.
+        /// </summary>
+        /// <param name="source">The source texture to copy from.</param>
+        /// <param name="dest">The destination texture to copy to.</param>
+        /// <param name="srcPx">The X coordinate in the source.</param>
+        /// <param name="srcPy">The Y coordinate in the source.</param>
+        /// <param name="srcW">The width of the region to copy.</param>
+        /// <param name="srcH">The height of the region to copy.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
+        /// <param name="flip">The sprite effects to apply (horizontal/vertical flip).</param>
         public static void Blit(Texture2D source, Texture2D dest, int srcPx, int srcPy, int srcW, int srcH, int destX, int destY, SpriteEffects flip)
         {
             Color[] color = new Color[srcW * srcH];
@@ -299,6 +530,15 @@ namespace RogueEssence.Content
         }
 
 
+        /// <summary>
+        /// Copies color data from a source array to a destination array with optional flipping.
+        /// </summary>
+        /// <param name="source">The source color array.</param>
+        /// <param name="dest">The destination color array.</param>
+        /// <param name="srcSz">The dimensions of the source data.</param>
+        /// <param name="destSz">The dimensions of the destination array.</param>
+        /// <param name="destPt">The position in the destination to copy to.</param>
+        /// <param name="flip">The sprite effects to apply (horizontal/vertical flip).</param>
         public static void Blit(Color[] source, Color[] dest, Point srcSz, Point destSz, Point destPt, SpriteEffects flip)
         {
             bool flipH = (flip & SpriteEffects.FlipHorizontally) != SpriteEffects.None;
@@ -328,20 +568,49 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Gets all pixel data from a sprite sheet as a color array.
+        /// </summary>
+        /// <param name="source">The sprite sheet to get data from.</param>
+        /// <returns>An array containing all pixel colors.</returns>
         public static Color[] GetData(BaseSheet source)
         {
             return GetData(source.baseTexture, 0, 0, source.Width, source.Height);
         }
 
+        /// <summary>
+        /// Gets pixel data from a rectangular region of a sprite sheet.
+        /// </summary>
+        /// <param name="source">The sprite sheet to get data from.</param>
+        /// <param name="srcPx">The X coordinate of the source region.</param>
+        /// <param name="srcPy">The Y coordinate of the source region.</param>
+        /// <param name="srcW">The width of the source region.</param>
+        /// <param name="srcH">The height of the source region.</param>
+        /// <returns>An array containing the pixel colors from the region.</returns>
         public static Color[] GetData(BaseSheet source, int srcPx, int srcPy, int srcW, int srcH)
         {
             return GetData(source.baseTexture, srcPx, srcPy, srcW, srcH);
         }
+
+        /// <summary>
+        /// Gets all pixel data from a texture as a color array.
+        /// </summary>
+        /// <param name="source">The texture to get data from.</param>
+        /// <returns>An array containing all pixel colors.</returns>
         public static Color[] GetData(Texture2D source)
         {
             return GetData(source, 0, 0, source.Width, source.Height);
         }
 
+        /// <summary>
+        /// Gets pixel data from a rectangular region of a texture.
+        /// </summary>
+        /// <param name="source">The texture to get data from.</param>
+        /// <param name="srcPx">The X coordinate of the source region.</param>
+        /// <param name="srcPy">The Y coordinate of the source region.</param>
+        /// <param name="srcW">The width of the source region.</param>
+        /// <param name="srcH">The height of the source region.</param>
+        /// <returns>An array containing the pixel colors from the region.</returns>
         public static Color[] GetData(Texture2D source, int srcPx, int srcPy, int srcW, int srcH)
         {
             Color[] color = new Color[srcW * srcH];
@@ -349,11 +618,28 @@ namespace RogueEssence.Content
             return color;
         }
 
+        /// <summary>
+        /// Fills a rectangular region with a solid color.
+        /// </summary>
+        /// <param name="srcColor">The color to fill with.</param>
+        /// <param name="srcW">The width of the region to fill.</param>
+        /// <param name="srcH">The height of the region to fill.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
         public void BlitColor(Color srcColor, int srcW, int srcH, int destX, int destY)
         {
             BaseSheet.BlitColor(srcColor, baseTexture, srcW, srcH, destX, destY);
         }
 
+        /// <summary>
+        /// Fills a rectangular region of a texture with a solid color.
+        /// </summary>
+        /// <param name="srcColor">The color to fill with.</param>
+        /// <param name="dest">The destination texture.</param>
+        /// <param name="srcW">The width of the region to fill.</param>
+        /// <param name="srcH">The height of the region to fill.</param>
+        /// <param name="destX">The X coordinate in the destination.</param>
+        /// <param name="destY">The Y coordinate in the destination.</param>
         public static void BlitColor(Color srcColor, Texture2D dest, int srcW, int srcH, int destX, int destY)
         {
             Color[] color = new Color[srcW * srcH];
@@ -362,6 +648,12 @@ namespace RogueEssence.Content
             dest.SetData<Color>(0, new Rectangle(destX, destY, srcW, srcH), color, 0, color.Length);
         }
 
+        /// <summary>
+        /// Gets the color of a single pixel in the sprite sheet.
+        /// </summary>
+        /// <param name="x">The X coordinate of the pixel.</param>
+        /// <param name="y">The Y coordinate of the pixel.</param>
+        /// <returns>The color of the pixel at the specified coordinates.</returns>
         public Color GetPixel(int x, int y)
         {
             Color[] color = new Color[1];

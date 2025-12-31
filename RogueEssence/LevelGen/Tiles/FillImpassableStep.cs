@@ -12,10 +12,18 @@ namespace RogueEssence
     public class FillImpassableStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the FillImpassableStep class.
+        /// </summary>
         public FillImpassableStep()
         {
         }
 
+        /// <summary>
+        /// Applies the step to fill unreachable tiles with impassable terrain.
+        /// Note: This step is not yet implemented.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             //TODO: find all fully unreachable tiles and fill in with impassable

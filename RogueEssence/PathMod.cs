@@ -9,27 +9,75 @@ using RogueEssence.Dev;
 
 namespace RogueEssence
 {
+    /// <summary>
+    /// Provides static utilities for managing file paths and mod loading in the game.
+    /// Handles path resolution for base game files and mod files with fallback support.
+    /// </summary>
     public static class PathMod
     {
+        /// <summary>
+        /// Represents the type of mod.
+        /// </summary>
         public enum ModType
         {
+            /// <summary>No mod type specified.</summary>
             None=-1,
+            /// <summary>A regular mod that extends the base game.</summary>
             Mod,
+            /// <summary>A quest/campaign mod.</summary>
             Quest,
+            /// <summary>Total count of mod types.</summary>
             Count
         }
 
+        /// <summary>
+        /// Gets the name of the executable file.
+        /// </summary>
         public static string ExeName { get; private set; }
+
+        /// <summary>
+        /// Gets the path to the executable directory.
+        /// </summary>
         public static string ExePath { get; private set; }
+
+        /// <summary>
+        /// The path to game assets.
+        /// </summary>
         public static string ASSET_PATH;
+
+        /// <summary>
+        /// The path to development/raw assets.
+        /// </summary>
         public static string DEV_PATH;
+
+        /// <summary>
+        /// The application data path.
+        /// </summary>
         public static string APP_PATH;
+
+        /// <summary>
+        /// Gets the path to editor resources.
+        /// </summary>
         public static string RESOURCE_PATH { get => ASSET_PATH + "Editor/"; }
+
+        /// <summary>
+        /// Gets the path to base game content.
+        /// </summary>
         public static string BASE_PATH { get => ASSET_PATH + "Base/"; }
 
+        /// <summary>
+        /// Gets the full path to the mods directory.
+        /// </summary>
         public static string MODS_PATH { get => APP_PATH + MODS_FOLDER; }
+
+        /// <summary>
+        /// The mods folder name.
+        /// </summary>
         public static string MODS_FOLDER = "MODS/";
 
+        /// <summary>
+        /// The filename for path parameters configuration.
+        /// </summary>
         public const string PATH_PARAMS_FILE = "PathParams.xml";
 
         /// <summary>
@@ -759,13 +807,26 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Represents version information for a mod.
+    /// </summary>
     public struct ModVersion
     {
+        /// <summary>The display name of the mod.</summary>
         public string Name;
+        /// <summary>The unique identifier of the mod.</summary>
         public Guid UUID;
+        /// <summary>The version of the mod.</summary>
         public Version Version;
+        /// <summary>Gets the version as a display string.</summary>
         public string VersionString { get { return (Version == null) ? "---" : Version.ToString(); } }
 
+        /// <summary>
+        /// Initializes a new instance of the ModVersion struct.
+        /// </summary>
+        /// <param name="name">The mod name.</param>
+        /// <param name="uuid">The mod UUID.</param>
+        /// <param name="version">The mod version.</param>
         public ModVersion(string name, Guid uuid, Version version)
         {
             Name = name;
@@ -774,17 +835,33 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Represents a difference between two mod versions.
+    /// </summary>
     public struct ModDiff
     {
+        /// <summary>The display name of the mod.</summary>
         public string Name;
+        /// <summary>The unique identifier of the mod.</summary>
         public Guid UUID;
+        /// <summary>The old version of the mod.</summary>
         public Version OldVersion;
+        /// <summary>The new version of the mod.</summary>
         public Version NewVersion;
 
+        /// <summary>Gets the old version as a display string.</summary>
         public string OldVersionString { get { return (OldVersion == null) ? "---" : OldVersion.ToString(); } }
 
+        /// <summary>Gets the new version as a display string.</summary>
         public string NewVersionString { get { return (NewVersion == null) ? "---" : NewVersion.ToString(); } }
 
+        /// <summary>
+        /// Initializes a new instance of the ModDiff struct.
+        /// </summary>
+        /// <param name="name">The mod name.</param>
+        /// <param name="uuid">The mod UUID.</param>
+        /// <param name="oldVersion">The old version.</param>
+        /// <param name="newVersion">The new version.</param>
         public ModDiff(string name, Guid uuid, Version oldVersion, Version newVersion)
         {
             Name = name;
@@ -794,44 +871,89 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Represents the relationship type between mods.
+    /// </summary>
     public enum ModRelationship
     {
+        /// <summary>The mods are incompatible and cannot be loaded together.</summary>
         Incompatible,
+        /// <summary>This mod should be loaded after the related mod.</summary>
         LoadAfter,
+        /// <summary>This mod should be loaded before the related mod.</summary>
         LoadBefore,
+        /// <summary>This mod depends on the related mod.</summary>
         DependsOn
     }
 
+    /// <summary>
+    /// Represents a relationship to another mod.
+    /// </summary>
     public struct RelatedMod
     {
+        /// <summary>The UUID of the related mod.</summary>
         public Guid UUID;
+        /// <summary>The namespace of the related mod.</summary>
         public string Namespace;
+        /// <summary>The type of relationship.</summary>
         public ModRelationship Relationship;
 
+        /// <summary>
+        /// Returns a string representation of the relationship.
+        /// </summary>
+        /// <returns>A formatted string showing the relationship type and namespace.</returns>
         public override string ToString()
         {
             return String.Format("{0}: {1}", Relationship.ToString(), Namespace);
         }
     }
 
+    /// <summary>
+    /// Contains header information for a mod including metadata and relationships.
+    /// </summary>
     public struct ModHeader
     {
         /// <summary>
         /// Must always be a relative path
         /// </summary>
         public string Path;
+        /// <summary>The display name of the mod.</summary>
         public string Name;
+        /// <summary>The author of the mod.</summary>
         public string Author;
+        /// <summary>A description of the mod.</summary>
         public string Description;
+        /// <summary>The namespace identifier for the mod.</summary>
         public string Namespace;
+        /// <summary>The unique identifier of the mod.</summary>
         public Guid UUID;
+        /// <summary>The version of the mod.</summary>
         public Version Version;
+        /// <summary>The required game version for this mod.</summary>
         public Version GameVersion;
+        /// <summary>The type of mod (Mod or Quest).</summary>
         public PathMod.ModType ModType;
+        /// <summary>Array of relationships to other mods.</summary>
         public RelatedMod[] Relationships;
 
+        /// <summary>
+        /// An invalid mod header instance used as a default/null value.
+        /// </summary>
         public static readonly ModHeader Invalid = new ModHeader("", "", "", "", "", Guid.Empty, new Version(), new Version(), PathMod.ModType.None, new RelatedMod[0] { });
 
+        /// <summary>
+        /// Initializes a new instance of the ModHeader struct.
+        /// </summary>
+        /// <param name="path">The relative path to the mod.</param>
+        /// <param name="name">The display name.</param>
+        /// <param name="author">The author name.</param>
+        /// <param name="description">The mod description.</param>
+        /// <param name="newNamespace">The namespace identifier.</param>
+        /// <param name="uuid">The unique identifier.</param>
+        /// <param name="version">The mod version.</param>
+        /// <param name="gameVersion">The required game version.</param>
+        /// <param name="modType">The type of mod.</param>
+        /// <param name="relationships">Relationships to other mods.</param>
         public ModHeader(string path, string name, string author, string description, string newNamespace, Guid uuid, Version version, Version gameVersion, PathMod.ModType modType, RelatedMod[] relationships)
         {
             Path = path;
@@ -846,16 +968,28 @@ namespace RogueEssence
             Relationships = relationships;
         }
 
+        /// <summary>
+        /// Determines if this mod header represents a valid mod.
+        /// </summary>
+        /// <returns>True if the path is set; otherwise, false.</returns>
         public bool IsValid()
         {
             return !String.IsNullOrEmpty(Path);
         }
 
+        /// <summary>
+        /// Determines if this mod header has all required fields filled.
+        /// </summary>
+        /// <returns>True if all required fields are set; otherwise, false.</returns>
         public bool IsFilled()
         {
             return !String.IsNullOrEmpty(Path) && !String.IsNullOrEmpty(Name) && !String.IsNullOrEmpty(Namespace) && !UUID.Equals(Guid.Empty) && ModType != PathMod.ModType.None;
         }
 
+        /// <summary>
+        /// Gets a display name for use in menus.
+        /// </summary>
+        /// <returns>The mod name, or the path filename if no name is set.</returns>
         public string GetMenuName()
         {
             if (!IsValid())

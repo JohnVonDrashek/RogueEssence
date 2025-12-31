@@ -128,18 +128,34 @@ namespace RogueEssence.LevelGen
 
     }
 
+    /// <summary>
+    /// Abstract base class for floor map generators that produce dungeon floors from a generation context.
+    /// Provides the core logic for generating maps using a sequence of generation steps.
+    /// </summary>
+    /// <typeparam name="T">The type of map generation context to use.</typeparam>
     [Serializable]
     public abstract class FloorMapGen<T> : MapGen<T>, IFloorGen
         where T : BaseMapGenContext
     {
+        /// <summary>
+        /// Optional comment for development purposes.
+        /// </summary>
         [Dev.Multiline(0)]
         public string Comment;
 
+        /// <summary>
+        /// Initializes a new instance of the FloorMapGen class.
+        /// </summary>
         public FloorMapGen()
         {
             Comment = "";
         }
 
+        /// <summary>
+        /// Generates a map using the zone context and applies all generation steps.
+        /// </summary>
+        /// <param name="zoneContext">The zone generation context containing seed and zone steps.</param>
+        /// <returns>The generated map context.</returns>
         public IGenContext GenMap(ZoneGenContext zoneContext)
         {
             //it will first create the instance of the context,
@@ -217,9 +233,19 @@ namespace RogueEssence.LevelGen
         }
     }
 
+    /// <summary>
+    /// Interface for floor generators that produce dungeon maps from zone contexts.
+    /// Implementations define how floors are generated for dungeons.
+    /// </summary>
     public interface IFloorGen
     {
         //Map ExtractMap(ulong seed);
+
+        /// <summary>
+        /// Generates a map for a dungeon floor using the provided zone context.
+        /// </summary>
+        /// <param name="zoneContext">The zone generation context containing seed, floor ID, and zone steps.</param>
+        /// <returns>The generated map context.</returns>
         IGenContext GenMap(ZoneGenContext zoneContext);
     }
 }

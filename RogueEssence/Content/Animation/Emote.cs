@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An emote animation displayed above a character's head.
+    /// Plays an animation for a specified number of cycles.
+    /// </summary>
     public class Emote : BaseAnim
     {
         public Emote() { }

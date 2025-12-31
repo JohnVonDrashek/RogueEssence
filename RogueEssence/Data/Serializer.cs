@@ -14,18 +14,42 @@ using RogueEssence.LevelGen;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Wrapper class for serialized objects that includes version information.
+    /// Used to support versioned data migration during deserialization.
+    /// </summary>
     [Serializable]
     public class SerializationContainer
     {
+        /// <summary>
+        /// The version of the data format.
+        /// </summary>
         public Version Version;
+
+        /// <summary>
+        /// The actual serialized object.
+        /// </summary>
         public object Object;
     }
 
+    /// <summary>
+    /// Provides JSON serialization and deserialization utilities for game data.
+    /// Supports versioned serialization, diff-based patching, and mod layering.
+    /// </summary>
     public static class Serializer
     {
+        /// <summary>
+        /// The JSON serializer settings used for all serialization operations.
+        /// </summary>
         public static JsonSerializerSettings Settings { get; private set; }
+
         private static JsonDiffPatch jdp;
 
+        /// <summary>
+        /// Initializes the serializer settings with custom contract resolver and binder.
+        /// </summary>
+        /// <param name="resolver">The contract resolver for customizing serialization behavior.</param>
+        /// <param name="binder">The serialization binder for type resolution.</param>
         public static void InitSettings(IContractResolver resolver, ISerializationBinder binder)
         {
             Settings = new JsonSerializerSettings()
@@ -46,6 +70,13 @@ namespace RogueEssence.Data
 
         private static object lockObj = new object();
 
+        /// <summary>
+        /// Deserializes an object from a stream.
+        /// </summary>
+        /// <param name="stream">The stream containing JSON data.</param>
+        /// <param name="type">The type to deserialize to.</param>
+        /// <param name="converters">Optional custom JSON converters.</param>
+        /// <returns>The deserialized object.</returns>
         public static object Deserialize(Stream stream, Type type, params JsonConverter[] converters)
         {
             lock (lockObj)
@@ -64,6 +95,11 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Serializes an object to a stream using default settings.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="entry">The object to serialize.</param>
         public static void Serialize(Stream stream, object entry)
         {
             using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, -1, true))
@@ -73,6 +109,12 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Serializes an object to a stream with custom converters.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="entry">The object to serialize.</param>
+        /// <param name="converters">Custom JSON converters to use.</param>
         public static void Serialize(Stream stream, object entry, params JsonConverter[] converters)
         {
             using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, -1, true))
@@ -84,6 +126,11 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Extracts the version from a serialized container string.
+        /// </summary>
+        /// <param name="containerStr">The JSON string containing the serialized container.</param>
+        /// <returns>The version extracted from the container.</returns>
         public static Version GetVersion(string containerStr)
         {
             Version objVersion = new Version(0, 0);
@@ -116,6 +163,11 @@ namespace RogueEssence.Data
             return objVersion;
         }
 
+        /// <summary>
+        /// Sets the version in a JToken container.
+        /// </summary>
+        /// <param name="containerToken">The container token to modify.</param>
+        /// <param name="version">The version to set.</param>
         public static void SetVersion(JToken containerToken, Version version)
         {
             string versionStr = version.ToString();
@@ -123,6 +175,13 @@ namespace RogueEssence.Data
         }
 
 
+        /// <summary>
+        /// Deserializes data from a base file with diff patches applied.
+        /// Used for mod layering where mods provide diffs instead of full files.
+        /// </summary>
+        /// <param name="path">The path to the base data file.</param>
+        /// <param name="diffpaths">Paths to diff patch files to apply in order.</param>
+        /// <returns>The deserialized object with all diffs applied.</returns>
         public static object DeserializeDataWithDiffs(string path, params string[] diffpaths)
         {
             lock (lockObj)
@@ -178,6 +237,11 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Deserializes versioned data from a stream.
+        /// </summary>
+        /// <param name="stream">The stream containing the serialized data.</param>
+        /// <returns>The deserialized object from the container.</returns>
         public static object DeserializeData(Stream stream)
         {
             lock (lockObj)
@@ -195,6 +259,13 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Serializes data as a diff patch against a base file.
+        /// Only saves the differences, reducing file size for mods.
+        /// </summary>
+        /// <param name="path">The path to save the diff file.</param>
+        /// <param name="basepath">The path to the base file to diff against.</param>
+        /// <param name="entry">The object to serialize as a diff.</param>
         public static void SerializeDataAsDiff(string path, string basepath, object entry)
         {
             //save the current object json to a string
@@ -248,6 +319,12 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Serializes versioned data to a stream.
+        /// </summary>
+        /// <param name="stream">The stream to write to.</param>
+        /// <param name="entry">The object to serialize.</param>
+        /// <param name="min">If true, uses minified JSON without formatting.</param>
         public static void SerializeData(Stream stream, object entry, bool min = false)
         {
             using (StreamWriter writer = new StreamWriter(stream, Encoding.UTF8, -1, true))

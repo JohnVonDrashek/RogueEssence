@@ -24,15 +24,27 @@ namespace RogueEssence.LevelGen
         [DataType(0, DataManager.DataType.Tile, false)]
         public string FindTile;
 
+        /// <summary>
+        /// Initializes a new instance of the DetectTileStep class.
+        /// </summary>
         public DetectTileStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the DetectTileStep class with the specified tile to find.
+        /// </summary>
+        /// <param name="tile">The tile ID to search for.</param>
         public DetectTileStep(string tile)
         {
             FindTile = tile;
         }
 
+        /// <summary>
+        /// Applies the detection step, throwing an exception if the specified tile is not found on the map.
+        /// </summary>
+        /// <param name="map">The map generation context to search.</param>
+        /// <exception cref="Exception">Thrown when the specified tile is not found.</exception>
         public override void Apply(T map)
         {
             for (int xx = 0; xx < map.Width; xx++)

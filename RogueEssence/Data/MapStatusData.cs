@@ -6,6 +6,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Represents a status effect that affects the entire map or dungeon floor.
+    /// Map statuses can modify weather, visibility, and apply effects to all characters.
+    /// </summary>
     [Serializable]
     public class MapStatusData : ProximityPassive, IDescribedData
     {
@@ -70,6 +74,9 @@ namespace RogueEssence.Data
         /// </summary>
         public MapStatusGivenEvent RepeatMethod;
 
+        /// <summary>
+        /// Initializes a new instance of the MapStatusData class with default values.
+        /// </summary>
         public MapStatusData()
         {
             Name = new LocalText();

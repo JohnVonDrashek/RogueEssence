@@ -403,9 +403,19 @@ namespace RogueEssence.Script
         private GameTime m_curtime = new GameTime();
 
         //Properties
+        /// <summary>
+        /// Gets or sets the NLua Lua state instance.
+        /// </summary>
         public Lua      LuaState { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current game time for the Lua engine.
+        /// </summary>
         public GameTime Curtime { get { return m_curtime; } set { m_curtime = value; } }
 
+        /// <summary>
+        /// Gets whether the script execution is currently breaking.
+        /// </summary>
         public bool Breaking { get; private set; }
 
         //Pre-compiled internal lua functions
@@ -418,10 +428,17 @@ namespace RogueEssence.Script
         //==============================================================================
 
         private static LuaEngine instance;
+
+        /// <summary>
+        /// Initializes the singleton instance of the Lua engine.
+        /// </summary>
         public static void InitInstance()
         {
             instance = new LuaEngine();
         }
+        /// <summary>
+        /// Gets the singleton instance of the Lua engine.
+        /// </summary>
         public static LuaEngine Instance { get { return instance; } }
 
         /// <summary>
@@ -433,6 +450,11 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Initializes the script folder structure for a mod or project.
+        /// </summary>
+        /// <param name="baseFolder">The base folder path for the project.</param>
+        /// <param name="scriptNamespace">The namespace for the scripts.</param>
         public static void InitScriptFolders(string baseFolder, string scriptNamespace)
         {
             Directory.CreateDirectory(Path.Join(baseFolder, SCRIPT_PATH));
@@ -512,11 +534,17 @@ namespace RogueEssence.Script
             DiagManager.Instance.LogInfo("[SE]: **- Lua engine ready! -**");
         }
 
+        /// <summary>
+        /// Signals that script execution should break.
+        /// </summary>
         public void BreakScripts()
         {
             Breaking = true;
         }
 
+        /// <summary>
+        /// Called when a scene ends, resetting the breaking state.
+        /// </summary>
         public void SceneOver()
         {
             Breaking = false;
@@ -547,6 +575,10 @@ namespace RogueEssence.Script
 
         }
 
+        /// <summary>
+        /// Coroutine that re-initializes the current zone after a script reset.
+        /// </summary>
+        /// <returns>An enumerator of yield instructions for the coroutine.</returns>
         public IEnumerator<YieldInstruction> ReInitZone()
         {
             yield return CoroutineManager.Instance.StartCoroutine(ZoneManager.Instance.CurrentZone.OnInit());
@@ -562,6 +594,9 @@ namespace RogueEssence.Script
             }
         }
 
+        /// <summary>
+        /// Re-initializes the zone when in editor mode.
+        /// </summary>
         public void ReInitZoneEditor()
         {
             if (ZoneManager.Instance.CurrentGround != null)
@@ -610,6 +645,12 @@ namespace RogueEssence.Script
                 LuaState.State.Encoding = Encoding.UTF8;
         }
 
+        /// <summary>
+        /// Gets the file path for a Lua module if it exists.
+        /// </summary>
+        /// <param name="scriptPath">The base script path to search in.</param>
+        /// <param name="moduleName">The name of the module to find.</param>
+        /// <returns>The full path to the module file, or null if not found.</returns>
         public static string GetModulePath(string scriptPath, string moduleName)
         {
             //check if the ?.lua or ?/init.lua exists
@@ -880,6 +921,9 @@ namespace RogueEssence.Script
             LuaState["XML"] = m_scriptxml;
         }
 
+        /// <summary>
+        /// Updates the zone instance reference in the Lua state.
+        /// </summary>
         public void UpdateZoneInstance()
         {
             LuaState["_ZONE"] = ZoneManager.Instance;
@@ -1025,6 +1069,11 @@ namespace RogueEssence.Script
             return new LuaTableContainer(tbl_list);
         }
 
+        /// <summary>
+        /// Loads a Lua table from a serialized container.
+        /// </summary>
+        /// <param name="dict">The container with serialized table data.</param>
+        /// <returns>A reconstructed Lua table, or null if the input is null.</returns>
         public LuaTable LoadLuaTable(LuaTableContainer dict)
         {
             if (dict == null)
@@ -1378,6 +1427,10 @@ namespace RogueEssence.Script
             }
         }
 
+        /// <summary>
+        /// Loads the string table for a ground map's localization.
+        /// </summary>
+        /// <param name="mapassetname">The asset name of the map.</param>
         public void LoadGroundMapStrings(string mapassetname)
         {
             string relpath = string.Format(MAP_SCRIPT_PATTERN, mapassetname).Replace('.', '/');
@@ -1559,6 +1612,11 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Calls a Lua function as a coroutine and yields its results.
+        /// </summary>
+        /// <param name="luaFun">The Lua function to call.</param>
+        /// <returns>An enumerator of yield instructions from the Lua coroutine.</returns>
         public IEnumerator<YieldInstruction> CallScriptFunction(LuaFunction luaFun)
         {
             //Create a lua iterator function for the lua coroutine
@@ -1683,6 +1741,11 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Creates a Lua table from a .NET collection.
+        /// </summary>
+        /// <param name="obj">The collection to convert (IList or IDictionary).</param>
+        /// <returns>A Lua table containing the collection's elements.</returns>
         public LuaTable MakeTable(object obj)
         {
             if (obj == null)
@@ -1741,6 +1804,11 @@ namespace RogueEssence.Script
             return arr;
         }
 
+        /// <summary>
+        /// Converts an enumerable to a list of objects for Lua consumption.
+        /// </summary>
+        /// <param name="enumerable">The enumerable to convert.</param>
+        /// <returns>A list containing all elements from the enumerable.</returns>
         public IList MakeList(IEnumerable enumerable)
         {
             List<object> objList = new List<object>();
@@ -1770,6 +1838,13 @@ namespace RogueEssence.Script
             return types.ToArray();
         }
 
+        /// <summary>
+        /// Creates an instance of a generic .NET type from Lua.
+        /// </summary>
+        /// <param name="class_type">The generic type definition.</param>
+        /// <param name="class_arg_table">Lua table containing the type arguments.</param>
+        /// <param name="arg_table">Lua table containing the constructor arguments.</param>
+        /// <returns>An instance of the constructed generic type.</returns>
         public object MakeGenericType(ProxyType class_type, LuaTable class_arg_table, LuaTable arg_table)
         {
             try
@@ -1804,6 +1879,12 @@ namespace RogueEssence.Script
                 return Activator.CreateInstance(filled_type);
         }
 
+        /// <summary>
+        /// Casts a value to a specified type for use in Lua.
+        /// </summary>
+        /// <param name="val">The value to cast.</param>
+        /// <param name="t">The target type (ProxyType or Type).</param>
+        /// <returns>The cast value.</returns>
         public dynamic LuaCast(object val, object t)
         {
             Type destTy;
@@ -1824,12 +1905,22 @@ namespace RogueEssence.Script
                 return Convert.ChangeType(val, destTy);
         }
 
+        /// <summary>
+        /// Converts an enum value to its underlying numeric type.
+        /// </summary>
+        /// <param name="val">The enum value to convert.</param>
+        /// <returns>The numeric value of the enum.</returns>
         public dynamic EnumToNumeric(object val)
         {
             Type underlying = Enum.GetUnderlyingType(val.GetType());
             return Convert.ChangeType(val, underlying);
         }
 
+        /// <summary>
+        /// Gets the underlying System.Type of an object, handling ProxyType wrappers.
+        /// </summary>
+        /// <param name="v">The object or ProxyType to get the type of.</param>
+        /// <returns>The System.Type of the object.</returns>
         public Type TypeOf(object v)
         {
             if (v.GetType().IsEquivalentTo(typeof(ProxyType)))
@@ -1844,6 +1935,10 @@ namespace RogueEssence.Script
                 return v.GetType();
         }
 
+        /// <summary>
+        /// Dumps the current Lua stack trace for debugging purposes.
+        /// </summary>
+        /// <returns>A string representation of the Lua stack trace.</returns>
         public string DumpStack()
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -1879,21 +1974,41 @@ namespace RogueEssence.Script
         //
         // Common Casts
         //
+        /// <summary>
+        /// Casts a ground entity to a GroundChar.
+        /// </summary>
+        /// <param name="o">The ground entity to cast.</param>
+        /// <returns>The entity cast as a GroundChar.</returns>
         public GroundChar CastToGroundChar(GroundEntity o)
         {
             return (GroundChar)o;
         }
 
+        /// <summary>
+        /// Casts a ground entity to a GroundAIUser.
+        /// </summary>
+        /// <param name="o">The ground entity to cast.</param>
+        /// <returns>The entity cast as a GroundAIUser.</returns>
         public GroundAIUser CastToGroundAIUser(GroundEntity o)
         {
             return (GroundAIUser)o;
         }
 
+        /// <summary>
+        /// Casts a ground entity to a GroundObject.
+        /// </summary>
+        /// <param name="o">The ground entity to cast.</param>
+        /// <returns>The entity cast as a GroundObject.</returns>
         public GroundObject CastToGroundObject(GroundEntity o)
         {
             return (GroundObject)o;
         }
 
+        /// <summary>
+        /// Casts an object to a BaseTaskUser.
+        /// </summary>
+        /// <param name="o">The object to cast.</param>
+        /// <returns>The object cast as a BaseTaskUser.</returns>
         public BaseTaskUser CastToBaseTaskUser(object o)
         {
             return (BaseTaskUser)o;
@@ -1953,11 +2068,17 @@ namespace RogueEssence.Script
             m_scrsvc.Publish(EServiceEvents.AddMenu.ToString(), menu);
         }
 
+        /// <summary>
+        /// Called when a new game is started.
+        /// </summary>
         public void OnNewGame()
         {
             m_scrsvc.Publish(EServiceEvents.NewGame.ToString());
         }
 
+        /// <summary>
+        /// Called when a save file is upgraded to a new version.
+        /// </summary>
         public void OnUpgrade()
         {
             m_scrsvc.Publish(EServiceEvents.UpgradeSave.ToString());
@@ -1998,6 +2119,11 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Called when a ground map is initialized.
+        /// </summary>
+        /// <param name="mapname">The name of the map.</param>
+        /// <param name="map">The ground map instance.</param>
         public void OnGroundMapInit(string mapname, GroundMap map)
         {
             m_scriptUI.Reset();
@@ -2069,16 +2195,25 @@ namespace RogueEssence.Script
             m_scrsvc.Publish(EServiceEvents.DungeonFloorExit.ToString(), mapname, mapobj);
         }
 
+        /// <summary>
+        /// Called when a zone is initialized.
+        /// </summary>
         public void OnZoneInit()
         {
             m_scrsvc.Publish(EServiceEvents.ZoneInit.ToString());
         }
 
+        /// <summary>
+        /// Called when a dungeon segment starts.
+        /// </summary>
         public void OnZoneSegmentStart()
         {
             m_scrsvc.Publish(EServiceEvents.DungeonSegmentStart.ToString());
         }
 
+        /// <summary>
+        /// Called when a dungeon segment ends.
+        /// </summary>
         public void OnZoneSegmentEnd()
         {
             m_scrsvc.Publish(EServiceEvents.DungeonSegmentEnd.ToString());
@@ -2118,6 +2253,10 @@ namespace RogueEssence.Script
         }
     }
 
+    /// <summary>
+    /// Container class for serializing Lua tables to and from JSON.
+    /// Uses a list of key-value pairs to preserve integer keys during serialization.
+    /// </summary>
     [Serializable]
     public class LuaTableContainer
     {
@@ -2128,7 +2267,15 @@ namespace RogueEssence.Script
         [JsonConverter(typeof(Dev.LuaTableContainerDictConverter))]
         public List<object[]> Table;
 
+        /// <summary>
+        /// Creates an empty Lua table container.
+        /// </summary>
         public LuaTableContainer() { Table = new List<object[]>(); }
+
+        /// <summary>
+        /// Creates a Lua table container with the specified table data.
+        /// </summary>
+        /// <param name="table">The list of key-value pairs representing the table.</param>
         public LuaTableContainer(List<object[]> table) { Table = table; }
     }
 

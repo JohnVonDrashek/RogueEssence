@@ -7,8 +7,14 @@ using System;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Dialog window for configuring mod metadata including name, namespace, UUID, and version.
+    /// </summary>
     public class ModConfigWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the ModConfigWindow class.
+        /// </summary>
         public ModConfigWindow()
         {
             this.InitializeComponent();
@@ -25,6 +31,11 @@ namespace RogueEssence.Dev.Views
 
 
 
+        /// <summary>
+        /// Handles the OK button click, validating input and closing with true if valid.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public async void btnOK_Click(object sender, RoutedEventArgs e)
         {
             ModConfigViewModel vm = (ModConfigViewModel)DataContext;
@@ -56,6 +67,11 @@ namespace RogueEssence.Dev.Views
         }
 
 
+        /// <summary>
+        /// Handles the Cancel button click, closing the dialog with a false result.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close(false);

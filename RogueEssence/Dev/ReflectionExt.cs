@@ -10,10 +10,27 @@ using Newtonsoft.Json;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Provides extension methods and utilities for reflection operations.
+    /// Includes methods for serialization copying, type discovery, member introspection,
+    /// and generic type resolution for the editor.
+    /// </summary>
     public static class ReflectionExt
     {
+        /// <summary>
+        /// Delegate for converting an object member to its string representation.
+        /// </summary>
+        /// <param name="member">The member to convert.</param>
+        /// <returns>The string representation of the member.</returns>
         public delegate string TypeStringConv(object member);
 
+        /// <summary>
+        /// Creates a deep copy of an object using serialization.
+        /// </summary>
+        /// <typeparam name="T">The type of object to copy.</typeparam>
+        /// <param name="obj">The object to copy.</param>
+        /// <param name="conv">Optional JSON converters to use during serialization.</param>
+        /// <returns>A deep copy of the original object.</returns>
         public static T SerializeCopy<T>(T obj, params JsonConverter[] conv)
         {
             using (MemoryStream stream = new MemoryStream())
@@ -27,6 +44,12 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Creates a minimal instance of the specified type using the constructor with the fewest parameters.
+        /// Arrays are initialized as empty, and array parameters are passed as empty arrays.
+        /// </summary>
+        /// <param name="type">The type to instantiate.</param>
+        /// <returns>A new instance of the type, or null if creation fails.</returns>
         public static object CreateMinimalInstance(Type type)
         {
             if (type.IsValueType)
@@ -54,6 +77,12 @@ namespace RogueEssence.Dev
             return null;
         }
 
+        /// <summary>
+        /// Gets all PassableAttribute instances from an array of attributes that match the specified flag.
+        /// </summary>
+        /// <param name="flag">The flag value to filter by.</param>
+        /// <param name="attributes">The array of attributes to search.</param>
+        /// <returns>An array of matching PassableAttribute objects.</returns>
         //TODO: utilize flag
         public static object[] GetPassableAttributes(int flag, object[] attributes)
         {
@@ -67,6 +96,12 @@ namespace RogueEssence.Dev
             return objects.ToArray();
         }
 
+        /// <summary>
+        /// Finds the first attribute of the specified type in an array of attributes.
+        /// </summary>
+        /// <typeparam name="T">The type of attribute to find.</typeparam>
+        /// <param name="attributes">The array of attributes to search.</param>
+        /// <returns>The first matching attribute, or null if not found.</returns>
         public static T FindAttribute<T>(object[] attributes) where T : Attribute
         {
             foreach (object obj in attributes)
@@ -79,6 +114,11 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Recursively wipes all fields marked with NonSerializedAttribute to null.
+        /// Handles circular references and processes all nested objects.
+        /// </summary>
+        /// <param name="obj">The object whose non-serialized fields should be wiped.</param>
         public static void WipeNonSerializedFields(this object obj)
         {
             wipeNonSerializedFieldsRecursive(obj, new List<object>());
@@ -199,6 +239,12 @@ namespace RogueEssence.Dev
             return members;
         }
 
+        /// <summary>
+        /// Gets all public fields and properties with both getters and setters for the specified type.
+        /// </summary>
+        /// <param name="type">The type to inspect.</param>
+        /// <param name="flags">The binding flags to use when searching for members.</param>
+        /// <returns>A list of field and property members.</returns>
         public static List<MemberInfo> GetFieldsAndProperties(this Type type, BindingFlags flags)
         {
             List<MemberInfo> members = new List<MemberInfo>();
@@ -217,6 +263,13 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Sets the value of a field or property on an object.
+        /// For properties, this finds and sets the backing field directly.
+        /// </summary>
+        /// <param name="member">The field or property member info.</param>
+        /// <param name="property">The object containing the member.</param>
+        /// <param name="value">The value to set.</param>
         // some logic borrowed from James Newton-King, http://www.newtonsoft.com
         public static void SetValue(this MemberInfo member, object property, object value)
         {
@@ -248,6 +301,12 @@ namespace RogueEssence.Dev
                 throw new Exception("Property must be of type FieldInfo or PropertyInfo");
         }
 
+        /// <summary>
+        /// Gets the value of a field or property from an object.
+        /// </summary>
+        /// <param name="member">The field or property member info.</param>
+        /// <param name="property">The object containing the member.</param>
+        /// <returns>The value of the member.</returns>
         public static object GetValue(this MemberInfo member, object property)
         {
             if (member.MemberType == MemberTypes.Property)
@@ -258,6 +317,11 @@ namespace RogueEssence.Dev
                 throw new Exception("Property must be of type FieldInfo or PropertyInfo");
         }
 
+        /// <summary>
+        /// Gets the type of a field, property, or event member.
+        /// </summary>
+        /// <param name="member">The member info to get the type from.</param>
+        /// <returns>The type of the member.</returns>
         public static Type GetMemberInfoType(this MemberInfo member)
         {
             switch (member.MemberType)
@@ -274,6 +338,11 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Gets a human-readable display name for a type, including formatted generic arguments.
+        /// </summary>
+        /// <param name="type">The type to get the display name for.</param>
+        /// <returns>A formatted display name string.</returns>
         public static string GetDisplayName(this Type type)
         {
             if (type.IsGenericType)
@@ -296,6 +365,11 @@ namespace RogueEssence.Dev
                 return Text.GetMemberTitle(type.Name);
         }
 
+        /// <summary>
+        /// Gets all assemblies that depend on the specified assemblies, traversing the dependency graph.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to find dependents of.</param>
+        /// <returns>A list of all dependent assemblies including the input assemblies.</returns>
         public static List<Assembly> GetDependentAssemblies(params Assembly[] assemblies)
         {
             List<int> startIndices = new List<int>();
@@ -465,6 +539,13 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Gets all concrete types that can be assigned to the specified type.
+        /// Handles arrays and generic types by recursively finding all valid constructions.
+        /// </summary>
+        /// <param name="type">The type to find assignable types for.</param>
+        /// <param name="limit">Maximum number of types to return (0 for unlimited).</param>
+        /// <returns>An array of types that can be assigned to the specified type.</returns>
         public static Type[] GetAssignableTypes(this Type type, int limit=0)
         {
             if (type.IsArray)
@@ -588,6 +669,13 @@ namespace RogueEssence.Dev
             return children;
         }
 
+        /// <summary>
+        /// Gets all possible closed (fully constructed) types from a partial type definition.
+        /// Used to enumerate all valid generic type constructions.
+        /// </summary>
+        /// <param name="partialType">The partial type to construct.</param>
+        /// <param name="limit">Maximum number of types to return (0 for unlimited).</param>
+        /// <returns>An array of fully constructed types.</returns>
         public static Type[] GetClosedTypesFromPartial(PartialType partialType, int limit = 0)
         {
             if (partialType.Type.IsArray)

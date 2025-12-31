@@ -6,18 +6,36 @@ using Microsoft.Xna.Framework;
 
 namespace RogueEssence
 {
+    /// <summary>
+    /// Represents a gamepad button mapping configuration for a specific controller type.
+    /// Maps game actions to physical gamepad buttons.
+    /// </summary>
     [Serializable]
     public class GamePadMap
     {
+        /// <summary>
+        /// The display name of this gamepad configuration.
+        /// </summary>
         public string Name;
+
+        /// <summary>
+        /// Array mapping InputType indices to physical gamepad buttons.
+        /// </summary>
         public Buttons[] ActionButtons;
 
+        /// <summary>
+        /// Initializes a new instance of the GamePadMap class with default values.
+        /// </summary>
         public GamePadMap()
         {
             Name = "";
             ActionButtons = new Buttons[(int)FrameInput.InputType.Wait];
         }
 
+        /// <summary>
+        /// Initializes a new instance of the GamePadMap class by copying from another instance.
+        /// </summary>
+        /// <param name="other">The GamePadMap to copy from.</param>
         public GamePadMap(GamePadMap other)
         {
             Name = other.Name;
@@ -26,9 +44,16 @@ namespace RogueEssence
         }
     }
 
+    /// <summary>
+    /// Contains all user-configurable game settings including audio, controls, display, and network options.
+    /// This class is serialized to persist settings between sessions.
+    /// </summary>
     [Serializable]
     public class Settings
     {
+        /// <summary>
+        /// Defines the speed at which battle animations play.
+        /// </summary>
         public enum BattleSpeed
         {
             VerySlow,
@@ -37,12 +62,19 @@ namespace RogueEssence
             Fast,
             VeryFast
         }
+        /// <summary>
+        /// Defines which skills are enabled by default when a character joins the team.
+        /// </summary>
         public enum SkillDefault
         {
             None,
             Attacks,
             All
         }
+
+        /// <summary>
+        /// Defines the color scheme for the minimap display.
+        /// </summary>
         public enum MinimapStyle
         {
             White,
@@ -50,16 +82,41 @@ namespace RogueEssence
             Blue
         }
 
+        /// <summary>
+        /// Background music volume level (0-10).
+        /// </summary>
         public int BGMBalance;
+
+        /// <summary>
+        /// Sound effects volume level (0-10).
+        /// </summary>
         public int SEBalance;
+
+        /// <summary>
+        /// The speed at which battle animations play.
+        /// </summary>
         public BattleSpeed BattleFlow;
 
-
+        /// <summary>
+        /// Which skills are enabled by default for new team members.
+        /// </summary>
         public SkillDefault DefaultSkills;
+
+        /// <summary>
+        /// Minimap transparency/visibility level (0-100).
+        /// </summary>
         public int Minimap;
+
+        /// <summary>
+        /// The color scheme used for the minimap.
+        /// </summary>
         public MinimapStyle MinimapColor;
 
         private double textSpeed;
+
+        /// <summary>
+        /// Gets or sets the text display speed multiplier. Updates DialogueBox.TextSpeed when set.
+        /// </summary>
         public double TextSpeed
         {
             get { return textSpeed; }
@@ -71,6 +128,10 @@ namespace RogueEssence
         }
 
         private int border;
+
+        /// <summary>
+        /// Gets or sets the menu border style index. Updates MenuBase.BorderStyle when set.
+        /// </summary>
         public int Border
         {
             get { return border; }
@@ -81,28 +142,95 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Window size/scale mode index.
+        /// </summary>
         public int Window;
+
+        /// <summary>
+        /// The language code for localization (e.g., "en", "jp").
+        /// </summary>
         public string Language;
 
+        /// <summary>
+        /// Keyboard keys mapped to directional input (Down, Left, Up, Right).
+        /// </summary>
         public Keys[] DirKeys;
+
+        /// <summary>
+        /// Keyboard keys mapped to action inputs.
+        /// </summary>
         public Keys[] ActionKeys;
+
+        /// <summary>
+        /// Dictionary of gamepad configurations keyed by controller GUID.
+        /// </summary>
         public Dictionary<string, GamePadMap> GamepadMaps;
+
+        /// <summary>
+        /// Whether Enter key can be used for confirmation.
+        /// </summary>
         public bool Enter;
+
+        /// <summary>
+        /// Whether numpad can be used for directional input.
+        /// </summary>
         public bool NumPad;
+
+        /// <summary>
+        /// Whether to accept input when the game window is not focused.
+        /// </summary>
         public bool InactiveInput;
 
+        /// <summary>
+        /// List of saved server connections for online play.
+        /// </summary>
         public List<ServerInfo> ServerList;
+
+        /// <summary>
+        /// List of saved contacts for online play.
+        /// </summary>
         public List<ContactInfo> ContactList;
+
+        /// <summary>
+        /// List of saved peer connections for direct P2P play.
+        /// </summary>
         public List<PeerInfo> PeerList;
 
-
+        /// <summary>
+        /// Set of input types that may conflict in menu contexts.
+        /// </summary>
         public static HashSet<FrameInput.InputType> MenuConflicts;
+
+        /// <summary>
+        /// Set of input types that may conflict in dungeon contexts.
+        /// </summary>
         public static HashSet<FrameInput.InputType> DungeonConflicts;
+
+        /// <summary>
+        /// Set of input types that may conflict for action inputs.
+        /// </summary>
         public static HashSet<FrameInput.InputType> ActionConflicts;
+
+        /// <summary>
+        /// Set of keyboard keys that cannot be bound to actions.
+        /// </summary>
         public static HashSet<Keys> ForbiddenKeys;
+
+        /// <summary>
+        /// Set of gamepad buttons that cannot be bound to actions.
+        /// </summary>
         public static HashSet<Buttons> ForbiddenButtons;
+
+        /// <summary>
+        /// List of color pairs for minimap tiles (explored, unexplored).
+        /// </summary>
         public static List<(Color explored, Color unexplored)> MinimapColors;
 
+        /// <summary>
+        /// Initializes static conflict sets, forbidden inputs, and minimap colors.
+        /// Must be called before using Settings.
+        /// </summary>
         public static void InitStatic()
         {
             MenuConflicts = new HashSet<FrameInput.InputType>();
@@ -221,6 +349,9 @@ namespace RogueEssence
             MinimapColors.Add((Color.Blue, Color.DarkGray));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the Settings class with default values.
+        /// </summary>
         public Settings()
         {
 
@@ -250,6 +381,12 @@ namespace RogueEssence
             InactiveInput = false;
         }
 
+        /// <summary>
+        /// Sets up default control bindings for keyboard and gamepad.
+        /// </summary>
+        /// <param name="dirKeys">Array to populate with default directional key bindings, or null to skip.</param>
+        /// <param name="actionKeys">Array to populate with default action key bindings, or null to skip.</param>
+        /// <param name="actionButtons">Array to populate with default gamepad button bindings, or null to skip.</param>
         public static void DefaultControls(Keys[] dirKeys, Keys[] actionKeys, Buttons[] actionButtons)
         {
             if (dirKeys != null)
@@ -314,6 +451,11 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified input type can be bound to a keyboard key.
+        /// </summary>
+        /// <param name="input">The input type to check.</param>
+        /// <returns>True if the input type supports keyboard binding; otherwise, false.</returns>
         public static bool UsedByKeyboard(FrameInput.InputType input)
         {
             switch (input)
@@ -348,6 +490,11 @@ namespace RogueEssence
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified input type can be bound to a gamepad button.
+        /// </summary>
+        /// <param name="input">The input type to check.</param>
+        /// <returns>True if the input type supports gamepad binding; otherwise, false.</returns>
         public static bool UsedByGamepad(FrameInput.InputType input)
         {
             switch (input)
@@ -377,25 +524,54 @@ namespace RogueEssence
 
     }
 
+    /// <summary>
+    /// Provides localized text formatting with control input placeholders.
+    /// Replaces format arguments with the current control bindings for specified input types.
+    /// </summary>
     [Serializable]
     public class LocalFormatControls : LocalFormat
     {
+        /// <summary>
+        /// The list of input types whose control bindings will be used as format arguments.
+        /// </summary>
         public List<FrameInput.InputType> Enums;
 
+        /// <summary>
+        /// Initializes a new empty instance of the LocalFormatControls class.
+        /// </summary>
         public LocalFormatControls() { Enums = new List<FrameInput.InputType>(); }
+
+        /// <summary>
+        /// Initializes a new instance of the LocalFormatControls class with the specified key and input types.
+        /// </summary>
+        /// <param name="keyString">The localization string key.</param>
+        /// <param name="inputs">The input types whose control bindings will be inserted.</param>
         public LocalFormatControls(string keyString, params FrameInput.InputType[] inputs)
         {
             Key = new StringKey(keyString);
             Enums = new List<FrameInput.InputType>();
             Enums.AddRange(inputs);
         }
+        /// <summary>
+        /// Initializes a new instance of the LocalFormatControls class by copying from another instance.
+        /// </summary>
+        /// <param name="other">The LocalFormatControls instance to copy from.</param>
         public LocalFormatControls(LocalFormatControls other) : base(other)
         {
             Enums = new List<FrameInput.InputType>();
             Enums.AddRange(other.Enums);
         }
+
+        /// <summary>
+        /// Creates a deep copy of this LocalFormatControls instance.
+        /// </summary>
+        /// <returns>A new LocalFormatControls instance with the same values.</returns>
         public override LocalFormat Clone() { return new LocalFormatControls(this); }
 
+        /// <summary>
+        /// Formats the localized string, replacing placeholders with the current control bindings.
+        /// </summary>
+        /// <returns>The formatted localized string with control bindings inserted.</returns>
         public override string FormatLocal()
         {
             List<string> enumStrings = new List<string>();

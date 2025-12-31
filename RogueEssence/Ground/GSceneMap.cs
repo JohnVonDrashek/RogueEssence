@@ -9,9 +9,18 @@ using RogueEssence.Script;
 
 namespace RogueEssence.Ground
 {
+    /// <summary>
+    /// Partial class containing map interaction methods for the Ground Scene.
+    /// Handles item usage, object interaction, experience handout, and team management in ground mode.
+    /// </summary>
     public partial class GroundScene
     {
 
+        /// <summary>
+        /// Processes direction input for a character, updating their facing direction.
+        /// </summary>
+        /// <param name="dir">The direction to face.</param>
+        /// <param name="character">The character to update.</param>
         private void ProcessDir(Dir8 dir, GroundChar character)
         {
             if (dir > Dir8.None)

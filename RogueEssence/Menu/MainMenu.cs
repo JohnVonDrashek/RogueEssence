@@ -9,6 +9,10 @@ using RogueEssence.Ground;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// The primary in-game menu accessed during dungeon exploration or ground maps.
+    /// Provides access to skills, inventory, tactics, team management, and other game functions.
+    /// </summary>
     public class MainMenu : SingleStripMenu
     {
         private static int defaultChoice;
@@ -17,16 +21,55 @@ namespace RogueEssence.Menu
 
         MenuText menuTimer;
 
+        /// <summary>
+        /// Gets or sets the collection of menu choice options.
+        /// </summary>
         public List<MenuTextChoice> Choices { get; set; }
+
+        /// <summary>
+        /// Gets or sets the elements displayed in the title panel.
+        /// </summary>
         public List<IMenuElement> TitleElements { get; set; }
+
+        /// <summary>
+        /// Gets or sets the elements displayed in the summary panel.
+        /// </summary>
         public List<IMenuElement> SummaryElements { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the calculated width of the menu.
+        /// </summary>
         public int MenuWidth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title panel showing the current location name.
+        /// </summary>
         public SummaryMenu TitleMenu { get; set; }
+
+        /// <summary>
+        /// Gets or sets the bounds for the title panel.
+        /// </summary>
         public Rect TitleMenuBounds { get; set; }
+
+        /// <summary>
+        /// Gets or sets the summary panel showing team and party status.
+        /// </summary>
         public SummaryMenu SummaryMenu { get; set; }
+
+        /// <summary>
+        /// Gets or sets the bounds for the summary panel.
+        /// </summary>
         public Rect SummaryMenuBounds { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainMenu"/> class with default label.
+        /// </summary>
         public MainMenu() : this(MenuLabel.MAIN_MENU) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainMenu"/> class with a custom label.
+        /// </summary>
+        /// <param name="label">The identifier label for this menu.</param>
         public MainMenu(string label)
         {
             Label = label;
@@ -35,7 +78,11 @@ namespace RogueEssence.Menu
             SummaryElements = new List<IMenuElement>();
         }
         
-         public void SetupChoices()
+        /// <summary>
+        /// Populates the menu choices based on the current game state.
+        /// Enables/disables options based on inventory status, replay mode, etc.
+        /// </summary>
+        public void SetupChoices()
         {
             bool equippedItems = false;
             foreach (Character character in DataManager.Instance.Save.ActiveTeam.Players)
@@ -93,6 +140,10 @@ namespace RogueEssence.Menu
             Choices.Add(new MenuTextChoice("EXIT", Text.FormatKey("MENU_EXIT"), MenuManager.Instance.RemoveMenu));
         }
 
+        /// <summary>
+        /// Creates the title and summary panels with current game information.
+        /// Shows location name, party stats, HP, hunger, and dungeon timer.
+        /// </summary>
         public void SetupTitleAndSummary()
         {
             MenuWidth = CalculateChoiceLength(Choices, 72);
@@ -186,6 +237,9 @@ namespace RogueEssence.Menu
             }
         }
         
+        /// <summary>
+        /// Finalizes menu initialization after choices and panels are set up.
+        /// </summary>
         public void InitMenu()
         {
             Initialize(new Loc(16, 16), MenuWidth, Choices.ToArray(), Math.Min(Math.Max(0, defaultChoice), Choices.Count - 1));
@@ -236,6 +290,11 @@ namespace RogueEssence.Menu
         }
 
 
+        /// <summary>
+        /// Coroutine that processes saving the game.
+        /// </summary>
+        /// <param name="returnToTitle">Whether to return to the title screen after saving.</param>
+        /// <returns>A coroutine for the save operation.</returns>
         public IEnumerator<YieldInstruction> processSave(bool returnToTitle)
         {
             Action exitAction;

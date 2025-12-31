@@ -20,6 +20,10 @@ namespace RogueEssence.Script
     {
         protected string m_luapath;
 
+        /// <summary>
+        /// Gets the name of this event, which is the Lua function path.
+        /// </summary>
+        /// <returns>The Lua function path string.</returns>
         public virtual string EventName()
         {
             return m_luapath;
@@ -34,14 +38,18 @@ namespace RogueEssence.Script
         }
 
         /// <summary>
-        ///
+        /// Creates a new script event that calls the specified Lua function.
         /// </summary>
-        /// <param name="luafunpath"></param>
+        /// <param name="luafunpath">The path to the Lua function to call.</param>
         public ScriptEvent(string luafunpath)
         {
             SetLuaFunctionPath(luafunpath);
         }
 
+        /// <summary>
+        /// Sets the Lua function path for this event.
+        /// </summary>
+        /// <param name="luafunpath">The path to the Lua function to call.</param>
         public void SetLuaFunctionPath(string luafunpath)
         {
             m_luapath = luafunpath;
@@ -50,6 +58,10 @@ namespace RogueEssence.Script
                 DiagManager.Instance.LogInfo(String.Format("ScriptEvent(): Lua function '{0}' does not exists. The event will not run!", m_luapath));
         }
 
+        /// <summary>
+        /// Creates a copy of this script event.
+        /// </summary>
+        /// <returns>A new ScriptEvent with the same Lua function path.</returns>
         public virtual ScriptEvent Clone()
         {
             return new ScriptEvent(m_luapath);
@@ -63,6 +75,11 @@ namespace RogueEssence.Script
             DiagManager.Instance.LogInfo(String.Format("ScriptEvent.DoCleanup(): Doing cleanup on {0}!", m_luapath));
         }
 
+        /// <summary>
+        /// Executes this event by calling the Lua function as a coroutine.
+        /// </summary>
+        /// <param name="parameters">Parameters to pass to the Lua function.</param>
+        /// <returns>A coroutine representing the event execution.</returns>
         public virtual Coroutine Apply(params object[] parameters)
         {
             LuaFunction func_iter = LuaEngine.Instance.CreateCoroutineIterator(m_luapath, parameters);
@@ -70,6 +87,12 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Creates a coroutine from a Lua iterator function.
+        /// </summary>
+        /// <param name="name">The name of the function for logging purposes.</param>
+        /// <param name="func_iter">The Lua iterator function to execute.</param>
+        /// <returns>A coroutine that executes the Lua function.</returns>
         public static Coroutine ApplyFunc(string name, LuaFunction func_iter)
         {
             return new LuaCoroutine(String.Format("{0}: {1}", typeof(ScriptEvent).Name, name), applyFunc(name, func_iter));
@@ -134,8 +157,10 @@ namespace RogueEssence.Script
                 DiagManager.Instance.LogInfo(String.Format("ScriptEvent.ReloadEvent(): Lua function '{0}' does not exists. The event will not run!", m_luapath));
         }
 
-        //Called when the engine is reloaded.
-        // Since all lua references are invalidated, we have to set them up again!
+        /// <summary>
+        /// Called when the Lua engine is reloaded.
+        /// Since all Lua references are invalidated, this re-validates the function path.
+        /// </summary>
         public virtual void LuaEngineReload()
         {
             DiagManager.Instance.LogInfo(String.Format("ScriptEvent.OnLuaEngineReload(): Reloading event {0}, and interrupting current coroutine!", m_luapath));
@@ -154,6 +179,10 @@ namespace RogueEssence.Script
     {
         [NonSerialized] private LuaFunction m_luafun = null;
 
+        /// <summary>
+        /// Creates a transient script event from a Lua function reference.
+        /// </summary>
+        /// <param name="luafun">The Lua function to execute.</param>
         public TransientScriptEvent(LuaFunction luafun)
         {
             m_luafun = luafun;
@@ -161,6 +190,10 @@ namespace RogueEssence.Script
             if (!func_valid)
                 DiagManager.Instance.LogInfo("TransientScriptEvent.TransientScriptEvent(): lua function passed as parameter is null!");
         }
+        /// <summary>
+        /// Creates a transient script event from a Lua function path string.
+        /// </summary>
+        /// <param name="luafun">The Lua code that returns a function.</param>
         public TransientScriptEvent(string luafun)
         {
             m_luafun = LuaEngine.Instance.RunString("return " + luafun).First() as LuaFunction;
@@ -169,12 +202,22 @@ namespace RogueEssence.Script
                 DiagManager.Instance.LogInfo("TransientScriptEvent.TransientScriptEvent(): lua function path passed as parameter is invalid!");
         }
 
+        /// <summary>
+        /// Gets the name of this event.
+        /// </summary>
+        /// <returns>The string representation of the Lua function.</returns>
         public override string EventName()
         {
             return m_luafun.ToString();
         }
 
 
+        /// <summary>
+        /// Executes this transient event by calling the stored Lua function.
+        /// </summary>
+        /// <param name="parameters">Parameters to pass to the Lua function.</param>
+        /// <returns>A coroutine representing the event execution.</returns>
+        /// <exception cref="Exception">Thrown if the Lua function is null.</exception>
         public override Coroutine Apply(params object[] parameters)
         {
             if (m_luafun == null)

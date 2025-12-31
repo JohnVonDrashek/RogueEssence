@@ -10,6 +10,10 @@ using System;
 
 namespace RogueEssence.Script
 {
+    /// <summary>
+    /// Provides game-related scripting functions for Lua.
+    /// Exposes save management, team access, inventory, money, navigation, and utility functions.
+    /// </summary>
     class ScriptGame : ILuaEngineComponent
     {
         /// <summary>

@@ -9,8 +9,14 @@ namespace RectPacker
     /// </summary>
     public class Canvas
     {
+        /// <summary>
+        /// Represents a single cell in the packing canvas grid.
+        /// </summary>
         public struct CanvasCell
         {
+            /// <summary>
+            /// Whether this cell is occupied by a rectangle.
+            /// </summary>
             public bool occupied;
 
             public CanvasCell(bool occupied) { this.occupied = occupied; }

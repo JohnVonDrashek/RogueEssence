@@ -14,18 +14,27 @@ using System.Reactive.Subjects;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for RandRange values. Displays min/max numeric controls for editing random integer ranges.
+    /// Supports RangeBorderAttribute for configuring 1-based indexing and inclusive borders.
+    /// </summary>
     public class RandRangeEditor : Editor<RandRange>
     {
         /// <summary>
-        /// Default display behavior of whether to treat 0s as 1s
+        /// Default display behavior of whether to treat 0s as 1s.
         /// </summary>
         public bool Index1;
 
         /// <summary>
-        /// Default display behavior of whether to treat end borders exclsusively
+        /// Default display behavior of whether to treat end borders exclusively.
         /// </summary>
         public bool Inclusive;
 
+        /// <summary>
+        /// Initializes a new instance of the RandRangeEditor class.
+        /// </summary>
+        /// <param name="index1">Whether to use 1-based indexing.</param>
+        /// <param name="inclusive">Whether the range end is inclusive.</param>
         public RandRangeEditor(bool index1, bool inclusive)
         {
             Index1 = index1;

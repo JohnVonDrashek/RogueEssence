@@ -24,15 +24,27 @@ namespace RogueEssence.LevelGen
         [DataType(0, DataManager.DataType.Item, false)]
         public string FindItem;
 
+        /// <summary>
+        /// Initializes a new instance of the DetectItemStep class.
+        /// </summary>
         public DetectItemStep()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the DetectItemStep class with the specified item to find.
+        /// </summary>
+        /// <param name="item">The item ID to search for.</param>
         public DetectItemStep(string item)
         {
             FindItem = item;
         }
 
+        /// <summary>
+        /// Applies the detection step, throwing an exception if the specified item is not found on the map.
+        /// </summary>
+        /// <param name="map">The map generation context to search.</param>
+        /// <exception cref="Exception">Thrown when the specified item is not found.</exception>
         public override void Apply(T map)
         {
             foreach(MapItem item in map.Items)

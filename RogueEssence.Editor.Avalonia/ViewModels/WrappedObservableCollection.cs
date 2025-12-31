@@ -7,10 +7,10 @@ using System.Linq;
 namespace RogueEssence.Dev.ViewModels
 {
     /// <summary>
-    /// Observable collection of ViewModels that pushes changes to a related collection of models
+    /// Observable collection that synchronizes changes back to an underlying model list.
+    /// Provides observable collection functionality for any IList.
     /// </summary>
-    /// <typeparam name="TViewModel">Type of ViewModels in collection</typeparam>
-    /// <typeparam name="TModel">Type of models in underlying collection</typeparam>
+    /// <typeparam name="TModel">Type of models in the collection.</typeparam>
     public class WrappedObservableCollection<TModel> : ObservableCollection<TModel>
 
     {
@@ -31,6 +31,10 @@ namespace RogueEssence.Dev.ViewModels
 
         }
 
+        /// <summary>
+        /// Loads models from the underlying list into the observable collection.
+        /// </summary>
+        /// <param name="models">The underlying model list to synchronize with.</param>
         public void LoadModels(IList<TModel> models)
         {
             _models = models;

@@ -11,39 +11,92 @@ using RogueEssence.Script;
 
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// Abstract base class for dialogue boxes that display scrolling text with optional speaker portraits.
+    /// Supports text tags for pauses, speed changes, scripts, emotes, and sound effects.
+    /// </summary>
     public abstract class DialogueBox : MenuBase, IInteractable
     {
+        /// <summary>
+        /// Regex pattern for splitting text at [scroll] tags.
+        /// </summary>
         public static Regex SplitTags = new Regex(@"\[scroll\]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         protected const int HOLD_CANCEL_TIME = 30;
         private const int SCROLL_SPEED = 2;
         protected const int CURSOR_FLASH_TIME = 24;
 
+        /// <summary>
+        /// Global text speed multiplier for dialogue. Higher values display text faster.
+        /// </summary>
         public static double TextSpeed;
 
         /// <summary>
-        /// frames between speech blip
+        /// Number of frames between speech sound effects.
         /// </summary>
         public const int SPEAK_FRAMES = 2;
+
+        /// <summary>
+        /// Default sound effect to play for speech.
+        /// </summary>
         public const string SOUND_EFFECT = "Menu/Speak";
 
+        /// <summary>
+        /// Horizontal buffer from screen edge in pixels.
+        /// </summary>
         public const int SIDE_BUFFER = 8;
-        public const int TEXT_HEIGHT = 16; //14
-        public const int VERT_PAD = 2; //1
-        public const int VERT_OFFSET = -2; //-3
-        public const int HORIZ_PAD = 4;
-        public const int MAX_LINES = 2; //3
 
+        /// <summary>
+        /// Height of each text line in pixels.
+        /// </summary>
+        public const int TEXT_HEIGHT = 16;
+
+        /// <summary>
+        /// Vertical padding inside the dialogue box.
+        /// </summary>
+        public const int VERT_PAD = 2;
+
+        /// <summary>
+        /// Vertical offset adjustment for text positioning.
+        /// </summary>
+        public const int VERT_OFFSET = -2;
+
+        /// <summary>
+        /// Horizontal padding inside the dialogue box.
+        /// </summary>
+        public const int HORIZ_PAD = 4;
+
+        /// <summary>
+        /// Maximum number of text lines visible in the dialogue box.
+        /// </summary>
+        public const int MAX_LINES = 2;
+
+        /// <summary>
+        /// Gets the default bounds for a dialogue box positioned at the bottom of the screen.
+        /// </summary>
         public static Rect DefaultBounds => Rect.FromPoints(
             new Loc(SIDE_BUFFER, GraphicsManager.ScreenHeight - (16 + TEXT_HEIGHT * MAX_LINES + VERT_PAD * 2)),
             new Loc(GraphicsManager.ScreenWidth - SIDE_BUFFER, GraphicsManager.ScreenHeight - 8)
         );
 
+        /// <summary>
+        /// Whether the dialogue can be skipped by holding cancel.
+        /// </summary>
         public bool Skippable;
 
+        /// <summary>
+        /// Collection of text tags organized by text segment index.
+        /// </summary>
         public List<List<TextTag>> Tags;
+
+        /// <summary>
+        /// Gets the tags for the current text segment.
+        /// </summary>
         protected List<TextTag> CurrentTag { get { return Tags[curTextIndex]; } }
 
+        /// <summary>
+        /// Script callbacks that can be invoked from dialogue text tags.
+        /// </summary>
         public object[] Scripts;
         
         //Dialogue Text needs to be able to set character index accurately
@@ -55,12 +108,29 @@ namespace RogueEssence.Menu
         private int totalLines;
         private int nextTextIndex;
 
+        /// <summary>
+        /// Gets the currently displayed text segment.
+        /// </summary>
         protected DialogueText CurrentText { get { return Texts[curTextIndex]; } }
+
+        /// <summary>
+        /// Gets the next text segment to display during scrolling, or null.
+        /// </summary>
         protected DialogueText NextText { get { return nextTextIndex > -1 ? Texts[nextTextIndex] : null; } }
-        
+
+        /// <summary>
+        /// Gets whether the current text box has finished displaying all text and tags.
+        /// </summary>
         protected bool CurrentBoxFinished { get { return CurrentText.Finished && CurrentTag.Count == 0; } }
+
+        /// <summary>
+        /// Gets whether all dialogue text has been displayed.
+        /// </summary>
         public bool Finished { get { return CurrentText.Finished && curTextIndex == Texts.Count-1; } }
-        
+
+        /// <summary>
+        /// Whether to play sound effects during text display.
+        /// </summary>
         public bool Sound;
 
         protected FrameTick TotalTextTime;
@@ -68,6 +138,10 @@ namespace RogueEssence.Menu
         protected FrameTick LastSpeakTime;
         protected FrameTick CurrentScrollTime;
 
+        /// <summary>
+        /// Called when all text has been displayed. Override to handle completion behavior.
+        /// </summary>
+        /// <param name="input">The input manager for handling user input.</param>
         public abstract void ProcessTextDone(InputManager input);
 
         //optional speaker box
@@ -87,10 +161,20 @@ namespace RogueEssence.Menu
         private bool runningScript;
         private bool startedScript;
 
+        /// <inheritdoc/>
         public bool IsCheckpoint { get { return false; } }
-        
+
+        /// <inheritdoc/>
         public bool Inactive { get; set; }
+
+        /// <inheritdoc/>
         public bool BlockPrevious { get; set; }
+
+        /// <summary>
+        /// Creates an array of script callbacks from a Lua table.
+        /// </summary>
+        /// <param name="callbacks">The Lua table containing callbacks.</param>
+        /// <returns>An array of script objects.</returns>
         public static object[] CreateScripts(LuaTable callbacks)
         {
             object[] scripts = new object[] {};
@@ -108,6 +192,17 @@ namespace RogueEssence.Menu
             return scripts;
         }
         
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DialogueBox"/> class.
+        /// </summary>
+        /// <param name="msg">The message to display.</param>
+        /// <param name="sound">Whether to play sound effects.</param>
+        /// <param name="soundEffect">The sound effect to play for speech.</param>
+        /// <param name="speakTime">Frames between speech sounds.</param>
+        /// <param name="centerH">Whether to center text horizontally.</param>
+        /// <param name="centerV">Whether to center text vertically.</param>
+        /// <param name="bounds">The bounds of the dialogue box.</param>
+        /// <param name="scripts">Script callbacks for text tags.</param>
         public DialogueBox(string msg, bool sound, string soundEffect, int speakTime, bool centerH, bool centerV, Rect bounds, object[] scripts)
         {
             Bounds = bounds;
@@ -126,6 +221,7 @@ namespace RogueEssence.Menu
             updateMessage(0);
         }
 
+        /// <inheritdoc/>
         public virtual void ProcessActions(FrameTick elapsedTime)
         {
             TotalTextTime += elapsedTime;
@@ -138,6 +234,7 @@ namespace RogueEssence.Menu
                 CurrentScrollTime += elapsedTime;
         }
 
+        /// <inheritdoc/>
         public void Update(InputManager input)
         {
             if (!CurrentBoxFinished)
@@ -319,6 +416,12 @@ namespace RogueEssence.Menu
             return null;
         }
 
+        /// <summary>
+        /// Sets the speaker portrait for the dialogue box.
+        /// </summary>
+        /// <param name="speaker">The monster ID of the speaker.</param>
+        /// <param name="emotion">The emotion style for the portrait.</param>
+        /// <param name="speakerLoc">The location to display the portrait.</param>
         public void SetPortrait(MonsterID speaker, EmoteStyle emotion, Loc speakerLoc)
         {
             if (speaker.IsValid())
@@ -329,6 +432,10 @@ namespace RogueEssence.Menu
                 speakerPic = null;
         }
         
+        /// <summary>
+        /// Updates the speaker portrait's emotion.
+        /// </summary>
+        /// <param name="emote">The new emote index to display.</param>
         public void SetPortraitEmote(int emote)
         {
             if (speakerPic != null)
@@ -337,6 +444,13 @@ namespace RogueEssence.Menu
             }
         }
 
+        /// <summary>
+        /// Sets the speaker with portrait and name.
+        /// </summary>
+        /// <param name="speaker">The monster ID of the speaker.</param>
+        /// <param name="name">The display name for the speaker.</param>
+        /// <param name="emotion">The emotion style for the portrait.</param>
+        /// <param name="speakerLoc">The location to display the portrait.</param>
         public void SetSpeaker(MonsterID speaker, string name, EmoteStyle emotion, Loc speakerLoc)
         {
             SetPortrait(speaker, emotion, speakerLoc);
@@ -348,6 +462,11 @@ namespace RogueEssence.Menu
             updateMessage(0);
         }
 
+        /// <summary>
+        /// Updates the dialogue message.
+        /// </summary>
+        /// <param name="msg">The new message to display.</param>
+        /// <param name="sound">Whether to play sound effects.</param>
         public void SetMessage(string msg, bool sound)
         {
             message = msg;
@@ -367,6 +486,9 @@ namespace RogueEssence.Menu
                 yield return new WaitForFrames(1);
             }
         }
+        /// <summary>
+        /// Immediately finishes displaying all text, skipping to the end.
+        /// </summary>
         public void FinishText()
         {
             foreach(DialogueText text in Texts)
@@ -375,6 +497,10 @@ namespace RogueEssence.Menu
                 tagList.Clear();
         }
 
+        /// <summary>
+        /// Sets the current character index for text display progress.
+        /// </summary>
+        /// <param name="curCharIndex">The character index to set.</param>
         public void SetTextProgress(int curCharIndex)
         {
             updateMessage(curCharIndex);
@@ -531,44 +657,92 @@ namespace RogueEssence.Menu
         }
     }
 
+    /// <summary>
+    /// Abstract base class for tags that modify dialogue text behavior at specific character positions.
+    /// </summary>
     public abstract class TextTag
     {
+        /// <summary>
+        /// The character index at which this tag takes effect.
+        /// </summary>
         public int LetterIndex;
 
+        /// <summary>
+        /// Determines if this tag blocks text advancement until processed.
+        /// </summary>
+        /// <returns>True if blocking; otherwise, false.</returns>
         public virtual bool IsBlocking()
         {
             return false;
         }
     }
 
+    /// <summary>
+    /// A text tag that pauses dialogue display for a specified time or until user input.
+    /// </summary>
     public class TextPause : TextTag
     {
-        public int Time;//1 in order to wait on button press
+        /// <summary>
+        /// The time in frames to pause. Use 0 or negative to wait for button press.
+        /// </summary>
+        public int Time;
+
+        /// <inheritdoc/>
         public override bool IsBlocking()
         {
             return true;
         }
     }
-    
+
+    /// <summary>
+    /// A text tag that changes the text display speed.
+    /// </summary>
     public class TextSpeed : TextTag
     {
+        /// <summary>
+        /// The new text speed multiplier.
+        /// </summary>
         public double Speed;
     }
 
+    /// <summary>
+    /// A text tag that changes the speaker's emote/expression.
+    /// </summary>
     public class TextEmote : TextTag
     {
+        /// <summary>
+        /// The emote index to display.
+        /// </summary>
         public int Emote;
     }
-    
+
+    /// <summary>
+    /// A text tag that changes the speech sound effect.
+    /// </summary>
     public class TextSoundEffect : TextTag
     {
+        /// <summary>
+        /// The sound effect to play.
+        /// </summary>
         public string Sound;
+
+        /// <summary>
+        /// Frames between speech sounds.
+        /// </summary>
         public int SpeakTime;
     }
 
+    /// <summary>
+    /// A text tag that executes a script callback.
+    /// </summary>
     public class TextScript : TextTag
     {
+        /// <summary>
+        /// The index of the script in the Scripts array to execute.
+        /// </summary>
         public int Script;
+
+        /// <inheritdoc/>
         public override bool IsBlocking()
         {
             return true;

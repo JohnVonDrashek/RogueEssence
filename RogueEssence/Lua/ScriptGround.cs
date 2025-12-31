@@ -653,7 +653,22 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Makes a ground entity move to a position using a custom action.
+        /// </summary>
         public LuaFunction ActionToPosition;
+
+        /// <summary>
+        /// Internal implementation for moving with a custom action.
+        /// </summary>
+        /// <param name="ent">The entity to move.</param>
+        /// <param name="baseAction">The base action to use during movement.</param>
+        /// <param name="x">X coordinate of destination.</param>
+        /// <param name="y">Y coordinate of destination.</param>
+        /// <param name="animSpeed">Speed of the animation.</param>
+        /// <param name="speed">Movement speed in pixels per frame.</param>
+        /// <param name="height">Height of the destination.</param>
+        /// <returns>A yield instruction that completes when the movement finishes.</returns>
         public YieldInstruction _ActionToPosition(GroundEntity ent, GroundAction baseAction, int x, int y, float animSpeed, float speed, int height)
         {
             try
@@ -1040,6 +1055,10 @@ namespace RogueEssence.Script
         //
 
 
+        /// <summary>
+        /// Sets up Lua function wrappers for ground scripting operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             //Implement stuff that should be written in lua!

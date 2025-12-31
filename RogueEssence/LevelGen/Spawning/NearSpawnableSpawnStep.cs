@@ -21,11 +21,19 @@ namespace RogueEssence.LevelGen
         where TSpawnable : ISpawnable
         where TPriorSpawn : ISpawnable
     {
+        /// <summary>
+        /// Initializes a new instance of the NearSpawnableSpawnStep class.
+        /// </summary>
         public NearSpawnableSpawnStep()
             : base()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the NearSpawnableSpawnStep class with the specified spawner and success rate.
+        /// </summary>
+        /// <param name="spawn">The spawner to use.</param>
+        /// <param name="successPercent">The percentage chance reduction when a room succeeds.</param>
         public NearSpawnableSpawnStep(IStepSpawner<TGenContext, TSpawnable> spawn, int successPercent)
             : base(spawn)
         {
@@ -37,6 +45,11 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public int SuccessPercent { get; set; }
 
+        /// <summary>
+        /// Distributes spawns to rooms that contain existing spawnables of the prior spawn type.
+        /// </summary>
+        /// <param name="map">The generation context.</param>
+        /// <param name="spawns">The list of spawns to distribute.</param>
         public override void DistributeSpawns(TGenContext map, List<TSpawnable> spawns)
         {
             // gather up all rooms and put in a spawn list

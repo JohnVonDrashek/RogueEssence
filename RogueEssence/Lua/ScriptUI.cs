@@ -14,6 +14,10 @@ using RogueElements;
 
 namespace RogueEssence.Script
 {
+    /// <summary>
+    /// Provides user interface scripting functions for Lua.
+    /// Exposes dialogue boxes, menus, choices, and other UI elements.
+    /// </summary>
     class ScriptUI : ILuaEngineComponent
     {
         /// <summary>
@@ -44,6 +48,10 @@ namespace RogueEssence.Script
         private Loc m_curchoiceLoc = DialogueChoiceMenu.DefaultLoc;
 
 
+        /// <summary>
+        /// Exports the current speaker settings to a Lua table for later restoration.
+        /// </summary>
+        /// <returns>A Lua table containing all speaker settings.</returns>
         public LuaTable ExportSpeakerSettings()
         {
             LuaTable tbl = LuaEngine.Instance.RunString("return {}").First() as LuaTable;
@@ -62,6 +70,10 @@ namespace RogueEssence.Script
             addfn.Call(tbl, "ChoiceLoc", m_curchoiceLoc);
             return tbl;
         }
+        /// <summary>
+        /// Imports speaker settings from a previously exported Lua table.
+        /// </summary>
+        /// <param name="tbl">A Lua table containing speaker settings.</param>
         public void ImportSpeakerSettings(LuaTable tbl)
         {
             m_curspeakerID = (MonsterID)tbl["SpeakerID"];
@@ -78,11 +90,17 @@ namespace RogueEssence.Script
             m_curchoiceLoc = (Loc)tbl["ChoiceLoc"];
         }
 
+        /// <summary>
+        /// Creates a new ScriptUI instance with default speaker settings.
+        /// </summary>
         public ScriptUI()
         {
             ResetSpeaker();
         }
 
+        /// <summary>
+        /// Resets the UI state, clearing speaker settings.
+        /// </summary>
         public void Reset()
         {
             ResetSpeaker();
@@ -630,6 +648,10 @@ namespace RogueEssence.Script
         /// </example>
         public LuaFunction WaitDialog;
 
+        /// <summary>
+        /// Internal implementation for waiting on a dialogue to complete.
+        /// </summary>
+        /// <returns>A coroutine that waits for the dialogue to finish.</returns>
         public Coroutine _WaitDialog()
         {
             if (DataManager.Instance.CurrentReplay != null)
@@ -1638,6 +1660,10 @@ namespace RogueEssence.Script
         /// </example>
         public LuaFunction WaitForChoice;
 
+        /// <summary>
+        /// Internal implementation for waiting on a choice menu selection.
+        /// </summary>
+        /// <returns>A coroutine that waits for the choice to be made.</returns>
         public Coroutine _WaitForChoice()
         {
             if (DataManager.Instance.CurrentReplay != null)
@@ -1662,6 +1688,12 @@ namespace RogueEssence.Script
         //================================================================
         // Menu Utilities
         //================================================================
+
+        /// <summary>
+        /// Processes a menu as a coroutine.
+        /// </summary>
+        /// <param name="menu">The menu to process.</param>
+        /// <returns>A coroutine that processes the menu.</returns>
         public Coroutine ProcessMenuCoroutine( object menu )
         {
             try
@@ -1679,6 +1711,10 @@ namespace RogueEssence.Script
         //
         // Function setup
         //
+        /// <summary>
+        /// Sets up Lua function wrappers for UI operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             WaitDialog = state.RunString(@"

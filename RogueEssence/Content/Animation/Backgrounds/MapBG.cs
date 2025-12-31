@@ -15,6 +15,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Dungeon
 {
+    /// <summary>
+    /// An animated background for a dungeon map.
+    /// Supports scrolling, parallax, and optional X/Y tiling.
+    /// </summary>
     [Serializable]
     [JsonConverter(typeof(MapBGConverter))]
     public class MapBG : IBackgroundSprite

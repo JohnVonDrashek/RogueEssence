@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An animation that shows an item moving in an arc from start to end location.
+    /// Used for throwing, receiving, and pickup animations.
+    /// </summary>
     public class ItemAnim : BaseAnim
     {
 
@@ -74,6 +78,10 @@ namespace RogueEssence.Content
     }
 
 
+    /// <summary>
+    /// An animation that shows an item dropping down from above.
+    /// Used for item spawn and drop effects.
+    /// </summary>
     public class ItemDropAnim : BaseAnim
     {
         const int MAX_TILE_HEIGHT = 8;

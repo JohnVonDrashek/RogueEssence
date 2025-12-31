@@ -8,11 +8,16 @@ using Newtonsoft.Json;
 
 namespace RogueEssence.Data
 {
-
+    /// <summary>
+    /// Represents the battle mechanics data for a skill, item, or trap.
+    /// Contains element type, hit rate, skill states, and event handlers for battle phases.
+    /// </summary>
     [Serializable]
     public class BattleData : GameEventOwner
     {
-
+        /// <summary>
+        /// Defines the category of a skill for damage calculation purposes.
+        /// </summary>
         public enum SkillCategory
         {
             None = 0,
@@ -21,13 +26,25 @@ namespace RogueEssence.Data
             Status
         }
 
+        /// <summary>
+        /// Gets the event cause type for priority ordering.
+        /// </summary>
+        /// <returns>The Skill event cause.</returns>
         public override GameEventPriority.EventCause GetEventCause()
         {
             return GameEventPriority.EventCause.Skill;
         }
 
+        /// <summary>
+        /// Gets the unique identifier for this battle data.
+        /// </summary>
+        /// <returns>The ID string.</returns>
         public override string GetID() { return ID; }
-        //TODO: make this more nuanced for skills, traps, item usages and throws?
+
+        /// <summary>
+        /// Gets the display name for this battle data based on its data type.
+        /// </summary>
+        /// <returns>The formatted display name.</returns>
         public override string GetDisplayName()
         {
             if (DataType == DataManager.DataType.Skill)
@@ -39,6 +56,10 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Returns a formatted string containing element type, category, power, and hit rate.
+        /// </summary>
+        /// <returns>A multi-line string with battle data information.</returns>
         public override string ToString()
         {
             ElementData element = DataManager.Instance.GetElement(Element);
@@ -161,6 +182,9 @@ namespace RogueEssence.Data
         /// </summary>
         public CharAnimData HitCharAction;
 
+        /// <summary>
+        /// Initializes a new instance of the BattleData class with default values.
+        /// </summary>
         public BattleData()
         {
             ID = "";
@@ -187,6 +211,10 @@ namespace RogueEssence.Data
             HitCharAction = new CharAnimProcess();
         }
 
+        /// <summary>
+        /// Creates a deep copy of another BattleData instance.
+        /// </summary>
+        /// <param name="other">The BattleData to copy from.</param>
         public BattleData(BattleData other)
         {
             ID = other.ID;
@@ -216,6 +244,13 @@ namespace RogueEssence.Data
             HitCharAction = other.HitCharAction.Clone();
         }
 
+        /// <summary>
+        /// Copies all events from one priority list to another, optionally initializing the destination list.
+        /// </summary>
+        /// <typeparam name="T">The type of game event.</typeparam>
+        /// <param name="effectsTo">The destination priority list.</param>
+        /// <param name="effectsFrom">The source priority list.</param>
+        /// <param name="init">Whether to initialize the destination list before copying.</param>
         protected void copyEventList<T>(ref PriorityList<T> effectsTo, PriorityList<T> effectsFrom, bool init) where T : GameEvent
         {
             if (init)
@@ -227,6 +262,11 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Processes the hit event, invoking all OnHit event handlers in priority order.
+        /// </summary>
+        /// <param name="context">The battle context containing attacker, target, and skill information.</param>
+        /// <returns>An enumerator for coroutine execution.</returns>
         public IEnumerator<YieldInstruction> Hit(BattleContext context)
         {
             DungeonScene.EventEnqueueFunction<BattleEvent> function = (StablePriorityQueue<GameEventPriority, EventQueueElement<BattleEvent>> queue, Priority maxPriority, ref Priority nextPriority) =>

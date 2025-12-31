@@ -83,6 +83,9 @@ namespace RogueEssence.LevelGen
         //on the mapgen's list itself, as well as the list held in the zonecontext member
         //data devs makes up their own rules about the numberings
 
+        /// <summary>
+        /// Initializes a new instance of the LayeredSegment class.
+        /// </summary>
         public LayeredSegment() : base()
         {
             Floors = new List<IFloorGen>();
@@ -110,8 +113,14 @@ namespace RogueEssence.LevelGen
     [Serializable]
     public class SingularSegment : ZoneSegmentBase
     {
+        /// <summary>
+        /// The base floor generator used for all floors in this segment.
+        /// </summary>
         public IFloorGen BaseFloor;
 
+        /// <summary>
+        /// The number of floors in this segment.
+        /// </summary>
         public int FloorSpan;
         public override int FloorCount { get { return FloorSpan; } }
         public override IEnumerable<int> GetFloorIDs()
@@ -121,6 +130,10 @@ namespace RogueEssence.LevelGen
         }
 
 
+        /// <summary>
+        /// Initializes a new instance of the SingularSegment class with the specified number of floors.
+        /// </summary>
+        /// <param name="floors">The number of floors in this segment.</param>
         public SingularSegment(int floors) : base()
         {
             FloorSpan = floors;
@@ -174,6 +187,9 @@ namespace RogueEssence.LevelGen
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the RangeDictSegment class.
+        /// </summary>
         public RangeDictSegment() : base()
         {
             Floors = new RangeDict<IFloorGen>();
@@ -213,6 +229,9 @@ namespace RogueEssence.LevelGen
         }
 
 
+        /// <summary>
+        /// Initializes a new instance of the DictionarySegment class.
+        /// </summary>
         public DictionarySegment() : base()
         {
             Floors = new Dictionary<int, IFloorGen>();
@@ -234,10 +253,21 @@ namespace RogueEssence.LevelGen
     }
 
 
+    /// <summary>
+    /// Abstract base class for dungeon zone segments that manage collections of floor generators.
+    /// </summary>
     [Serializable]
     public abstract class ZoneSegmentBase
     {
+        /// <summary>
+        /// Gets the total number of floors in this segment.
+        /// </summary>
         public abstract int FloorCount { get; }
+
+        /// <summary>
+        /// Enumerates all valid floor IDs in this segment.
+        /// </summary>
+        /// <returns>An enumerable of floor IDs.</returns>
         public abstract IEnumerable<int> GetFloorIDs();
 
         /// <summary>
@@ -253,6 +283,9 @@ namespace RogueEssence.LevelGen
         [Dev.Multiline(0)]
         public string Comment;
 
+        /// <summary>
+        /// Initializes a new instance of the ZoneSegmentBase class.
+        /// </summary>
         public ZoneSegmentBase()
         {
             ZoneSteps = new List<ZoneStep>();
@@ -267,6 +300,11 @@ namespace RogueEssence.LevelGen
         /// <returns></returns>
         public abstract IFloorGen GetMapGen(int floorId);
 
+        /// <summary>
+        /// Generates a map for the current floor specified in the zone context.
+        /// </summary>
+        /// <param name="zoneContext">The zone generation context containing the current floor ID.</param>
+        /// <returns>The generated map context.</returns>
         public IGenContext GetMap(ZoneGenContext zoneContext)
         {
             return GetMapGen(zoneContext.CurrentID).GenMap(zoneContext);
@@ -284,15 +322,40 @@ namespace RogueEssence.LevelGen
         }
     }
 
+    /// <summary>
+    /// Context object containing generation state for a zone, including seed and floor information.
+    /// </summary>
     [Serializable]
     public class ZoneGenContext
     {
+        /// <summary>
+        /// The random seed used for generation.
+        /// </summary>
         public ulong Seed;
+
+        /// <summary>
+        /// The identifier of the current zone being generated.
+        /// </summary>
         public string CurrentZone;
+
+        /// <summary>
+        /// The index of the current segment within the zone.
+        /// </summary>
         public int CurrentSegment;
+
+        /// <summary>
+        /// The current floor ID being generated.
+        /// </summary>
         public int CurrentID;
+
+        /// <summary>
+        /// The list of zone steps to apply during generation.
+        /// </summary>
         public List<ZoneStep> ZoneSteps;
 
+        /// <summary>
+        /// Initializes a new instance of the ZoneGenContext class.
+        /// </summary>
         public ZoneGenContext()
         {
             ZoneSteps = new List<ZoneStep>();

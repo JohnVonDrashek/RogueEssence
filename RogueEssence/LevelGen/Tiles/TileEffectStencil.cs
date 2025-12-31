@@ -17,10 +17,17 @@ namespace RogueEssence.LevelGen
     public class TileEffectStencil<TGenContext> : ITerrainStencil<TGenContext>
         where TGenContext : BaseMapGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the TileEffectStencil class.
+        /// </summary>
         public TileEffectStencil()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the TileEffectStencil class with the specified inversion setting.
+        /// </summary>
+        /// <param name="not">If true, test passes for tiles without effects; if false, passes for tiles with effects.</param>
         public TileEffectStencil(bool not)
         {
             this.Not = not;
@@ -31,6 +38,12 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public bool Not { get; private set; }
 
+        /// <summary>
+        /// Tests whether the tile has an effect based on the Not setting.
+        /// </summary>
+        /// <param name="map">The map generation context.</param>
+        /// <param name="loc">The location to test.</param>
+        /// <returns>True if the test passes based on the Not setting and presence of tile effects.</returns>
         public bool Test(TGenContext map, Loc loc)
         {
             Tile checkTile = (Tile)map.GetTile(loc);
@@ -54,19 +67,34 @@ namespace RogueEssence.LevelGen
     public class MatchTileEffectStencil<TGenContext> : ITerrainStencil<TGenContext>
         where TGenContext : BaseMapGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the MatchTileEffectStencil class.
+        /// </summary>
         public MatchTileEffectStencil()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MatchTileEffectStencil class with the specified effect to match.
+        /// </summary>
+        /// <param name="effect">The effect ID to match against.</param>
         public MatchTileEffectStencil(string effect)
         {
             this.Effect = effect;
         }
 
-
+        /// <summary>
+        /// The tile effect ID that tiles must have to pass the test.
+        /// </summary>
         [DataType(0, DataManager.DataType.Tile, false)]
         public string Effect;
 
+        /// <summary>
+        /// Tests whether the tile has the specified effect.
+        /// </summary>
+        /// <param name="map">The map generation context.</param>
+        /// <param name="loc">The location to test.</param>
+        /// <returns>True if the tile's effect matches the specified Effect ID.</returns>
         public bool Test(TGenContext map, Loc loc)
         {
             Tile checkTile = (Tile)map.GetTile(loc);

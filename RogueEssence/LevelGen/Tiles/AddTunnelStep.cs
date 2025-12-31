@@ -12,6 +12,9 @@ namespace RogueEssence
     public class AddTunnelStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the AddTunnelStep class with a default hall brush.
+        /// </summary>
         public AddTunnelStep()
         {
             this.Brush = new DefaultHallBrush();
@@ -59,6 +62,10 @@ namespace RogueEssence
             return false;
         }
 
+        /// <summary>
+        /// Applies the tunnel generation step to the map, drawing angular tunnels starting from room or hall edges.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             Grid.LocTest checkGround = (Loc testLoc) =>

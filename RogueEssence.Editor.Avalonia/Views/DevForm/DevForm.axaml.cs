@@ -17,11 +17,25 @@ using System.IO;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Main developer form window for the RogueEssence editor.
+    /// Implements IRootEditor to serve as the primary editor interface, managing map and ground editors.
+    /// </summary>
     public class DevForm : Window, IRootEditor
     {
+        /// <summary>
+        /// Gets whether the editor has completed loading.
+        /// </summary>
         public bool LoadComplete { get; private set; }
 
+        /// <summary>
+        /// Reference to the active map editor form, if open.
+        /// </summary>
         public MapEditForm MapEditForm;
+
+        /// <summary>
+        /// Reference to the active ground editor form, if open.
+        /// </summary>
         public GroundEditForm GroundEditForm;
 
         private Action pendingEditorAction;
@@ -37,6 +51,9 @@ namespace RogueEssence.Dev.Views
 
 
 
+        /// <summary>
+        /// Initializes a new instance of the DevForm class.
+        /// </summary>
         public DevForm()
         {
             InitializeComponent();
@@ -131,6 +148,10 @@ namespace RogueEssence.Dev.Views
         }
 
 
+        /// <summary>
+        /// Updates the editor state each game frame.
+        /// </summary>
+        /// <param name="gameTime">The current game time.</param>
         public void Update(GameTime gameTime)
         {
             if (pendingEditorAction != null)
@@ -189,8 +210,14 @@ namespace RogueEssence.Dev.Views
                     saveConfig();
             }
         }
+        /// <summary>
+        /// Draw method required by IRootEditor interface.
+        /// </summary>
         public void Draw() { }
 
+        /// <summary>
+        /// Opens the ground map editor.
+        /// </summary>
         public void OpenGround()
         {
             ExecuteOrInvoke(openGround);
@@ -205,11 +232,17 @@ namespace RogueEssence.Dev.Views
             GroundEditForm.Show();
         }
 
+        /// <summary>
+        /// Opens the dungeon map editor.
+        /// </summary>
         public void OpenMap()
         {
             ExecuteOrInvoke(openMap);
         }
 
+        /// <summary>
+        /// Internal method to open the map editor.
+        /// </summary>
         public void openMap()
         {
             MapEditForm = new MapEditForm();
@@ -219,11 +252,21 @@ namespace RogueEssence.Dev.Views
             MapEditForm.Show();
         }
 
+        /// <summary>
+        /// Handles the ground editor window closed event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void groundEditorClosed(object sender, EventArgs e)
         {
             GameManager.Instance.SceneOutcome = resetEditors();
         }
 
+        /// <summary>
+        /// Handles the map editor window closed event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void mapEditorClosed(object sender, EventArgs e)
         {
             GameManager.Instance.SceneOutcome = resetEditors();
@@ -238,12 +281,18 @@ namespace RogueEssence.Dev.Views
         }
 
 
+        /// <summary>
+        /// Closes the ground editor if open.
+        /// </summary>
         public void CloseGround()
         {
             if (GroundEditForm != null)
                 GroundEditForm.Close();
         }
 
+        /// <summary>
+        /// Closes the map editor if open.
+        /// </summary>
         public void CloseMap()
         {
             if (MapEditForm != null)
@@ -336,6 +385,10 @@ namespace RogueEssence.Dev.Views
             EnterLoadPhase(GameBase.LoadPhase.Unload);
         }
 
+        /// <summary>
+        /// Sets the current game load phase.
+        /// </summary>
+        /// <param name="loadState">The new load phase.</param>
         public static void EnterLoadPhase(GameBase.LoadPhase loadState)
         {
             GameBase.CurrentPhase = loadState;
@@ -401,6 +454,12 @@ namespace RogueEssence.Dev.Views
             }
         }
 
+        /// <summary>
+        /// Gets a configuration value as a string.
+        /// </summary>
+        /// <param name="key">The configuration key.</param>
+        /// <param name="def">The default value if key not found.</param>
+        /// <returns>The configuration value or default.</returns>
         public static string GetConfig(string key, string def)
         {
             string val;
@@ -409,6 +468,12 @@ namespace RogueEssence.Dev.Views
             return def;
         }
 
+        /// <summary>
+        /// Gets a configuration value as an integer.
+        /// </summary>
+        /// <param name="key">The configuration key.</param>
+        /// <param name="def">The default value if key not found or parsing fails.</param>
+        /// <returns>The configuration value or default.</returns>
         public static int GetConfig(string key, int def)
         {
             string val;
@@ -421,11 +486,21 @@ namespace RogueEssence.Dev.Views
             return def;
         }
 
+        /// <summary>
+        /// Sets a configuration value from an integer.
+        /// </summary>
+        /// <param name="key">The configuration key.</param>
+        /// <param name="val">The integer value to store.</param>
         public static void SetConfig(string key, int val)
         {
             SetConfig(key, val.ToString());
         }
 
+        /// <summary>
+        /// Sets a configuration value from a string.
+        /// </summary>
+        /// <param name="key">The configuration key.</param>
+        /// <param name="val">The string value to store (null to remove).</param>
         public static void SetConfig(string key, string val)
         {
             if (val == null && devConfig.ContainsKey(key))
@@ -436,6 +511,10 @@ namespace RogueEssence.Dev.Views
             canSave = true;
         }
 
+        /// <summary>
+        /// Gets the path to the configuration file.
+        /// </summary>
+        /// <returns>The configuration file path.</returns>
         public static string GetConfigPath()
         {
             //https://jimrich.sk/environment-specialfolder-on-windows-linux-and-os-x/

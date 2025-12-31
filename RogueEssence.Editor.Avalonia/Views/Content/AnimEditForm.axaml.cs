@@ -13,9 +13,15 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Form window for editing animation assets.
+    /// Provides preview and editing capabilities for game animations.
+    /// </summary>
     public class AnimEditForm : Window
     {
-
+        /// <summary>
+        /// Initializes a new instance of the AnimEditForm class.
+        /// </summary>
         public AnimEditForm()
         {
             InitializeComponent();
@@ -30,6 +36,11 @@ namespace RogueEssence.Dev.Views
         }
 
 
+        /// <summary>
+        /// Handles the window closed event, clearing debug animation state.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
         public void Window_Closed(object sender, EventArgs e)
         {
             lock (GameBase.lockObj)

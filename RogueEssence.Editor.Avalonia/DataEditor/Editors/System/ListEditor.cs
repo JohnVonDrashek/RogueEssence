@@ -14,12 +14,38 @@ using Avalonia.Interactivity;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for IList values. Displays a collection box for editing list elements with copy/paste support.
+    /// Supports RankedListAttribute for indexed display and EditorHeightAttribute for custom height.
+    /// </summary>
     public class ListEditor : Editor<IList>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor should display type information.
+        /// </summary>
         public override bool DefaultType => true;
 
+        /// <summary>
+        /// Loads a collection box control for editing list elements.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The list to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, IList member, Type[] subGroupStack)
         {
             RankedListAttribute rangeAtt = ReflectionExt.FindAttribute<RankedListAttribute>(attributes);
@@ -58,6 +84,13 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Creates a context menu for list operations including copy and paste.
+        /// </summary>
+        /// <param name="control">The parent stack panel control.</param>
+        /// <param name="type">The list type.</param>
+        /// <param name="vm">The collection box view model.</param>
+        /// <returns>A context menu with copy/paste operations.</returns>
         public static ContextMenu CreateContextMenu(StackPanel control, Type type, CollectionBoxViewModel vm)
         {
             Type elementType = ReflectionExt.GetBaseTypeArg(typeof(IList<>), type, 0);
@@ -102,6 +135,17 @@ namespace RogueEssence.Dev
             return copyPasteStrip;
         }
 
+        /// <summary>
+        /// Creates a view model for the collection box with element editing capabilities.
+        /// </summary>
+        /// <param name="control">The parent stack panel control.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="name">The name of the list member.</param>
+        /// <param name="type">The type of the list.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The list to create a view model for.</param>
+        /// <param name="index1">Whether to use 1-based indexing.</param>
+        /// <returns>A configured CollectionBoxViewModel.</returns>
         private CollectionBoxViewModel createViewModel(StackPanel control, string parent, string name, Type type, object[] attributes, IList member, bool index1)
         {
             Type elementType = ReflectionExt.GetBaseTypeArg(typeof(IList<>), type, 0);
@@ -138,6 +182,15 @@ namespace RogueEssence.Dev
             return vm;
         }
 
+        /// <summary>
+        /// Saves the collection box controls and returns the resulting list.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>The edited list.</returns>
         public override IList SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             int controlIndex = 0;

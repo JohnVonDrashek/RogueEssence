@@ -97,6 +97,9 @@ namespace RogueEssence.Content
             }
         }
     }
+    /// <summary>
+    /// Creates a continuous overlay effect that runs until switched off.
+    /// </summary>
     [Serializable]
     public class OverlayEmitter : SwitchOffEmitter
     {

@@ -11,7 +11,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RogueEssence.Ground
 {
-    //The game engine for Ground Mode, in which the player has free movement
+    /// <summary>
+    /// The base game engine for Ground Mode, in which the player has free movement.
+    /// Handles rendering, camera updates, screenshot functionality, and entity drawing for ground maps.
+    /// </summary>
     public abstract class BaseGroundScene : BaseScene
     {
         public Loc MouseLoc;

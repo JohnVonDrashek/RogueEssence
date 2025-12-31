@@ -3,10 +3,16 @@ using System.Collections.Generic;
 
 namespace RogueEssence.Dungeon
 {
+    /// <summary>
+    /// Manages the turn-based system for the dungeon, tracking whose turn it is and managing turn order.
+    /// Handles turn tiers for different movement speeds and faction turn cycling.
+    /// </summary>
     [Serializable]
     public class TurnState
     {
-
+        /// <summary>
+        /// The current position in the turn order.
+        /// </summary>
         public TurnOrder CurrentOrder;
 
         /// <summary>
@@ -14,6 +20,9 @@ namespace RogueEssence.Dungeon
         /// </summary>
         public List<CharIndex> TurnToChar;
 
+        /// <summary>
+        /// Initializes a new TurnState with default values.
+        /// </summary>
         public TurnState()
         {
             CurrentOrder = new TurnOrder(0, Faction.Player, 0);
@@ -42,6 +51,10 @@ namespace RogueEssence.Dungeon
                 character.TurnUsed = true;
         }
 
+        /// <summary>
+        /// Gets the CharIndex of the character whose turn it currently is.
+        /// </summary>
+        /// <returns>The current character's index, or Invalid if no characters are queued.</returns>
         public CharIndex GetCurrentTurnChar()
         {
             if (TurnToChar.Count == 0)
@@ -50,6 +63,10 @@ namespace RogueEssence.Dungeon
         }
 
 
+        /// <summary>
+        /// Updates the turn list when a character is removed from the map.
+        /// </summary>
+        /// <param name="charIndex">The index of the removed character.</param>
         public void UpdateCharRemoval(CharIndex charIndex)
         {
             //The TurnToChar list will always contain only one faction's worth of turns.
@@ -118,6 +135,11 @@ namespace RogueEssence.Dungeon
             return remaining;
         }
 
+        /// <summary>
+        /// Determines if a character is eligible to take a turn on the current tier.
+        /// </summary>
+        /// <param name="character">The character to check.</param>
+        /// <returns>True if the character can move on the current tier; otherwise, false.</returns>
         public bool IsEligibleToMove(ITurnChar character)
         {
             if (character.Dead)
@@ -151,6 +173,12 @@ namespace RogueEssence.Dungeon
             return false;
         }
         
+        /// <summary>
+        /// Loads a team's members into the turn map for turn ordering.
+        /// </summary>
+        /// <param name="faction">The faction of the team.</param>
+        /// <param name="teamIndex">The team's index within the faction.</param>
+        /// <param name="team">The team to load.</param>
         public void LoadTeamTurnMap(Faction faction, int teamIndex, Team team)
         {
             //team members start off with their turns organized in-order
@@ -196,6 +224,14 @@ namespace RogueEssence.Dungeon
         /// <param name="guest"></param>
         /// <param name="oldSlot"></param>
         /// <param name="newSlot"></param>
+        /// <summary>
+        /// Adjusts the turn list when two team members swap positions.
+        /// </summary>
+        /// <param name="faction">The faction of the team.</param>
+        /// <param name="teamIndex">The team index.</param>
+        /// <param name="guest">Whether the swapped members are guests.</param>
+        /// <param name="oldSlot">The first slot being swapped.</param>
+        /// <param name="newSlot">The second slot being swapped.</param>
         public void AdjustSlotSwap(Faction faction, int teamIndex, bool guest, int oldSlot, int newSlot)
         {
             if (faction != CurrentOrder.Faction)
@@ -231,6 +267,14 @@ namespace RogueEssence.Dungeon
         }
 
 
+        /// <summary>
+        /// Adjusts the turn list when the team leader changes.
+        /// </summary>
+        /// <param name="faction">The faction of the team.</param>
+        /// <param name="teamIndex">The team index.</param>
+        /// <param name="guest">Whether the leader is a guest.</param>
+        /// <param name="oldSlot">The old leader's slot.</param>
+        /// <param name="newSlot">The new leader's slot.</param>
         public void AdjustLeaderSwap(Faction faction, int teamIndex, bool guest, int oldSlot, int newSlot)
         {
             if (faction != CurrentOrder.Faction)

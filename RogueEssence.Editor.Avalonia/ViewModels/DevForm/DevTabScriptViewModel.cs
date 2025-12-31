@@ -11,11 +11,18 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Script tab in the developer form.
+    /// Provides a Lua script console for executing commands and viewing output.
+    /// </summary>
     public class DevTabScriptViewModel : ViewModelBase
     {
         private Stack<string> m_lastcommands;
         private int m_cntDownArrow;   //counts the ammount of times the down arrow has been pressed in a row, for looking through the last commands!
 
+        /// <summary>
+        /// Initializes a new instance of the DevTabScriptViewModel class.
+        /// </summary>
         public DevTabScriptViewModel()
         {
             m_lastcommands = new Stack<string>();

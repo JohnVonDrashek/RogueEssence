@@ -79,6 +79,12 @@ namespace RogueEssence.Script
         /// </example>
         public LuaFunction WaitStartEntityTask;
 
+        /// <summary>
+        /// Internal implementation for starting an entity task and waiting for it to complete.
+        /// </summary>
+        /// <param name="ent">Entity which will run the task.</param>
+        /// <param name="fn">Task coroutine.</param>
+        /// <returns>A coroutine that waits for the task to complete.</returns>
         public Coroutine _WaitStartEntityTask(GroundEntity ent, LuaFunction fn)
         {
             try
@@ -107,6 +113,11 @@ namespace RogueEssence.Script
         /// </example>
         public LuaFunction WaitEntityTask;
 
+        /// <summary>
+        /// Internal implementation for waiting on an entity's current task.
+        /// </summary>
+        /// <param name="ent">Entity whose task to wait on.</param>
+        /// <returns>A coroutine that waits for the task to complete.</returns>
         public Coroutine _WaitEntityTask(GroundEntity ent)
         {
             try
@@ -135,6 +146,11 @@ namespace RogueEssence.Script
         /// TASK:WaitTask(_DUNGEON:DropMoney(100, RogueElements.Loc(10, 10), RogueElements.Loc(10, 10)))
         /// </example>
         public LuaFunction WaitTask;
+        /// <summary>
+        /// Internal implementation for waiting on a task object.
+        /// </summary>
+        /// <param name="obj">The task to wait on (IEnumerator or Coroutine).</param>
+        /// <returns>A coroutine wrapping the task.</returns>
         public Coroutine _WaitTask(object obj)
         {
             if (obj is IEnumerator<YieldInstruction>)
@@ -207,6 +223,11 @@ namespace RogueEssence.Script
         /// </example>
         public LuaFunction JoinCoroutines;
 
+        /// <summary>
+        /// Internal implementation for joining multiple coroutines.
+        /// </summary>
+        /// <param name="coroTable">A Lua table containing coroutines to wait on.</param>
+        /// <returns>A coroutine that completes when all input coroutines finish.</returns>
         public Coroutine _JoinCoroutines(LuaTable coroTable)
         {
             List<Coroutine> coroutines = new List<Coroutine>();
@@ -233,6 +254,10 @@ namespace RogueEssence.Script
         //===========================================
         //  Setup pure lua functions
         //===========================================
+        /// <summary>
+        /// Sets up Lua function wrappers for task operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             WaitStartEntityTask = state.RunString("return function(_, ent, fun) return coroutine.yield(TASK:_WaitStartEntityTask(ent, fun)) end").First() as LuaFunction;

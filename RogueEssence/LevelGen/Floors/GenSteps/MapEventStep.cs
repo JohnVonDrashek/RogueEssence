@@ -20,16 +20,27 @@ namespace RogueEssence.LevelGen
         [Dev.SubGroup]
         public ActiveEffect Effect;
 
+        /// <summary>
+        /// Initializes a new instance of the MapEffectStep class with an empty effect.
+        /// </summary>
         public MapEffectStep()
         {
             Effect = new ActiveEffect();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MapEffectStep class with the specified effect.
+        /// </summary>
+        /// <param name="effect">The active effect to apply to the map.</param>
         public MapEffectStep(ActiveEffect effect)
         {
             Effect = effect;
         }
 
+        /// <summary>
+        /// Applies the map effect step, adding the effect to the map's event system.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             map.Map.MapEffect.AddOther(Effect);

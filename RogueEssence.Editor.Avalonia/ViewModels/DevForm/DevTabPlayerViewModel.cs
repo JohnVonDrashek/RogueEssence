@@ -12,8 +12,15 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Player tab in the developer form.
+    /// Provides functionality for modifying the player character's species, form, skin, gender, and animations.
+    /// </summary>
     public class DevTabPlayerViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the DevTabPlayerViewModel class with empty collections.
+        /// </summary>
         public DevTabPlayerViewModel()
         {
             Monsters = new ObservableCollection<string>();

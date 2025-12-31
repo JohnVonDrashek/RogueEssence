@@ -18,11 +18,23 @@ namespace RogueEssence.Data
 
 
 
+    /// <summary>
+    /// Defines the types of templates that can be created.
+    /// </summary>
     public enum ETemplateType
     {
+        /// <summary>
+        /// Invalid or unset template type.
+        /// </summary>
         Invalid = -1,
-        Character = 0,          //GroundChar
-        Object = 1             //GroundObject
+        /// <summary>
+        /// Character template for GroundChar entities.
+        /// </summary>
+        Character = 0,
+        /// <summary>
+        /// Object template for GroundObject entities.
+        /// </summary>
+        Object = 1
     }
 
     /// <summary>
@@ -30,9 +42,21 @@ namespace RogueEssence.Data
     /// </summary>
     public abstract class BaseTemplate
     {
+        /// <summary>
+        /// Gets or sets the name of this template.
+        /// </summary>
         public virtual string        Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of this template.
+        /// </summary>
         public virtual ETemplateType Type { get; set; }
 
+        /// <summary>
+        /// Creates an instance of the templated object.
+        /// </summary>
+        /// <param name="instancename">The name to give the created instance.</param>
+        /// <returns>A new instance of the templated object.</returns>
         public abstract object create(string instancename);
     }
 
@@ -43,11 +67,31 @@ namespace RogueEssence.Data
     [Serializable]
     public class ObjectTemplate : BaseTemplate
     {
+        /// <summary>
+        /// Gets or sets the bounding rectangle for the object.
+        /// </summary>
         public Rect     Rect        { get; set; }
+
+        /// <summary>
+        /// Gets or sets the animation data for the object.
+        /// </summary>
         public ObjAnimData Anim        { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether the object responds to contact.
+        /// </summary>
         public bool     Contact     { get; set; }
+
+        /// <summary>
+        /// Gets the template type (Object).
+        /// </summary>
         public override ETemplateType Type { get {return ETemplateType.Object; } }
 
+        /// <summary>
+        /// Creates a new GroundObject instance from this template.
+        /// </summary>
+        /// <param name="instancename">The name to give the created object.</param>
+        /// <returns>A new GroundObject instance.</returns>
         public override object create(string instancename)
         {
             return new GroundObject(Anim, Rect, Contact, instancename);
@@ -63,9 +107,21 @@ namespace RogueEssence.Data
     [Serializable]
     public class CharacterTemplate : BaseTemplate //!#FIXME: Serialising this won't work, because they're stored as their base class.. Will need to look into it!
     {
+        /// <summary>
+        /// Gets or sets the character data for this template.
+        /// </summary>
         public Character Chara { get; set; }
+
+        /// <summary>
+        /// Gets the template type (Character).
+        /// </summary>
         public override ETemplateType Type { get { return ETemplateType.Character; } }
 
+        /// <summary>
+        /// Creates a new GroundChar instance from this template.
+        /// </summary>
+        /// <param name="instancename">The name to give the created character.</param>
+        /// <returns>A new GroundChar instance.</returns>
         public override object create(string instancename)
         {
             return new GroundChar(Chara, new Loc(0, 0), Dir8.Down, instancename);
@@ -78,6 +134,9 @@ namespace RogueEssence.Data
     [Serializable]
     public class TemplateManager
     {
+        /// <summary>
+        /// List of human-readable names for template types.
+        /// </summary>
         public static readonly List<string> TemplateTypeNames = new List<string>
         {
             "Characters",
@@ -137,6 +196,11 @@ namespace RogueEssence.Data
         }
 
 
+        /// <summary>
+        /// Iterates over templates of a specified type.
+        /// </summary>
+        /// <param name="ty">The type of templates to iterate.</param>
+        /// <returns>An enumerable of templates of the specified type.</returns>
         public IEnumerable<BaseTemplate> IterateSpecified(ETemplateType ty)
         {
             switch(ty)
@@ -156,11 +220,19 @@ namespace RogueEssence.Data
             }
         }
 
+        /// <summary>
+        /// Iterates over all character templates.
+        /// </summary>
+        /// <returns>An enumerable of all character templates.</returns>
         public IEnumerable<CharacterTemplate> IterateCharacters()
         {
             return m_charTemplates.Values;
         }
 
+        /// <summary>
+        /// Iterates over all object templates.
+        /// </summary>
+        /// <returns>An enumerable of all object templates.</returns>
         public IEnumerable<ObjectTemplate> IterateObjects()
         {
             return m_objTemplates.Values;

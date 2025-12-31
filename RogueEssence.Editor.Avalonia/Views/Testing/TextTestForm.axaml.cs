@@ -13,9 +13,15 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Form window for testing text rendering and display.
+    /// Used for development and debugging of text-related features.
+    /// </summary>
     public class TextTestForm : Window
     {
-
+        /// <summary>
+        /// Initializes a new instance of the TextTestForm class.
+        /// </summary>
         public TextTestForm()
         {
             InitializeComponent();

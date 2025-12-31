@@ -11,9 +11,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace RogueEssence.Dev
 {
-    //The game engine for Ground Mode, in which the player has free movement
+    /// <summary>
+    /// The scene for dungeon map editing in the development editor.
+    /// Provides visual editing capabilities for dungeon tiles, terrain, decorations, entities, and items.
+    /// </summary>
     public partial class DungeonEditScene : BaseDungeonScene
     {
+        /// <summary>
+        /// Defines the available editing modes for the dungeon editor.
+        /// </summary>
         public enum EditorMode
         {
             None = -1,

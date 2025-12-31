@@ -10,8 +10,11 @@ namespace RogueEssence
     public class CoroutineManager
     {
         private static Lazy<CoroutineManager> s_instance = new Lazy<CoroutineManager>( ()=>{ return new CoroutineManager(); } );
+        /// <summary>
+        /// Gets the singleton instance of the CoroutineManager.
+        /// </summary>
         public static CoroutineManager Instance { get { return s_instance.Value; } }
-        
+
         /// <summary>
         /// Contains the list of coroutines to be executed.
         /// </summary>
@@ -24,6 +27,9 @@ namespace RogueEssence
         /// </summary>
         private int m_currentcontextidx = -1;
 
+        /// <summary>
+        /// Private constructor for singleton pattern.
+        /// </summary>
         private CoroutineManager() { }
 
         /// <summary>
@@ -37,6 +43,12 @@ namespace RogueEssence
             return StartCoroutine(new Coroutine(coro), false);
         }
 
+        /// <summary>
+        /// Starts a coroutine, optionally branching into a new execution context.
+        /// </summary>
+        /// <param name="coro">The coroutine to start.</param>
+        /// <param name="branch">If true, creates a new execution context; otherwise, uses the current context.</param>
+        /// <returns>The started coroutine.</returns>
         public Coroutine StartCoroutine(Coroutine coro, bool branch = false)
         {
             int contextidx = branch ? -1 : m_currentcontextidx;
@@ -137,6 +149,10 @@ namespace RogueEssence
             } while (wantsAnother);
         }
 
+        /// <summary>
+        /// Dumps the current coroutine stack for debugging purposes.
+        /// </summary>
+        /// <returns>A string representation of the current coroutine stack.</returns>
         public string DumpCoroutines()
         {
             if (m_currentcontextidx < 0 || m_currentcontextidx >= m_coroutines.Count)
@@ -148,6 +164,11 @@ namespace RogueEssence
             return dumpMsg.ToString();
         }
 
+        /// <summary>
+        /// Wraps a coroutine in a yield instruction for use in other coroutines.
+        /// </summary>
+        /// <param name="coroutine">The coroutine to yield.</param>
+        /// <returns>An enumerator that yields the coroutine.</returns>
         public IEnumerator<YieldInstruction> YieldCoroutine(Coroutine coroutine)
         {
             yield return StartCoroutine(coroutine);

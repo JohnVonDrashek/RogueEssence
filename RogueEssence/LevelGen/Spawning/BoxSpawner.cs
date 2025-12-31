@@ -8,17 +8,26 @@ using RogueEssence.Dev;
 namespace RogueEssence.LevelGen
 {
     /// <summary>
-    /// Spawns a box with a random item in it.
+    /// Spawns a box item containing a random item determined by a base spawner.
+    /// The box wraps the contained item using the specified box item ID.
     /// </summary>
-    /// <typeparam name="TGenContext"></typeparam>
+    /// <typeparam name="TGenContext">The type of generation context.</typeparam>
     [Serializable]
     public class BoxSpawner<TGenContext> : IStepSpawner<TGenContext, MapItem>
         where TGenContext : IGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the BoxSpawner class.
+        /// </summary>
         public BoxSpawner()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the BoxSpawner class with the specified box ID and base spawner.
+        /// </summary>
+        /// <param name="id">The item ID of the box that contains the items.</param>
+        /// <param name="spawner">The spawner that determines what items go in the boxes.</param>
         public BoxSpawner(string id, IStepSpawner<TGenContext, MapItem> spawner)
         {
             this.BaseSpawner = spawner;
@@ -37,6 +46,11 @@ namespace RogueEssence.LevelGen
         /// </summary>
         public IStepSpawner<TGenContext, MapItem> BaseSpawner { get; set; }
 
+        /// <summary>
+        /// Gets the spawned items wrapped in boxes.
+        /// </summary>
+        /// <param name="map">The generation context.</param>
+        /// <returns>A list of box items, each containing an item from the base spawner.</returns>
         public List<MapItem> GetSpawns(TGenContext map)
         {
             if (this.BaseSpawner is null)

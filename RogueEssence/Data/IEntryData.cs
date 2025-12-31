@@ -1,5 +1,8 @@
 ﻿namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Extends IEntryData to include a description field for assets that have player-facing descriptions.
+    /// </summary>
     public interface IDescribedData : IEntryData
     {
         /// <summary>
@@ -30,8 +33,16 @@
         /// </summary>
         string Comment { get; set; }
 
+        /// <summary>
+        /// Gets the display name with color formatting for UI display.
+        /// </summary>
+        /// <returns>The formatted name string with color tags.</returns>
         string GetColoredName();
 
+        /// <summary>
+        /// Generates a summary of this entry for indexing purposes.
+        /// </summary>
+        /// <returns>An EntrySummary containing the entry's metadata.</returns>
         EntrySummary GenerateEntrySummary();
     }
 }

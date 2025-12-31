@@ -14,8 +14,18 @@ using System.Xml.Linq;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Abstract base class for type-specific editors. Provides a generic implementation
+    /// of the IEditor interface for editing objects of type T.
+    /// </summary>
+    /// <typeparam name="T">The type of object this editor handles.</typeparam>
     public abstract class Editor<T> : IEditor
     {
+        /// <summary>
+        /// Delegate for creating a new instance of a type.
+        /// </summary>
+        /// <param name="type">The partial type information.</param>
+        /// <param name="fullType">The fully constructed type.</param>
         protected delegate void CreateMethod(PartialType type, Type fullType);
 
         /// <summary>
@@ -39,6 +49,12 @@ namespace RogueEssence.Dev
         /// </summary>
         public virtual bool SimpleEditor => false;
 
+        /// <summary>
+        /// Loads a label control with the specified name and description tooltip.
+        /// </summary>
+        /// <param name="control">The panel to add the label to.</param>
+        /// <param name="name">The name to display in the label.</param>
+        /// <param name="desc">The description to show in the tooltip.</param>
         public static void LoadLabelControl(StackPanel control, string name, string desc)
         {
             TextBlock lblName = new TextBlock();
@@ -51,6 +67,11 @@ namespace RogueEssence.Dev
             control.Children.Add(lblName);
         }
 
+        /// <summary>
+        /// Creates a grid panel with the specified number of columns for shared row layouts.
+        /// </summary>
+        /// <param name="cols">The number of columns to create.</param>
+        /// <returns>A new Grid with the specified column definitions.</returns>
         protected static Grid getSharedRowPanel(int cols)
         {
             Grid sharedRowPanel = new Grid();
@@ -60,9 +81,29 @@ namespace RogueEssence.Dev
             return sharedRowPanel;
         }
 
+        /// <summary>
+        /// Gets the attribute type that this editor handles.
+        /// </summary>
+        /// <returns>The attribute type, or null if none.</returns>
         public virtual Type GetAttributeType() { return null; }
+
+        /// <summary>
+        /// Gets the type this editor can convert/edit.
+        /// </summary>
+        /// <returns>The type T that this editor handles.</returns>
         public Type GetConvertingType() { return typeof(T); }
 
+        /// <summary>
+        /// Loads editor controls for window-based editing.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="obj">The object value.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public virtual void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, T obj, Type[] subGroupStack)
         {
             //go through all members and add for them
@@ -118,12 +159,33 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Loads a control for a specific member of an object.
+        /// </summary>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="obj">The parent object.</param>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The member value.</param>
+        /// <param name="isWindow">Whether this is being loaded in a window.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         //TODO: add the ability to tag- using attributes- a specific member with a specific editor
         public virtual void LoadMemberControl(string parent, T obj, StackPanel control, string name, Type type, object[] attributes, object member, bool isWindow, Type[] subGroupStack)
         {
             DataEditor.LoadClassControls(control, parent, obj.GetType(), name, type, attributes, member, isWindow, subGroupStack, false);
         }
 
+        /// <summary>
+        /// Saves window controls and returns the resulting object.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>The saved object.</returns>
         public virtual T SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             try
@@ -184,17 +246,38 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Saves a member control and returns the resulting value.
+        /// </summary>
+        /// <param name="obj">The parent object.</param>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="isWindow">Whether this is in a window.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>The saved member value.</returns>
         public virtual object SaveMemberControl(T obj, StackPanel control, string name, Type type, object[] attributes, bool isWindow, Type[] subGroupStack)
         {
             return DataEditor.SaveClassControls(control, name, type, attributes, isWindow, subGroupStack, false);
         }
 
-
+        /// <summary>
+        /// Gets a string representation of the object for display purposes.
+        /// </summary>
+        /// <param name="obj">The object to convert to string.</param>
+        /// <param name="type">The type of the object.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <returns>A string representation of the object.</returns>
         public virtual string GetString(T obj, Type type, object[] attributes)
         {
             return obj == null ? "NULL" : obj.ToString();
         }
 
+        /// <summary>
+        /// Gets a string representation of this editor's type.
+        /// </summary>
+        /// <returns>The type string, or null.</returns>
         public virtual string GetTypeString()
         {
             return null;

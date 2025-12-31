@@ -4,6 +4,10 @@ using RogueEssence.Content;
 
 namespace RogueEssence.Script
 {
+    /// <summary>
+    /// Provides sound and music playback functions for Lua scripts.
+    /// Exposes sound effects, fanfares, and background music controls.
+    /// </summary>
     class ScriptSound : ILuaEngineComponent
     {
         //===========================
@@ -35,6 +39,11 @@ namespace RogueEssence.Script
         /// SOUND:WaitSE("Battle/Hit")
         /// </example>
         public LuaFunction WaitSE;
+
+        /// <summary>
+        /// Internal implementation for waiting until a sound effect completes.
+        /// </summary>
+        /// <returns>A coroutine that waits for the fanfare to end.</returns>
         public Coroutine _WaitSE()
         {
             return new Coroutine(GameManager.Instance.WaitFanfareEnds());
@@ -138,6 +147,11 @@ namespace RogueEssence.Script
         /// SOUND:WaitFanfare("Battle/LevelUp")
         /// </example>
         public LuaFunction WaitFanfare;
+
+        /// <summary>
+        /// Internal implementation for waiting until a fanfare completes.
+        /// </summary>
+        /// <returns>A coroutine that waits for the fanfare to end.</returns>
         public Coroutine _WaitFanfare()
         {
             return new Coroutine(GameManager.Instance.WaitFanfareEnds());
@@ -201,6 +215,10 @@ namespace RogueEssence.Script
             return GameManager.Instance.Song;
         }
 
+        /// <summary>
+        /// Sets up Lua function wrappers for sound operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             WaitFanfare = state.RunString("return function(_) return coroutine.yield(_:_WaitFanfare()) end").First() as LuaFunction;

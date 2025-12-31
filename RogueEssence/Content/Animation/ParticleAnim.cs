@@ -3,6 +3,10 @@ using RogueElements;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A particle animation that moves through space with velocity and acceleration.
+    /// Supports both 2D movement and height changes for 3D-like effects.
+    /// </summary>
     [Serializable]
     public class ParticleAnim : StaticAnim, IParticleEmittable
     {

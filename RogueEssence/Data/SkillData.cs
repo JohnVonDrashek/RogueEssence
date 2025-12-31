@@ -3,9 +3,17 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Contains all data for a skill/move that can be used in battle.
+    /// Includes targeting, power, effects, and visual data.
+    /// </summary>
     [Serializable]
     public class SkillData : IDescribedData
     {
+        /// <summary>
+        /// Returns the localized name of the skill.
+        /// </summary>
+        /// <returns>The skill name as a string.</returns>
         public override string ToString()
         {
             return Name.ToLocal();
@@ -38,6 +46,10 @@ namespace RogueEssence.Data
         /// </summary>
         public int IndexNum;
 
+        /// <summary>
+        /// Generates a summary of this skill for indexing and quick access.
+        /// </summary>
+        /// <returns>An EntrySummary containing the skill's key metadata.</returns>
         public EntrySummary GenerateEntrySummary()
         {
             BasePowerState powerState = Data.SkillStates.GetWithDefault<BasePowerState>();
@@ -80,6 +92,9 @@ namespace RogueEssence.Data
         public BattleData Data;
 
 
+        /// <summary>
+        /// Initializes a new instance of the SkillData class with default values.
+        /// </summary>
         public SkillData()
         {
             Name = new LocalText();
@@ -114,23 +129,68 @@ namespace RogueEssence.Data
         }
     }
     
+    /// <summary>
+    /// Summary data for a skill entry, including combat stats and range info.
+    /// Used for quick access without loading full skill data.
+    /// </summary>
     [Serializable]
     public class SkillDataSummary : EntrySummary
     {
+        /// <summary>
+        /// The elemental type of the skill.
+        /// </summary>
         public string Element;
+
+        /// <summary>
+        /// The category (physical, special, status) of the skill.
+        /// </summary>
         public BattleData.SkillCategory Category;
+
+        /// <summary>
+        /// The base power of the skill.
+        /// </summary>
         public int BasePower;
+
+        /// <summary>
+        /// The number of times this skill can be used.
+        /// </summary>
         public int BaseCharges;
+
+        /// <summary>
+        /// The base accuracy/hit rate of the skill.
+        /// </summary>
         public int HitRate;
+
+        /// <summary>
+        /// A description of the skill's targeting range.
+        /// </summary>
         public string RangeDescription;
+
+        /// <summary>
+        /// The localized description of the skill.
+        /// </summary>
         public LocalText Description;
-        
+
+        /// <summary>
+        /// Initializes a new empty instance of the SkillDataSummary class.
+        /// </summary>
         public SkillDataSummary() : base() { }
 
+        /// <summary>
+        /// Initializes a new instance of the SkillDataSummary class with the specified values.
+        /// </summary>
+        /// <param name="name">The localized name of the skill.</param>
+        /// <param name="released">Whether the skill is released for gameplay.</param>
+        /// <param name="comment">Developer comment for this skill.</param>
+        /// <param name="sort">The sort order for this skill.</param>
         public SkillDataSummary(LocalText name, bool released, string comment, int sort)
             : base(name, released, comment, sort)
         { }
-        
+
+        /// <summary>
+        /// Gets the display name with green color formatting.
+        /// </summary>
+        /// <returns>The formatted name string with color tags.</returns>
         public override string GetColoredName()
         {
             return String.Format("[color=#00FF00]{0}[color]", Name.ToLocal());

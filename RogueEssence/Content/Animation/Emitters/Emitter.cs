@@ -5,6 +5,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Abstract base class for all particle emitters.
+    /// Emitters spawn animations at specified positions with controlled timing.
+    /// </summary>
     [Serializable]
     public abstract class BaseEmitter
     {
@@ -62,6 +66,10 @@ namespace RogueEssence.Content
 
 
     }
+    /// <summary>
+    /// Abstract emitter that has a defined end state (can be finished).
+    /// Implements IFinishableSprite for scene management.
+    /// </summary>
     [Serializable]
     public abstract class EndingEmitter : BaseEmitter, IFinishableSprite
     {
@@ -77,6 +85,10 @@ namespace RogueEssence.Content
         public virtual Loc GetDrawSize() { return new Loc(); }
     }
 
+    /// <summary>
+    /// Abstract emitter that can be emitted by other emitters.
+    /// Supports cloning and static positioning.
+    /// </summary>
     [Serializable]
     public abstract class FiniteEmitter : EndingEmitter, IEmittable
     {
@@ -106,6 +118,10 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Abstract emitter for area-of-effect attacks with circular or square shapes.
+    /// Configured with range and expansion speed from a hitbox.
+    /// </summary>
     [Serializable]
     public abstract class CircleSquareEmitter : EndingEmitter
     {
@@ -150,6 +166,9 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// An emitter that combines multiple CircleSquareEmitters to run simultaneously.
+    /// </summary>
     [Serializable]
     public class MultiCircleSquareEmitter : CircleSquareEmitter
     {
@@ -199,6 +218,10 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Abstract emitter for projectile attacks that travel in a direction.
+    /// Configured with range and speed.
+    /// </summary>
     [Serializable]
     public abstract class ShootingEmitter : EndingEmitter
     {
@@ -237,6 +260,10 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Abstract emitter that attaches to a character and follows their movement.
+    /// Used for persistent effects that follow the user.
+    /// </summary>
     [Serializable]
     public abstract class AttachPointEmitter : BaseEmitter
     {
@@ -260,9 +287,16 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// Abstract emitter that runs until explicitly switched off.
+    /// Used for looping effects that need manual termination.
+    /// </summary>
     [Serializable]
     public abstract class SwitchOffEmitter : EndingEmitter
     {
+        /// <summary>
+        /// Signals the emitter to stop emitting and finish.
+        /// </summary>
         public abstract void SwitchOff();
     }
 

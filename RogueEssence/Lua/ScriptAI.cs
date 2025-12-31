@@ -10,10 +10,11 @@ namespace RogueEssence.Script
     {
 
         /// <summary>
-        /// Assign the given scripted AI class to the specified GroundChar.
+        /// Assigns the given scripted AI class to the specified GroundChar.
         /// </summary>
-        /// <param name="ch"></param>
-        /// <param name="classpath"></param>
+        /// <param name="ch">The ground character to assign AI to.</param>
+        /// <param name="classpath">The path to the Lua AI class.</param>
+        /// <param name="args">Additional arguments to pass to the AI constructor.</param>
         public void SetCharacterAI(GroundChar ch, string classpath, params object[] args)
         {
             try
@@ -28,9 +29,9 @@ namespace RogueEssence.Script
         }
 
         /// <summary>
-        /// Disable a given groundchar's AI processing until its enabled again.
+        /// Disables a given ground character's AI processing until it is enabled again.
         /// </summary>
-        /// <param name="ch"></param>
+        /// <param name="ch">The ground character whose AI should be disabled.</param>
         public void DisableCharacterAI(GroundChar ch)
         {
             try
@@ -44,9 +45,9 @@ namespace RogueEssence.Script
         }
 
         /// <summary>
-        /// Enable a given groundchar's AI processing if its currently disabled
+        /// Enables a given ground character's AI processing if it is currently disabled.
         /// </summary>
-        /// <param name="ch"></param>
+        /// <param name="ch">The ground character whose AI should be enabled.</param>
         public void EnableCharacterAI(GroundChar ch)
         {
             try
@@ -60,9 +61,10 @@ namespace RogueEssence.Script
         }
 
         /// <summary>
-        /// Enable a given groundchar's AI processing if its currently disabled
+        /// Sets the AI state for a given ground character.
         /// </summary>
-        /// <param name="ch"></param>
+        /// <param name="ch">The ground character to modify.</param>
+        /// <param name="state">The name of the AI state to transition to.</param>
         public void SetAIState(GroundChar ch, string state)
         {
             try
@@ -76,6 +78,10 @@ namespace RogueEssence.Script
         }
 
 
+        /// <summary>
+        /// Sets up any Lua function wrappers for this component.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
         }

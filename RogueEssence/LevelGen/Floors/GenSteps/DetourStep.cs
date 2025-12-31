@@ -13,17 +13,29 @@ namespace RogueEssence.LevelGen
     public class DetourStep<T> : GenStep<T>
         where T : class, IFloorPlanGenContext, IPlaceableGenContext<EffectTile>, IGroupPlaceableGenContext<TeamSpawn>, IMobSpawnMap
     {
+        /// <summary>
+        /// The effect tiles that can be spawned as detour destinations.
+        /// </summary>
         public SpawnList<EffectTile> Spawns;
+
+        /// <summary>
+        /// The team spawners for guards that protect the detour tiles.
+        /// </summary>
         public SpawnList<TeamSpawner> GuardSpawns;
 
-
+        /// <summary>
+        /// Initializes a new instance of the DetourStep class.
+        /// </summary>
         public DetourStep()
         {
             Spawns = new SpawnList<EffectTile>();
             GuardSpawns = new SpawnList<TeamSpawner>();
         }
-                
 
+        /// <summary>
+        /// Applies the detour step, placing effect tiles and optional guards on the map.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             if (Spawns.Count > 0)

@@ -15,6 +15,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Dungeon
 {
+    /// <summary>
+    /// A background that tiles an AutoTile pattern across the entire screen.
+    /// Used for simple repeating tile backgrounds.
+    /// </summary>
     [Serializable]
     public class TileBG : IBackgroundSprite
     {

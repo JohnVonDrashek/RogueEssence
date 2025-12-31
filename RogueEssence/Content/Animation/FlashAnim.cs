@@ -4,7 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
-
+    /// <summary>
+    /// A screen flash animation that fades in and out between two colors.
+    /// Can fill the entire screen or tile across it.
+    /// </summary>
     class FlashAnim : BaseAnim
     {
 

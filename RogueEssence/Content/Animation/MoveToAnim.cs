@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An animation that moves from one position to another in a straight line.
+    /// Supports linger time at start and end, and spawns a result animation on completion.
+    /// </summary>
     public class MoveToAnim : LoopingAnim
     {
         public MoveToAnim(AnimData anim, IEmittable emittable, DrawLayer layer, int moveTime, Loc startLoc, Loc newEndPos, int startHeight, int endHeight, int lingerStart, int lingerEnd, Dir8 dir)

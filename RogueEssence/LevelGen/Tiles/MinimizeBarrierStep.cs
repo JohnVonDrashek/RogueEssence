@@ -13,10 +13,18 @@ namespace RogueEssence
     public class MinimizeBarrierStep<T> : GenStep<T>
         where T : class, ITiledGenContext
     {
+        /// <summary>
+        /// Initializes a new instance of the MinimizeBarrierStep class.
+        /// </summary>
         public MinimizeBarrierStep()
         {
         }
 
+        /// <summary>
+        /// Applies the step to convert unbreakable tiles to normal wall tiles when they are not chokepoints.
+        /// Note: This step is not yet implemented.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             //TODO: convert all unbreakable tiles to normal wall tiles, based on the following criteria:

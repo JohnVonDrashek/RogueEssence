@@ -13,9 +13,15 @@ using RogueEssence.Dungeon;
 
 namespace RogueEssence.Dev.Views
 {
+    /// <summary>
+    /// Form window for editing tileset assets.
+    /// Provides tools for managing and previewing tile graphics.
+    /// </summary>
     public class TilesetEditForm : Window
     {
-
+        /// <summary>
+        /// Initializes a new instance of the TilesetEditForm class.
+        /// </summary>
         public TilesetEditForm()
         {
             InitializeComponent();

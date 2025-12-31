@@ -10,6 +10,10 @@ using System.Collections.Generic;
 
 namespace RogueEssence.Script
 {
+    /// <summary>
+    /// Provides scripting functions for dungeon-related operations.
+    /// Exposes dungeon map, character, and animation functionality to Lua scripts.
+    /// </summary>
     class ScriptDungeon : ILuaEngineComponent
     {
         /// <summary>
@@ -68,6 +72,10 @@ namespace RogueEssence.Script
             return ZoneManager.Instance.CurrentZone.Name.ToLocal();
         }
 
+        /// <summary>
+        /// Sets whether the minimap is visible on the current dungeon floor.
+        /// </summary>
+        /// <param name="visible">True to show the minimap, false to hide it.</param>
         public void SetMinimapVisible(bool visible)
         {
             ZoneManager.Instance.CurrentMap.HideMinimap = !visible;
@@ -117,8 +125,17 @@ namespace RogueEssence.Script
                 return new Coroutine(chara.StartAnim(new CharAnimAction(chara.CharLoc, chara.CharDir, animIndex)));
         }
 
+        /// <summary>
+        /// Sets a character's action animation.
+        /// </summary>
         public LuaFunction CharSetAction;
 
+        /// <summary>
+        /// Internal implementation for setting a character's action animation.
+        /// </summary>
+        /// <param name="chara">The character to animate.</param>
+        /// <param name="anim">The animation to play.</param>
+        /// <returns>A coroutine that completes when the animation starts.</returns>
         public Coroutine _CharSetAction(Character chara, CharAnimation anim)
         {
             return new Coroutine(chara.StartAnim(anim));
@@ -215,7 +232,16 @@ namespace RogueEssence.Script
 
 
 
+        /// <summary>
+        /// Adds a map status effect to the current dungeon floor.
+        /// </summary>
         public LuaFunction AddMapStatus;
+
+        /// <summary>
+        /// Internal implementation for adding a map status.
+        /// </summary>
+        /// <param name="statusId">The ID of the status to add.</param>
+        /// <returns>A coroutine that completes when the status is added.</returns>
         public Coroutine _AddMapStatus(string statusId)
         {
             MapStatus status = new MapStatus(statusId);
@@ -223,13 +249,26 @@ namespace RogueEssence.Script
             return new Coroutine(DungeonScene.Instance.AddMapStatus(status));
         }
 
+        /// <summary>
+        /// Removes a map status effect from the current dungeon floor.
+        /// </summary>
         public LuaFunction RemoveMapStatus;
+
+        /// <summary>
+        /// Internal implementation for removing a map status.
+        /// </summary>
+        /// <param name="statusId">The ID of the status to remove.</param>
+        /// <returns>A coroutine that completes when the status is removed.</returns>
         public Coroutine _RemoveMapStatus(string statusId)
         {
             return new Coroutine(DungeonScene.Instance.RemoveMapStatus(statusId));
         }
 
 
+        /// <summary>
+        /// Sets up Lua function wrappers for dungeon scripting operations.
+        /// </summary>
+        /// <param name="state">The Lua engine state.</param>
         public override void SetupLuaFunctions(LuaEngine state)
         {
             //Implement stuff that should be written in lua!

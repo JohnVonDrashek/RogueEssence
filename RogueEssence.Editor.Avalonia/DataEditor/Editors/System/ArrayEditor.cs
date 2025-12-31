@@ -15,11 +15,33 @@ using RogueEssence.Dev.ViewModels;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for Array values. Displays a collection box for editing array elements.
+    /// Supports RankedListAttribute for indexed display and EditorHeightAttribute for custom height.
+    /// </summary>
     public class ArrayEditor : Editor<Array>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
 
+        /// <summary>
+        /// Loads collection box controls for editing an array.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The array to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, Array member, Type[] subGroupStack)
         {
             RankedListAttribute rangeAtt = ReflectionExt.FindAttribute<RankedListAttribute>(attributes);
@@ -59,6 +81,17 @@ namespace RogueEssence.Dev
 
         }
 
+        /// <summary>
+        /// Creates a view model for the collection box with element editing capabilities.
+        /// </summary>
+        /// <param name="control">The parent stack panel control.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="name">The name of the array member.</param>
+        /// <param name="type">The type of the array.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The array to create a view model for.</param>
+        /// <param name="index1">Whether to use 1-based indexing.</param>
+        /// <returns>A configured CollectionBoxViewModel.</returns>
         private CollectionBoxViewModel createViewModel(StackPanel control, string parent, string name, Type type, object[] attributes, Array member, bool index1)
         {
             Type elementType = type.GetElementType();
@@ -99,6 +132,15 @@ namespace RogueEssence.Dev
             return vm;
         }
 
+        /// <summary>
+        /// Saves the collection box controls and returns the resulting array.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>A new array containing the edited elements.</returns>
         public override Array SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             int controlIndex = 0;

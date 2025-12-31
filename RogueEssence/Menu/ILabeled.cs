@@ -1,12 +1,34 @@
 namespace RogueEssence.Menu
 {
+    /// <summary>
+    /// Provides a labeling mechanism for menu elements to support identification and navigation.
+    /// Labels enable scripting and programmatic access to specific menu elements.
+    /// </summary>
     public interface ILabeled
     {
+        /// <summary>
+        /// Gets the unique identifier label for this element.
+        /// </summary>
         public string Label { get; }
+
+        /// <summary>
+        /// Determines whether this element has a non-empty label.
+        /// </summary>
+        /// <returns>True if the label is not null or empty; otherwise, false.</returns>
         public bool HasLabel();
+
+        /// <summary>
+        /// Determines whether this element's label contains the specified substring.
+        /// </summary>
+        /// <param name="substr">The substring to search for within the label.</param>
+        /// <returns>True if the label contains the substring; otherwise, false.</returns>
         public bool LabelContains(string substr);
     }
 
+    /// <summary>
+    /// Contains constant string labels for identifying menus and menu elements throughout the game.
+    /// These labels are used for scripting, navigation, and programmatic menu access.
+    /// </summary>
     public abstract class MenuLabel
     {
         //MENU_LABELS

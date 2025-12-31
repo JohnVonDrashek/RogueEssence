@@ -14,11 +14,33 @@ using System.Reflection;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for ISpawnList values. Displays a spawn list box for editing weighted spawn elements.
+    /// Supports copy/paste functionality for spawn entries.
+    /// </summary>
     public class SpawnListEditor : Editor<ISpawnList>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
 
+        /// <summary>
+        /// Loads a spawn list box control for editing weighted spawn elements.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The spawn list to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, ISpawnList member, Type[] subGroupStack)
         {
             Type elementType = ReflectionExt.GetBaseTypeArg(typeof(ISpawnList<>), type, 0);

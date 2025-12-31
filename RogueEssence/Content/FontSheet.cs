@@ -9,11 +9,26 @@ using RectPacker;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// Stores rendering data for a single font glyph.
+    /// </summary>
     public struct GlyphData
     {
+        /// <summary>
+        /// The index of the glyph's rectangle in the sprite sheet.
+        /// </summary>
         public int RectIdx;
+
+        /// <summary>
+        /// If true, this glyph ignores color tinting and renders in white.
+        /// </summary>
         public bool Colorless;
 
+        /// <summary>
+        /// Creates new glyph data with the specified properties.
+        /// </summary>
+        /// <param name="rectIdx">The rectangle index in the sprite sheet.</param>
+        /// <param name="colorless">Whether the glyph ignores color tinting.</param>
         public GlyphData(int rectIdx, bool colorless)
         {
             RectIdx = rectIdx;
@@ -21,19 +36,47 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// A sprite sheet specialized for rendering bitmap fonts.
+    /// Supports variable-width characters, word wrapping, and text alignment.
+    /// </summary>
     public class FontSheet : SpriteSheet
     {
         const string NON_STARTERS = "";//lines cannot start with
         const string NON_ENDERS = "";//lines cannot end with
 
-        //Spacing variables
+        /// <summary>
+        /// The width in pixels of a space character.
+        /// </summary>
         public int SpaceWidth { get; private set; }
+
+        /// <summary>
+        /// The height in pixels of a character.
+        /// </summary>
         public int CharHeight { get; private set; }
+
+        /// <summary>
+        /// The spacing in pixels between lines of text.
+        /// </summary>
         public int LineSpace { get; private set; }
+
+        /// <summary>
+        /// The spacing in pixels between characters.
+        /// </summary>
         public int CharSpace { get; private set; }
 
         private Dictionary<int, GlyphData> charMap;
 
+        /// <summary>
+        /// Creates a new FontSheet with the specified properties.
+        /// </summary>
+        /// <param name="tex">The texture containing all glyph images.</param>
+        /// <param name="rects">The source rectangles for each glyph.</param>
+        /// <param name="space">The width of a space character.</param>
+        /// <param name="charHeight">The height of characters.</param>
+        /// <param name="charSpace">The spacing between characters.</param>
+        /// <param name="charLine">The spacing between lines.</param>
+        /// <param name="charMap">A dictionary mapping Unicode code points to glyph data.</param>
         public FontSheet(Texture2D tex, Rectangle[] rects, int space, int charHeight, int charSpace, int charLine, Dictionary<int, GlyphData> charMap)
             :base(tex, rects)
         {
@@ -47,13 +90,11 @@ namespace RogueEssence.Content
         }
 
 
-        //frompath (import) has two varieties: they will take
-        // - take a folder containing all elements, each with a char number
-        // - take a simple png
-        //fromstream (load) will take the png and all the rectangles, and the char maps from stream
-        //save will save as .font
-
-
+        /// <summary>
+        /// Imports a font sheet from a directory containing FontData.xml and glyph PNG files.
+        /// </summary>
+        /// <param name="path">The path to the font directory.</param>
+        /// <returns>A new FontSheet imported from the specified directory.</returns>
         public static new FontSheet Import(string path)
         {
             //get all extra stat from an XML
@@ -143,6 +184,11 @@ namespace RogueEssence.Content
             return finalList.ToArray();
         }
 
+        /// <summary>
+        /// Loads a font sheet from a binary stream.
+        /// </summary>
+        /// <param name="reader">The binary reader to read from.</param>
+        /// <returns>A new FontSheet loaded from the stream.</returns>
         public static new FontSheet Load(BinaryReader reader)
         {
             long length = reader.ReadInt64();
@@ -176,6 +222,10 @@ namespace RogueEssence.Content
             
         }
 
+        /// <summary>
+        /// Creates a fallback font sheet using the default error texture.
+        /// </summary>
+        /// <returns>A FontSheet containing the default fallback texture.</returns>
         public static new FontSheet LoadError()
         {
             Rectangle[] rects = new Rectangle[0];
@@ -183,6 +233,10 @@ namespace RogueEssence.Content
             return new FontSheet(defaultTex, rects, 8, 8, 1, 1, chars);
         }
 
+        /// <summary>
+        /// Saves the font sheet to a binary stream.
+        /// </summary>
+        /// <param name="writer">The binary writer to write to.</param>
         public override void Save(BinaryWriter writer)
         {
             base.Save(writer);
@@ -199,16 +253,50 @@ namespace RogueEssence.Content
             }
         }
 
+        /// <summary>
+        /// Draws text at the specified position with alignment options.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="x">The X position to draw at.</param>
+        /// <param name="y">The Y position to draw at.</param>
+        /// <param name="text">The text to draw.</param>
+        /// <param name="area">The area to align within, or null for no alignment.</param>
+        /// <param name="vOrigin">The vertical alignment origin.</param>
+        /// <param name="hOrigin">The horizontal alignment origin.</param>
         public void DrawText(SpriteBatch spriteBatch, int x, int y, string text, Rectangle? area, DirV vOrigin, DirH hOrigin)
         {
             DrawText(spriteBatch, x, y, text, area, vOrigin, hOrigin, Color.White);
         }
 
+        /// <summary>
+        /// Draws text with a color tint at the specified position.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="x">The X position to draw at.</param>
+        /// <param name="y">The Y position to draw at.</param>
+        /// <param name="text">The text to draw.</param>
+        /// <param name="area">The area to align within, or null for no alignment.</param>
+        /// <param name="vOrigin">The vertical alignment origin.</param>
+        /// <param name="hOrigin">The horizontal alignment origin.</param>
+        /// <param name="color">The color tint to apply.</param>
         public void DrawText(SpriteBatch spriteBatch, int x, int y, string text, Rectangle? area, DirV vOrigin, DirH hOrigin, Color color)
         {
             DrawText(spriteBatch, x, y, text, area, vOrigin, hOrigin, color, 0, text.Length);
         }
 
+        /// <summary>
+        /// Draws a substring of text with full control over rendering options.
+        /// </summary>
+        /// <param name="spriteBatch">The sprite batch to draw with.</param>
+        /// <param name="x">The X position to draw at.</param>
+        /// <param name="y">The Y position to draw at.</param>
+        /// <param name="text">The full text string.</param>
+        /// <param name="area">The area to align within, or null for no alignment.</param>
+        /// <param name="vOrigin">The vertical alignment origin.</param>
+        /// <param name="hOrigin">The horizontal alignment origin.</param>
+        /// <param name="color">The color tint to apply.</param>
+        /// <param name="start">The starting character index to draw.</param>
+        /// <param name="length">The number of characters to draw.</param>
         public void DrawText(SpriteBatch spriteBatch, int x, int y, string text, Rectangle? area, DirV vOrigin, DirH hOrigin, Color color, int start, int length)
         {
             if (String.IsNullOrWhiteSpace(text))
@@ -355,6 +443,12 @@ namespace RogueEssence.Content
             return area;
         }
 
+        /// <summary>
+        /// Calculates the total height of a string in pixels.
+        /// </summary>
+        /// <param name="thisString">The string to measure.</param>
+        /// <param name="lineSpace">The spacing between lines.</param>
+        /// <returns>The height in pixels including all lines.</returns>
         public int StringHeight(string thisString, int lineSpace)
         {
             if (String.IsNullOrEmpty(thisString))
@@ -370,6 +464,11 @@ namespace RogueEssence.Content
             return height;
         }
 
+        /// <summary>
+        /// Calculates the width of a substring in pixels (until newline or end).
+        /// </summary>
+        /// <param name="substring">The substring to measure.</param>
+        /// <returns>The width in pixels.</returns>
         public int SubstringWidth(string substring)
         {
             if (String.IsNullOrEmpty(substring))
@@ -401,15 +500,39 @@ namespace RogueEssence.Content
             return subWidth;
         }
 
+        /// <summary>
+        /// Breaks text into lines that fit within the specified width.
+        /// </summary>
+        /// <param name="substring">The text to break into lines.</param>
+        /// <param name="width">The maximum width in pixels per line.</param>
+        /// <returns>An array of lines that fit within the width.</returns>
         public string[] BreakIntoLines(string substring, int width)
         {
             return BreakIntoLines(substring, width, substring.Length);
         }
+
+        /// <summary>
+        /// Breaks text into lines up to a specified character index.
+        /// </summary>
+        /// <param name="substring">The text to break into lines.</param>
+        /// <param name="width">The maximum width in pixels per line.</param>
+        /// <param name="charIndex">The character index to stop at.</param>
+        /// <returns>An array of lines.</returns>
         public string[] BreakIntoLines(string substring, int width, int charIndex)
         {
             List<int> trimmedStarts;
             return BreakIntoLines(substring, width, charIndex, out trimmedStarts);
         }
+
+        /// <summary>
+        /// Breaks text into lines with information about trimmed leading spaces.
+        /// Supports CJK line breaking rules.
+        /// </summary>
+        /// <param name="substring">The text to break into lines.</param>
+        /// <param name="width">The maximum width in pixels per line.</param>
+        /// <param name="charIndex">The character index to stop at.</param>
+        /// <param name="trimmedStarts">Output list of trimmed space counts per line.</param>
+        /// <returns>An array of lines.</returns>
         public string[] BreakIntoLines(string substring, int width, int charIndex, out List<int> trimmedStarts)
         {
             trimmedStarts = new List<int>();
@@ -510,6 +633,11 @@ namespace RogueEssence.Content
             return lines.ToArray();
         }
 
+        /// <summary>
+        /// Checks if the font can render the specified character.
+        /// </summary>
+        /// <param name="glyph">The character to check.</param>
+        /// <returns>True if the character can be rendered, false otherwise.</returns>
         public bool CanRenderChar(char glyph)
         {
             if (glyph == ' ' || glyph == '　')

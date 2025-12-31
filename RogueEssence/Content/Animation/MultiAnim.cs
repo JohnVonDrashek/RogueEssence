@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// A single sprite within a multi-sprite animation frame.
+    /// Contains position, animation index, and visual properties.
+    /// </summary>
     public class MultiAnimSprite
     {
         public MultiAnimSprite(string animIndex, int frame, Loc position, int height)
@@ -43,6 +47,10 @@ namespace RogueEssence.Content
     }
 
 
+    /// <summary>
+    /// A single frame in a multi-sprite animation containing multiple sprites.
+    /// Manages timing and drawing of all sprites in the frame.
+    /// </summary>
     public class MultiAnimFrame
     {
         public MultiAnimFrame()
@@ -88,6 +96,10 @@ namespace RogueEssence.Content
         }
     }
 
+    /// <summary>
+    /// An animation composed of multiple frames, each containing multiple sprites.
+    /// Used for complex animations that cannot be represented by a single sprite sheet.
+    /// </summary>
     public class MultiAnim : BaseAnim
     {
         public MultiAnim()

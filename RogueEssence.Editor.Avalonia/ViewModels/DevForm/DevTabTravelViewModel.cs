@@ -13,8 +13,15 @@ using RogueElements;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// ViewModel for the Travel tab in the developer form.
+    /// Provides functionality for navigating between zones, dungeons, and ground maps.
+    /// </summary>
     public class DevTabTravelViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Initializes a new instance of the DevTabTravelViewModel class with empty collections.
+        /// </summary>
         public DevTabTravelViewModel()
         {
             Grounds = new ObservableCollection<string>();

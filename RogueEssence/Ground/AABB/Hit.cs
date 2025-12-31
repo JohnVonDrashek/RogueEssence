@@ -4,24 +4,50 @@
     using RogueElements;
 
 
+	/// <summary>
+	/// Represents collision hit information between a moving object and an obstacle.
+	/// Contains the position, normal direction, and collision amount for swept AABB collision detection.
+	/// </summary>
 	public class Hit : IHit
 	{
+		/// <summary>
+		/// Initializes a new instance of the Hit class with default values.
+		/// </summary>
 		public Hit()
 		{
             this.Normal = Dir4.None;
 			this.Amount = new Multiplier(1,1);
 		}
 
+		/// <summary>
+		/// Gets or sets the obstacle that was hit.
+		/// </summary>
 		public IObstacle Box { get; set; }
 
+		/// <summary>
+		/// Gets or sets the normal direction of the collision surface.
+		/// </summary>
         public Dir4 Normal { get; set; }
 
+		/// <summary>
+		/// Gets or sets the amount of movement needed to reach the collision point (0 to 1 ratio).
+		/// </summary>
         public Multiplier Amount { get; set; }
 
+		/// <summary>
+		/// Gets or sets the position where the collision occurred.
+		/// </summary>
 		public Loc Position { get; set; }
 
 		#region Public functions
 
+		/// <summary>
+		/// Resolves collision between a rectangle moving to a destination and an obstacle.
+		/// </summary>
+		/// <param name="origin">The starting bounds of the moving rectangle.</param>
+		/// <param name="destination">The ending bounds of the moving rectangle.</param>
+		/// <param name="other">The obstacle to test against.</param>
+		/// <returns>Hit information if a collision occurred; otherwise, null.</returns>
 		public static IHit Resolve(Rect origin, Rect destination, IObstacle other)
 		{
 			var result = Resolve(origin,destination, other.Bounds);
@@ -29,6 +55,13 @@
 			return result;
 		}
 
+		/// <summary>
+		/// Resolves collision between a point moving to a destination and an obstacle.
+		/// </summary>
+		/// <param name="origin">The starting point of the movement.</param>
+		/// <param name="destination">The ending point of the movement.</param>
+		/// <param name="other">The obstacle to test against.</param>
+		/// <returns>Hit information if a collision occurred; otherwise, null.</returns>
         public static IHit Resolve(Loc origin, Loc destination, IObstacle other)
 		{
 			var result = Resolve(origin, destination, other.Bounds);
@@ -36,6 +69,13 @@
 			return result;
 		}
 
+		/// <summary>
+		/// Resolves collision between a rectangle moving to a destination and another rectangle.
+		/// </summary>
+		/// <param name="origin">The starting bounds of the moving rectangle.</param>
+		/// <param name="destination">The ending bounds of the moving rectangle.</param>
+		/// <param name="other">The rectangle to test against.</param>
+		/// <returns>Hit information if a collision occurred; otherwise, null.</returns>
 		public static Hit Resolve(Rect origin, Rect destination, Rect other)
 		{
 			var broadphaseArea = Rect.Union(origin,destination);
@@ -48,6 +88,13 @@
 			return null;
 		}
 
+		/// <summary>
+		/// Resolves collision between a point moving to a destination and a rectangle.
+		/// </summary>
+		/// <param name="origin">The starting point of the movement.</param>
+		/// <param name="destination">The ending point of the movement.</param>
+		/// <param name="other">The rectangle to test against.</param>
+		/// <returns>Hit information if a collision occurred; otherwise, null.</returns>
         public static Hit Resolve(Loc origin, Loc destination, Rect other)
 		{
             var min = Loc.Min(origin, destination);
@@ -63,6 +110,12 @@
 			return null;
 		}
 
+		/// <summary>
+		/// Resolves collision for a stationary point inside an obstacle.
+		/// </summary>
+		/// <param name="point">The point to test.</param>
+		/// <param name="other">The obstacle to test against.</param>
+		/// <returns>Hit information if the point is inside the obstacle; otherwise, null.</returns>
         public static IHit Resolve(Loc point, IObstacle other)
 		{
 			if (other.Bounds.Contains(point))
@@ -274,6 +327,12 @@
 		}
 
 
+		/// <summary>
+		/// Determines if this hit is nearer than another hit from the given origin.
+		/// </summary>
+		/// <param name="than">The hit to compare against.</param>
+		/// <param name="origin">The origin point of the movement.</param>
+		/// <returns>True if this hit is nearer; otherwise, false.</returns>
         public bool IsNearest(IHit than, Loc origin)
 		{
             if (this.Amount < than.Amount)

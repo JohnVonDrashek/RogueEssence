@@ -14,6 +14,10 @@ using System.Reactive.Subjects;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Editor for Object values. Serves as a fallback editor for any object type.
+    /// Uses the default Editor behavior without type-specific customization.
+    /// </summary>
     public class ObjectEditor : Editor<Object>
     { }
 }

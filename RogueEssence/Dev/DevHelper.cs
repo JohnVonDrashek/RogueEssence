@@ -13,11 +13,24 @@ using System.Linq;
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Provides utility methods for development operations including asset conversion,
+    /// data reserializing, indexing, and merging quests into standalone builds.
+    /// </summary>
     public static class DevHelper
     {
         //TODO: this is old conversion code and needs to be deleted, but maybe the code could be salvaged for some mass rename operation?
+
+        /// <summary>
+        /// The version at which string-based asset naming was introduced.
+        /// </summary>
         public static Version StringAssetVersion = new Version(0, 6, 0);
 
+        /// <summary>
+        /// Gets the version from the first file in the provided directories.
+        /// </summary>
+        /// <param name="dirs">The file paths to check for version information.</param>
+        /// <returns>The version found in the first file, or the current version if none provided.</returns>
         public static Version GetVersion(params string[] dirs)
         {
             Version oldVersion = Versioning.GetVersion();
@@ -106,6 +119,10 @@ namespace RogueEssence.Dev
             return lines;
         }
 
+        /// <summary>
+        /// Prepares text files for asset name conversion from integer-based to string-based naming.
+        /// Creates conversion mapping files in the CONVERSION folder.
+        /// </summary>
         public static void PrepareAssetConversion()
         {
             
@@ -234,6 +251,10 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Converts asset file names from integer-based to string-based naming using prepared mapping files.
+        /// Also updates script path references for zones.
+        /// </summary>
         public static void ConvertAssetNames()
         {
             //load mod xml and resave it
@@ -385,6 +406,11 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Reverses the endian order of space-separated words in a string.
+        /// </summary>
+        /// <param name="str">The string with space-separated words to reverse.</param>
+        /// <returns>The string with words in reversed order.</returns>
         public static string ReverseEndian(string str)
         {
             string[] words = str.Split(' ');
@@ -392,6 +418,10 @@ namespace RogueEssence.Dev
             return String.Join(' ', words);
         }
 
+        /// <summary>
+        /// Resaves base data files (Universal and effects data) to apply format updates.
+        /// </summary>
+        /// <param name="useDiff">If true, saves as diff files; otherwise saves as full files.</param>
         public static void ResaveBase(bool useDiff)
         {
             //All instances of LoadObject in DevHelper need to be reworked to load on both diff and base file?
@@ -406,6 +436,10 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Reserializes base data files including Universal data, effects, and extensions.
+        /// Uses default save policy determined by the data source.
+        /// </summary>
         public static void ReserializeBase()
         {
             //All instances of LoadObject in DevHelper need to be reworked to load on both diff and base file?
@@ -446,6 +480,11 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Resaves data files for the specified data types.
+        /// </summary>
+        /// <param name="conversionFlags">Flags indicating which data types to resave.</param>
+        /// <param name="useDiff">If true, saves as diff files; otherwise saves as full files.</param>
         public static void Resave(DataManager.DataType conversionFlags, bool useDiff)
         {
             foreach (DataManager.DataType type in Enum.GetValues(typeof(DataManager.DataType)))
@@ -455,6 +494,13 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Resaves all data files of a specific type from a given path.
+        /// </summary>
+        /// <typeparam name="T">The type of data to load and save.</typeparam>
+        /// <param name="dataPath">The path containing the data files.</param>
+        /// <param name="ext">The file extension to process.</param>
+        /// <param name="useDiff">If true, saves as diff files; otherwise saves as full files.</param>
         public static void ResaveData<T>(string dataPath, string ext, bool useDiff)
         {
             // search for data EXT as well as diff EXT...
@@ -474,6 +520,10 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Reserializes data files for the specified data types using default save policy.
+        /// </summary>
+        /// <param name="conversionFlags">Flags indicating which data types to reserialize.</param>
         public static void Reserialize(DataManager.DataType conversionFlags)
         {
             foreach (DataManager.DataType type in Enum.GetValues(typeof(DataManager.DataType)))
@@ -483,6 +533,12 @@ namespace RogueEssence.Dev
             }
         }
 
+        /// <summary>
+        /// Reserializes all data files of a specific type from a given path using default save policy.
+        /// </summary>
+        /// <typeparam name="T">The type of data to load and save.</typeparam>
+        /// <param name="dataPath">The path containing the data files.</param>
+        /// <param name="ext">The file extension to process.</param>
         public static void ReserializeData<T>(string dataPath, string ext)
         {
             // search for data EXT as well as diff EXT...
@@ -514,6 +570,10 @@ namespace RogueEssence.Dev
                     IndexNamedData(DataManager.DATA_PATH + type.ToString() + "/");
             }
         }
+        /// <summary>
+        /// Runs extra indexing operations for universal data based on trigger types.
+        /// </summary>
+        /// <param name="conversionFlags">Flags indicating which data types trigger re-indexing.</param>
         public static void RunExtraIndexing(DataManager.DataType conversionFlags)
         {
             //index extra based on triggers
@@ -530,6 +590,11 @@ namespace RogueEssence.Dev
 
 
 
+        /// <summary>
+        /// Builds an index file for named data entries in the specified path.
+        /// Creates or updates an index.idx file containing entry summaries.
+        /// </summary>
+        /// <param name="dataPath">The path containing the data files to index.</param>
         public static void IndexNamedData(string dataPath)
         {
             try
@@ -562,6 +627,11 @@ namespace RogueEssence.Dev
         }
 
 
+        /// <summary>
+        /// Merges a quest mod into a standalone build, combining base game and mod assets.
+        /// Creates a complete standalone game package in the BUILD folder.
+        /// </summary>
+        /// <param name="quest">The name of the quest mod to merge.</param>
         public static void MergeQuest(string quest)
         {
             DiagManager.Instance.LogInfo(String.Format("Creating standalone from quest: {0}", String.Join(", ", quest)));

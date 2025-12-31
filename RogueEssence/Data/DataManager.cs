@@ -15,8 +15,16 @@ using Newtonsoft.Json;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Extension methods for the DataType enum.
+    /// </summary>
     public static class DataTypeExtensions
     {
+        /// <summary>
+        /// Gets the C# Type associated with a DataType enum value.
+        /// </summary>
+        /// <param name="dataType">The data type to get the class type for.</param>
+        /// <returns>The Type corresponding to the data type.</returns>
         public static Type GetClassType(this DataManager.DataType dataType)
         {
             switch (dataType)
@@ -60,9 +68,15 @@ namespace RogueEssence.Data
         }
     }
     
-    //Manages data such as items, intrinsics, etc.  Also holds save data
+    /// <summary>
+    /// Central manager for all game data including monsters, items, skills, and save files.
+    /// Provides caching, loading, and saving functionality for game data with mod support.
+    /// </summary>
     public class DataManager
     {
+        /// <summary>
+        /// Flags indicating different types of game data that can be loaded or managed.
+        /// </summary>
         [Flags]
         public enum DataType
         {
@@ -87,6 +101,9 @@ namespace RogueEssence.Data
             All = 131071
         }
 
+        /// <summary>
+        /// Indicates the current loading mode for replays or saves.
+        /// </summary>
         public enum LoadMode
         {
             None,
@@ -95,18 +112,45 @@ namespace RogueEssence.Data
             Verifying
         }
 
+        /// <summary>
+        /// Defines how data files are saved.
+        /// </summary>
         public enum SavePolicy
         {
+            /// <summary>
+            /// Save as file and as diff if base exists.
+            /// </summary>
             FileDiff,
+            /// <summary>
+            /// Save as file only.
+            /// </summary>
             File,
+            /// <summary>
+            /// Save as diff only.
+            /// </summary>
             Diff
         }
 
+        /// <summary>
+        /// Indicates the mod status of a data entry.
+        /// </summary>
         public enum ModStatus
         {
+            /// <summary>
+            /// Original base game data.
+            /// </summary>
             Base,
+            /// <summary>
+            /// New data added by a mod.
+            /// </summary>
             Added,
+            /// <summary>
+            /// Base data fully replaced by a mod.
+            /// </summary>
             Modded,
+            /// <summary>
+            /// Base data modified via diff patch.
+            /// </summary>
             DiffModded
         }
 

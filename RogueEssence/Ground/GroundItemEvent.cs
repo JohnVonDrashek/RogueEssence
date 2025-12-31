@@ -10,6 +10,9 @@ using RogueEssence.Script;
 
 namespace RogueEssence.Ground
 {
+    /// <summary>
+    /// Specifies the target selection type for item usage.
+    /// </summary>
     public enum SelectionType
     {
         /// <summary>
@@ -21,14 +24,34 @@ namespace RogueEssence.Ground
         /// </summary>
         Others,
     }
-    
+
+    /// <summary>
+    /// Abstract base class for events triggered when items are used in ground mode.
+    /// Defines how items can be used outside of dungeon combat.
+    /// </summary>
     public abstract class GroundItemEvent : GameEvent
     {
+        /// <summary>
+        /// The type of usage this item supports in ground mode.
+        /// </summary>
         public ItemData.UseType GroundUsageType;
+
+        /// <summary>
+        /// The target selection type for this item use.
+        /// </summary>
         public SelectionType Selection;
+
+        /// <summary>
+        /// Applies the item event effect to the given context.
+        /// </summary>
+        /// <param name="context">The ground context containing item, owner, and target information.</param>
+        /// <returns>A coroutine enumerator for the item effect.</returns>
         public abstract IEnumerator<YieldInstruction> Apply(GroundContext context);
     }
-    
+
+    /// <summary>
+    /// An item event that executes a Lua script when the item is used.
+    /// </summary>
     [Serializable]
     public class ScriptItemEvent : GroundItemEvent
     {
@@ -58,6 +81,9 @@ namespace RogueEssence.Ground
         }
     }
     
+    /// <summary>
+    /// An item event that teaches a skill to a character when the item is used.
+    /// </summary>
     [Serializable]
     public class LearnItemEvent : GroundItemEvent
     {

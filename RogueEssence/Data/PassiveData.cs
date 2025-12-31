@@ -5,6 +5,10 @@ using RogueEssence.Dev;
 
 namespace RogueEssence.Data
 {
+    /// <summary>
+    /// Contains collections of passive event handlers that trigger on various game events.
+    /// Used as a base for items, statuses, intrinsics, and other passive effects.
+    /// </summary>
     [Serializable]
     public class PassiveData
     {
@@ -183,6 +187,9 @@ namespace RogueEssence.Data
         [ListCollapse]
         public PriorityList<HPChangeEvent> RestoreHPs;
 
+        /// <summary>
+        /// Initializes a new instance of the PassiveData class with empty event lists.
+        /// </summary>
         public PassiveData()
         {
             OnEquips = new PriorityList<ItemGivenEvent>();
@@ -222,6 +229,10 @@ namespace RogueEssence.Data
     }
 
 
+    /// <summary>
+    /// Extends PassiveData with proximity-based effects that affect nearby characters.
+    /// Effects apply to characters within a specified radius.
+    /// </summary>
     [Serializable]
     public class ProximityData : PassiveData
     {
@@ -245,7 +256,9 @@ namespace RogueEssence.Data
         /// </summary>
         public PriorityList<BattleEvent> BeforeExplosions;
 
-
+        /// <summary>
+        /// Initializes a new instance of the ProximityData class with default values.
+        /// </summary>
         public ProximityData()
         {
             Radius = -1;
@@ -258,6 +271,10 @@ namespace RogueEssence.Data
     }
 
 
+    /// <summary>
+    /// Extends PassiveData to include a ProximityData field for area-of-effect passives.
+    /// Used for items, intrinsics, and statuses that affect nearby characters.
+    /// </summary>
     [Serializable]
     public class ProximityPassive : PassiveData
     {
@@ -267,6 +284,9 @@ namespace RogueEssence.Data
         /// </summary>
         public ProximityData ProximityEvent;
 
+        /// <summary>
+        /// Initializes a new instance of the ProximityPassive class with a default proximity event.
+        /// </summary>
         public ProximityPassive()
         {
             ProximityEvent = new ProximityData();

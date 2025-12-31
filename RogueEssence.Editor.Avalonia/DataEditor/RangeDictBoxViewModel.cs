@@ -13,6 +13,9 @@ using System.Linq;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// Represents a single element in a range dictionary with start and end bounds.
+    /// </summary>
     public class RangeDictElement : ViewModelBase
     {
         private int start;
@@ -65,6 +68,15 @@ namespace RogueEssence.Dev.ViewModels
 
         private StringConv conv;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RangeDictElement"/> class.
+        /// </summary>
+        /// <param name="conv">The string converter for display purposes.</param>
+        /// <param name="addMin">The offset to add to the start value for display.</param>
+        /// <param name="addMax">The offset to add to the end value for display.</param>
+        /// <param name="start">The start of the range.</param>
+        /// <param name="end">The end of the range.</param>
+        /// <param name="value">The value associated with this range.</param>
         public RangeDictElement(StringConv conv, int addMin, int addMax, int start, int end, object value)
         {
             this.conv = conv;
@@ -76,6 +88,9 @@ namespace RogueEssence.Dev.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel for the RangeDictBox control that manages range-keyed collections.
+    /// </summary>
     public class RangeDictBoxViewModel : ViewModelBase
     {
         public ObservableCollection<RangeDictElement> Collection { get; }
@@ -153,7 +168,20 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Delegate for applying edits to a range dictionary element.
+        /// </summary>
+        /// <param name="key">The range key.</param>
+        /// <param name="element">The edited element.</param>
         public delegate void EditElementOp(IntRange key, object element);
+
+        /// <summary>
+        /// Delegate for initiating an element edit operation.
+        /// </summary>
+        /// <param name="key">The range key.</param>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
+        /// <param name="op">The callback operation to perform after editing.</param>
         public delegate void ElementOp(IntRange key, object element, bool advancedEdit, EditElementOp op);
 
         public event ElementOp OnEditKey;
@@ -166,6 +194,11 @@ namespace RogueEssence.Dev.ViewModels
 
         public bool ConfirmDelete;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RangeDictBoxViewModel"/> class.
+        /// </summary>
+        /// <param name="parent">The parent window for dialog display.</param>
+        /// <param name="conv">The string converter for display purposes.</param>
         public RangeDictBoxViewModel(Window parent, StringConv conv)
         {
             StringConv = conv;
@@ -173,11 +206,21 @@ namespace RogueEssence.Dev.ViewModels
             Collection = new ObservableCollection<RangeDictElement>();
         }
 
+        /// <summary>
+        /// Gets the collection as a typed range dictionary.
+        /// </summary>
+        /// <typeparam name="T">The range dictionary type to create.</typeparam>
+        /// <returns>A range dictionary of the specified type.</returns>
         public T GetDict<T>() where T : IRangeDict
         {
             return (T)GetDict(typeof(T));
         }
 
+        /// <summary>
+        /// Gets the collection as a range dictionary of the specified type.
+        /// </summary>
+        /// <param name="type">The type of range dictionary to create.</param>
+        /// <returns>A range dictionary instance containing all collection entries.</returns>
         public IRangeDict GetDict(Type type)
         {
             IRangeDict result = (IRangeDict)Activator.CreateInstance(type);
@@ -186,6 +229,10 @@ namespace RogueEssence.Dev.ViewModels
             return result;
         }
 
+        /// <summary>
+        /// Loads the collection from a range dictionary source.
+        /// </summary>
+        /// <param name="source">The range dictionary to load from.</param>
         public void LoadFromDict(IRangeDict source)
         {
             Collection.Clear();
@@ -233,6 +280,11 @@ namespace RogueEssence.Dev.ViewModels
             OnMemberChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Inserts an element at the specified index with a range starting from the previous element's end.
+        /// </summary>
+        /// <param name="index">The index at which to insert.</param>
+        /// <param name="element">The element to insert.</param>
         public void InsertOnKey(int index, object element)
         {
             IntRange key = new IntRange(0);
@@ -287,6 +339,11 @@ namespace RogueEssence.Dev.ViewModels
         }
 
 
+        /// <summary>
+        /// Handles double-click events on the collection list to edit the selected item.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The routed event arguments.</param>
         public void lbxCollection_DoubleClick(object sender, RoutedEventArgs e)
         {
             //int index = lbxDictionary.IndexFromPoint(e.X, e.Y);
@@ -299,6 +356,9 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handles the add button click event.
+        /// </summary>
         public void btnAdd_Click()
         {
             IntRange newKey = new IntRange(0);
@@ -307,6 +367,9 @@ namespace RogueEssence.Dev.ViewModels
             OnEditKey?.Invoke(newKey, element, advancedEdit, insertKey);
         }
 
+        /// <summary>
+        /// Handles the delete button click event.
+        /// </summary>
         public async void btnDelete_Click()
         {
             if (CurrentElement > -1 && CurrentElement < Collection.Count)
@@ -324,7 +387,16 @@ namespace RogueEssence.Dev.ViewModels
             }
         }
 
+        /// <summary>
+        /// Flag to prevent recursive limit adjustments.
+        /// </summary>
         bool settingRange;
+
+        /// <summary>
+        /// Adjusts the start or end limit to maintain valid range constraints.
+        /// </summary>
+        /// <param name="newVal">The new value being set.</param>
+        /// <param name="changeEnd">Whether the end value is being changed (true) or start value (false).</param>
         public void AdjustOtherLimit(int newVal, bool changeEnd)
         {
             int newStart = CurrentStart;

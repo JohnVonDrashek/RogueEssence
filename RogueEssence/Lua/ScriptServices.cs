@@ -37,8 +37,15 @@ namespace RogueEssence.Script
         private LuaFunction                         m_fncallunsub;
         #endregion
 
+        /// <summary>
+        /// Gets or sets the reference to the Lua engine state.
+        /// </summary>
         public LuaEngine State { get { return m_state; } set { m_state = value; } }
 
+        /// <summary>
+        /// Creates a new ScriptServices instance with the given Lua engine.
+        /// </summary>
+        /// <param name="state">The Lua engine to associate with this services manager.</param>
         public ScriptServices(LuaEngine state )
         {
             m_services      = new Dictionary<string, ServiceEntry>();
@@ -75,6 +82,12 @@ namespace RogueEssence.Script
                     svc.Value.callbacks[msgname].Call(svc.Value.lobj, arguments);
             }
         }
+        /// <summary>
+        /// Sends a message to all services listening for it as a coroutine.
+        /// </summary>
+        /// <param name="msgname">Name of the message.</param>
+        /// <param name="arguments">Values passed along the message.</param>
+        /// <returns>An enumerator for the coroutine.</returns>
         public IEnumerator<YieldInstruction> PublishCoroutine(string msgname, params object[] arguments)
         {
             //DiagManager.Instance.LogInfo("[SE]: Dispatching " + msgname + " event!!");
@@ -171,8 +184,10 @@ namespace RogueEssence.Script
         }
 
         /// <summary>
-        ///
+        /// Unsubscribes a callback from a service event.
         /// </summary>
+        /// <param name="svc">The service name.</param>
+        /// <param name="eventname">The event name to unsubscribe from.</param>
         public void UnSubscribe(string svc, string eventname)
         {
             foreach (var serv in m_services)

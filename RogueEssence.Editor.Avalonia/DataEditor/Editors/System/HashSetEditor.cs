@@ -13,14 +13,39 @@ using RogueEssence.Dev.ViewModels;
 
 namespace RogueEssence.Dev
 {
-    //TODO: there is no parameterless interface for hashset
-    //so instead we have to do the painful process of manually adding every hashset of every type we actually use.  ugh
+    /// <summary>
+    /// Editor for HashSet values. Displays a collection box that prevents duplicate entries.
+    /// Note: Due to lack of parameterless interface for HashSet, concrete type implementations are needed.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the hash set.</typeparam>
     public class HashSetEditor<T> : Editor<HashSet<T>>
     {
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should be shown in a subgroup.
+        /// </summary>
         public override bool DefaultSubgroup => true;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor contents should have a border decoration.
+        /// </summary>
         public override bool DefaultDecoration => false;
+
+        /// <summary>
+        /// Gets a value indicating whether the editor should display type information.
+        /// </summary>
         public override bool DefaultType => true;
 
+        /// <summary>
+        /// Loads a collection box control for editing hash set elements with duplicate prevention.
+        /// </summary>
+        /// <param name="control">The panel to add controls to.</param>
+        /// <param name="parent">The parent object name.</param>
+        /// <param name="parentType">The type of the parent object.</param>
+        /// <param name="name">The name of the member being edited.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="member">The hash set to edit.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
         public override void LoadWindowControls(StackPanel control, string parent, Type parentType, string name, Type type, object[] attributes, HashSet<T> member, Type[] subGroupStack)
         {
             Type elementType = typeof(T);
@@ -94,7 +119,15 @@ namespace RogueEssence.Dev
             control.Children.Add(lbxValue);
         }
 
-
+        /// <summary>
+        /// Saves the collection box controls and returns the resulting hash set.
+        /// </summary>
+        /// <param name="control">The panel containing the controls.</param>
+        /// <param name="name">The name of the member.</param>
+        /// <param name="type">The type of the member.</param>
+        /// <param name="attributes">The attributes associated with the member.</param>
+        /// <param name="subGroupStack">Stack of subgroup types for nested editing.</param>
+        /// <returns>A new hash set containing the edited elements.</returns>
         public override HashSet<T> SaveWindowControls(StackPanel control, string name, Type type, object[] attributes, Type[] subGroupStack)
         {
             int controlIndex = 0;

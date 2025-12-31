@@ -24,22 +24,39 @@ namespace RogueEssence.LevelGen
         public int IDOffset;
 
 
+        /// <summary>
+        /// Initializes a new instance of the MapNameIDStep class.
+        /// </summary>
         public MapNameIDStep()
         {
             Name = new LocalText();
 
         }
+
+        /// <summary>
+        /// Initializes a new instance of the MapNameIDStep class with the specified name and ID offset.
+        /// </summary>
+        /// <param name="name">The name template for the map.</param>
+        /// <param name="idOffset">The offset to add to the map ID for display purposes.</param>
         public MapNameIDStep(LocalText name, int idOffset)
         {
             Name = new LocalText(name);
             IDOffset = idOffset;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the MapNameIDStep class with the specified name.
+        /// </summary>
+        /// <param name="name">The name template for the map.</param>
         public MapNameIDStep(LocalText name)
         {
             Name = new LocalText(name);
         }
 
+        /// <summary>
+        /// Applies the map name step, setting the map's title with the floor number substituted.
+        /// </summary>
+        /// <param name="map">The map generation context to modify.</param>
         public override void Apply(T map)
         {
             map.Map.Name = LocalText.FormatLocalText(Name, (map.Map.ID + IDOffset).ToString());

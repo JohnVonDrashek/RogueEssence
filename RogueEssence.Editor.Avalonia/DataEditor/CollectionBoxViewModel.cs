@@ -13,6 +13,9 @@ using RogueEssence.Dev.Views;
 
 namespace RogueEssence.Dev.ViewModels
 {
+    /// <summary>
+    /// Represents a single element in a list collection with an index key and value.
+    /// </summary>
     public class ListElement : ViewModelBase
     {
         private int key;
@@ -47,6 +50,13 @@ namespace RogueEssence.Dev.ViewModels
 
         private StringConv conv;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListElement"/> class.
+        /// </summary>
+        /// <param name="conv">The string converter for display purposes.</param>
+        /// <param name="addIndex">The value to add to the display index.</param>
+        /// <param name="key">The index key of this element.</param>
+        /// <param name="val">The actual value this element represents.</param>
         public ListElement(StringConv conv, int addIndex, int key, object val)
         {
             this.addIndex = addIndex;
@@ -56,6 +66,9 @@ namespace RogueEssence.Dev.ViewModels
         }
     }
 
+    /// <summary>
+    /// ViewModel for the CollectionBox control that manages a list of items.
+    /// </summary>
     public class CollectionBoxViewModel : ViewModelBase
     {
         public ObservableCollection<ListElement> Collection { get; }
@@ -72,7 +85,20 @@ namespace RogueEssence.Dev.ViewModels
         private Window parent;
 
 
+        /// <summary>
+        /// Delegate for applying edits to an element at a specific index.
+        /// </summary>
+        /// <param name="index">The index of the element.</param>
+        /// <param name="element">The edited element.</param>
         public delegate void EditElementOp(int index, object element);
+
+        /// <summary>
+        /// Delegate for initiating an element edit operation.
+        /// </summary>
+        /// <param name="index">The index of the element.</param>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
+        /// <param name="op">The callback operation to perform after editing.</param>
         public delegate void ElementOp(int index, object element, bool advancedEdit, EditElementOp op);
 
         public event ElementOp OnEditItem;
@@ -83,6 +109,11 @@ namespace RogueEssence.Dev.ViewModels
 
         public bool ConfirmDelete;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CollectionBoxViewModel"/> class.
+        /// </summary>
+        /// <param name="parent">The parent window for dialog display.</param>
+        /// <param name="conv">The string converter for display purposes.</param>
         public CollectionBoxViewModel(Window parent, StringConv conv)
         {
             StringConv = conv;
@@ -91,12 +122,21 @@ namespace RogueEssence.Dev.ViewModels
             SelectedIndex = -1;
         }
 
-
+        /// <summary>
+        /// Gets the collection as a typed list.
+        /// </summary>
+        /// <typeparam name="T">The list type to create.</typeparam>
+        /// <returns>A list of the specified type.</returns>
         public T GetList<T>() where T : IList
         {
             return (T)GetList(typeof(T));
         }
 
+        /// <summary>
+        /// Gets the collection as a list of the specified type.
+        /// </summary>
+        /// <param name="type">The type of list to create.</param>
+        /// <returns>A list instance containing all collection values.</returns>
         public IList GetList(Type type)
         {
             IList result = (IList)Activator.CreateInstance(type);
@@ -105,6 +145,10 @@ namespace RogueEssence.Dev.ViewModels
             return result;
         }
 
+        /// <summary>
+        /// Loads the collection from a source list.
+        /// </summary>
+        /// <param name="source">The source list to load from.</param>
         public void LoadFromList(IList source)
         {
             Collection.Clear();
@@ -121,6 +165,11 @@ namespace RogueEssence.Dev.ViewModels
             OnMemberChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Inserts an item at the specified index.
+        /// </summary>
+        /// <param name="index">The index at which to insert the item.</param>
+        /// <param name="element">The element to insert.</param>
         public void InsertItem(int index, object element)
         {
             index = Math.Min(Math.Max(0, index), Collection.Count + 1);
@@ -131,6 +180,10 @@ namespace RogueEssence.Dev.ViewModels
             OnMemberChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Deletes the item at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the item to delete.</param>
         public void DeleteItem(int index)
         {
             Collection.RemoveAt(index);
@@ -139,6 +192,11 @@ namespace RogueEssence.Dev.ViewModels
             OnMemberChanged?.Invoke();
         }
 
+        /// <summary>
+        /// Handles double-click events on the collection list to edit the selected item.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The pointer released event arguments.</param>
         public void lbxCollection_DoubleClick(object sender, PointerReleasedEventArgs e)
         {
             //int index = lbxCollection.IndexFromPoint(e.X, e.Y);
@@ -153,6 +211,10 @@ namespace RogueEssence.Dev.ViewModels
         }
 
 
+        /// <summary>
+        /// Handles the add button click event.
+        /// </summary>
+        /// <param name="advancedEdit">Whether advanced edit mode is enabled.</param>
         public void btnAdd_Click(bool advancedEdit)
         {
             int index = SelectedIndex;

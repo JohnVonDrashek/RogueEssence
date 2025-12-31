@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An animation that displays floating text that rises and fades out.
+    /// Used for damage numbers, status messages, and other in-game text effects.
+    /// </summary>
     public class TextAnim : BaseAnim
     {
 

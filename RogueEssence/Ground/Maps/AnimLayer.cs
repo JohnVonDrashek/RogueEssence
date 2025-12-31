@@ -8,6 +8,10 @@ using RogueEssence.Content;
 namespace RogueEssence.Ground
 {
 
+    /// <summary>
+    /// A layer containing animated decorations for a ground map.
+    /// Animations on this layer can be drawn at different depth levels.
+    /// </summary>
     [Serializable]
     public class AnimLayer : IMapLayer
     {

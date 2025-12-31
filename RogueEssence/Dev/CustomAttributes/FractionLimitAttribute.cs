@@ -2,6 +2,10 @@
 
 namespace RogueEssence.Dev
 {
+    /// <summary>
+    /// Specifies constraints on the sign of numerator and denominator for fraction fields.
+    /// Used to limit whether fractions can be negative or require specific sign combinations.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class FractionLimitAttribute : PassableAttribute
     {

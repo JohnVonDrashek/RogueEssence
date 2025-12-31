@@ -3,6 +3,10 @@ using RogueElements;
 
 namespace RogueEssence.Content
 {
+    /// <summary>
+    /// An animation that moves in a helical (spiral) pattern around an origin point.
+    /// Used for orbiting effects and spiral attacks.
+    /// </summary>
     public class HelixAnim : LoopingAnim
     {
         public HelixAnim(AnimData anim, int totalTime, Loc origin, int radius, int degreesStart, int cycleSpeed, int locHeight, int heightSpeed)
