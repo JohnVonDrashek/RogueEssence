@@ -1,0 +1,38 @@
+{
+  "name": "rogueessence-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for RogueEssence game engine - query game data, search code, and access documentation",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "rogueessence-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "rogueessence",
+    "game-engine",
+    "pokemon-mystery-dungeon",
+    "roguelike"
+  ],
+  "author": "JohnVonDrashek",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "glob": "^11.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

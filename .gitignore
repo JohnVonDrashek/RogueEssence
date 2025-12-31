@@ -22,3 +22,8 @@ publish/
 # OS files
 Thumbs.db
 .DS_Store
+
+# Node.js / MCP Server
+node_modules/
+dist/
+*.tsbuildinfo
