@@ -3,6 +3,10 @@
     "rogueessence": {
       "command": "node",
       "args": ["rogueessence-mcp-server/dist/index.js"]
+    },
+    "rogueelemens": {
+      "command": "node",
+      "args": ["/Users/gfelter/code/RogueElements/mcp-server/dist/index.js"]
     }
   }
 }
