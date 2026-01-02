@@ -97,23 +97,13 @@ let csharpLanguage: Language | null = null;
 async function initializeParser(): Promise<void> {
   if (csharpParser) return;
 
-  console.error("[MCP DEBUG] Initializing parser...");
-  console.error(`[MCP DEBUG] __dirname: ${__dirname}`);
-  console.error(`[MCP DEBUG] PROJECT_ROOT: ${PROJECT_ROOT}`);
-  console.error(`[MCP DEBUG] ROGUEESSENCE_DIR: ${ROGUEESSENCE_DIR}`);
-  console.error(`[MCP DEBUG] ROGUEESSENCE_DIR exists: ${fs.existsSync(ROGUEESSENCE_DIR)}`);
-
   await Parser.init();
   csharpParser = new Parser();
 
   // Load C# grammar from node_modules
   const wasmPath = path.resolve(__dirname, "../node_modules/tree-sitter-c-sharp/tree-sitter-c_sharp.wasm");
-  console.error(`[MCP DEBUG] WASM path: ${wasmPath}`);
-  console.error(`[MCP DEBUG] WASM exists: ${fs.existsSync(wasmPath)}`);
-
   csharpLanguage = await Language.load(wasmPath);
   csharpParser.setLanguage(csharpLanguage);
-  console.error("[MCP DEBUG] Parser initialized successfully");
 }
 
 // =============================================================================
@@ -363,8 +353,8 @@ async function parseClassFile(filePath: string): Promise<ClassDoc[]> {
     }
 
     return results;
-  } catch (err) {
-    console.error(`[MCP DEBUG] Error parsing ${filePath}:`, err);
+  } catch {
+    // Silently skip files that fail to parse
     return [];
   }
 }
@@ -394,12 +384,7 @@ async function findClassesInCategory(category: ClassCategory): Promise<ClassDoc[
   const categoryInfo = CLASS_CATEGORIES[category];
   const categoryDir = path.join(ROGUEESSENCE_DIR, categoryInfo.dir);
 
-  console.error(`[MCP DEBUG] findClassesInCategory: ${category}`);
-  console.error(`[MCP DEBUG]   categoryDir: ${categoryDir}`);
-  console.error(`[MCP DEBUG]   exists: ${fs.existsSync(categoryDir)}`);
-
   if (!fs.existsSync(categoryDir)) {
-    console.error(`[MCP DEBUG]   SKIPPING - directory not found`);
     return [];
   }
 
@@ -425,7 +410,6 @@ async function findClassesInCategory(category: ClassCategory): Promise<ClassDoc[
   }
 
   collectFiles(categoryDir);
-  console.error(`[MCP DEBUG]   files found: ${filesToParse.length}`);
 
   // Parse all files
   for (const filePath of filesToParse) {
@@ -437,10 +421,6 @@ async function findClassesInCategory(category: ClassCategory): Promise<ClassDoc[
     }
   }
 
-  console.error(`[MCP DEBUG]   classes matched: ${classes.length}`);
-  if (classes.length > 0) {
-    console.error(`[MCP DEBUG]   class names: [${classes.slice(0, 5).map(c => c.name).join(", ")}${classes.length > 5 ? "..." : ""}]`);
-  }
   return classes;
 }
 
